@@ -430,12 +430,165 @@ item_id INT,
 FOREIGN KEY (item_id) REFERENCES item(id)
 );
 
+CREATE TABLE light_source(
+item_id INT,
+aoe_id INT, # oblik u kojem sija svjetlo
+duration_in_minutes INT
+);
 
-# ADD TABLE FOR NORMAL ITEMS SUCH AS LIGHT SOURCES, TOOLS, THROWABLES, ETC. 
-# order of combat, initative, surprise, turns 
-# actions 
-# class 
-# player and DM permissions
-# maps 
-# game 
-# magic items 
+CREATE TABLE throwable(
+item_id INT,
+range_min INT,
+range_max INT,
+aoe_id INT,
+saving_throw_ability_id INT,
+saving_throw_DC INT,
+damage_dice_id INT,
+damage_dice_amount INT,
+damage_type_id INT 
+);
+
+CREATE TABLE consumable(
+item_id INT,
+dice_id INT,
+dice_amount INT,
+is_healing BOOl,
+saving_throw_ability_id INT,
+saving_throw_DC INT,
+condition_id INT,
+feature_id INT
+);
+
+CREATE TABLE creature_instance(
+id INT PRIMARY KEY,
+creature_template_id INT,
+current_hp INT,
+initiative INT
+);
+
+CREATE TABLE creature_instance_spell_slots(
+creature_instance_id INT,
+slot_level INT,
+amount INT
+);
+
+CREATE TABLE creature_template_spells_known(
+creature_instance_id INT,
+spell_id INT
+);
+
+CREATE TABLE creature_instance_spells_known(
+creature_instance_id INT,
+spell_id INT
+);
+
+CREATE TABLE creature_instance_inventory(
+creature_instance_id INT,
+item_id INT,
+amount INT
+);
+
+CREATE TABLE game_instance(
+id INT PRIMARY KEY,
+game_name VARCHAR(32),
+game_owner_id INT,
+start_date DATETIME
+);
+
+CREATE TABLE game_players(
+game_id INT PRIMARY KEY,
+player_id INT 
+);
+
+CREATE TABLE map(
+id INT PRIMARY KEY,
+aoe_id INT, # ovime se definiraju dimenzije
+game_instance_id INT
+);
+
+CREATE TABLE map_creatures(
+creature_instance_id INT,
+map_id INT,
+coord_x INT,
+coord_y INT,
+coord_z INT 
+);
+
+CREATE TABLE experience_for_level(
+which_level INT,
+experience_needed INT
+);
+
+CREATE TABLE player_character(
+id INT PRIMARY KEY,
+player_id INT,
+creature_instance_id INT,
+race_id INT,
+background_id INT,
+class_id INT,
+class_levl INT,
+experience INT,
+death_save_fail INT,
+death_save_success INT
+);
+
+CREATE TABLE object_template(
+id INT PRIMARY KEY,
+object_name VARCHAR(32),
+object_description TEXT,
+size_id INT,
+health_points INT 
+);
+
+CREATE TABLE object_damage_relationship(
+object_template_id INT,
+damage_replationship_id INT 
+);
+
+CREATE TABLE object_instance(
+id INT PRIMARY KEY,
+object_template_id INT,
+map_id INT,
+current_health_points INT,
+coord_x INT,
+coord_y INT,
+coord_z INT 
+);
+
+CREATE TABLE class(
+id INT PRIMARY KEY,
+class_name VARCHAR(32),
+class_description TEXT,
+hit_dice_id INT,
+primary_ability_id INT,
+saving_proficiency_id_1 INT,
+saving_proficiency_id_2 INT
+);
+
+CREATE TABLE class_proficiency(
+class_id INT,
+item_id INT 
+);
+
+CREATE TABLE class_levels(
+id INT PRIMARY KEY,
+class_level INT,
+class_id INT,
+proficiency_bonus INT,
+learn_cantrip_amount INT,
+learn_spell_amount INT
+);
+
+CREATE TABLE class_level_feature(
+class_level_id INT,
+feature_id INT
+);
+
+CREATE TABLE class_level_spellslots(
+class_level_id INT,
+slot_level INT,
+slot_amount INT
+);
+
+# features su ostali
+# takodjer i guess actions??
