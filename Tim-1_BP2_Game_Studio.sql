@@ -15,7 +15,7 @@ ability_name ENUM("STRENGTH", "DEXTERITY", "CONSTITUTION", "INTELLIGENCE", "WISD
 
 CREATE TABLE dice(
 id INT PRIMARY KEY,
-dice ENUM ("d4", "d6", "d8", "d10", "d12", "d20") -- ???? primary keay si vamo bio stavio
+dice ENUM ("d4", "d6", "d8", "d10", "d12", "d20") -- ???? primary key si vamo bio stavio
 );
 
 CREATE TABLE size(
@@ -37,20 +37,20 @@ creature_type ENUM ("ABERRATION", "BEAST", "CELESTIAL", "CONSTRUCT", "DRAGON", "
 
 CREATE TABLE creature_template(
 id INT PRIMARY KEY,
-creature_name VARCHAR(64),
-size_id INT,
+creature_name VARCHAR(64) NOT NULL,
+size_id INT, 
 creature_type_id INT,
 alignment_id INT,
-STRENGTH INT, 
-DEXTERITY INT,
-CONSTITUTION INT,
-INTELLIGENCE INT,
-WISDOM INT,
-CHARISMA INT,
+STRENGTH INT NOT NULL, 
+DEXTERITY INT NOT NULL,
+CONSTITUTION INT NOT NULL,
+INTELLIGENCE INT NOT NULL,
+WISDOM INT NOT NULL,
+CHARISMA INT NOT NULL,
 proficiency INT,
 #current_hp INT, --- ?????
-hit_dice_type INT,
-hit_dice_number INT,
+hit_dice_type INT NOT NULL,
+hit_dice_number INT NOT NULL,
 FOREIGN KEY (size_id) REFERENCES size(id),
 FOREIGN KEY (alignment_id) REFERENCES alignment(id),
 FOREIGN KEY (creature_type_id) REFERENCES creature_type(id)
@@ -59,7 +59,7 @@ FOREIGN KEY (creature_type_id) REFERENCES creature_type(id)
 CREATE TABLE skill_proficiency( 
 creature_id INT NOT NULL,
 skill_id INT NOT NULL,
-expertiese BOOL,
+expertise BOOL,
 PRIMARY KEY (creature_id, skill_id),
 FOREIGN KEY (skill_id) REFERENCES skill(id),
 FOREIGN KEY (creature_id) REFERENCES creature_template(id) 
@@ -99,8 +99,9 @@ FOREIGN KEY (condition_id) REFERENCES conditions(id)
 
 CREATE TABLE condition_relationship(
 condition_id INT,
-condition_relationship ENUM ("ADVANTAGE", "IMMUNE"),
-FOREIGN KEY (condition_id) REFERENCES conditions(id)
+condition_relationship ENUM ("ADVANTAGE", "IMMUNE"), -- ces stavit i disadvantage?
+FOREIGN KEY (condition_id) REFERENCES conditions(id),
+PRIMARY KEY (condition_id,condition_relationship)
 );
 
 CREATE TABLE creature_condition_relationship(
@@ -126,6 +127,7 @@ FOREIGN KEY (language_id) REFERENCES languages(id)
 CREATE TABLE challenge_rating(
 rating NUMERIC (10, 2) PRIMARY KEY,
 experience_points INT
+CHECK (experience_points>0)
 );
 -- NEMA SMISLAAA!!!!!!!!!!!!!!!!!!-----------
 
@@ -139,6 +141,7 @@ CREATE TABLE sense(
 id INT PRIMARY KEY,
 sense ENUM("BLINDSIGHT", "DARKVISION", "TREMORSENSE", "TRUESIGHT"),
 distance INT
+CHECK (distance>0)
 );
 
 CREATE TABLE creature_sense(
@@ -150,15 +153,16 @@ FOREIGN KEY (sense_id) REFERENCES sense(id)
 
 CREATE TABLE movement(
 id INT PRIMARY KEY,
-distance INT,
-movement ENUM ("WALK", "BURROW", "CLIMB", "FLY", "SWIM")
+distance INT DEFAULT 30, -- stavio sam 30 za prosjek likova, vecina njih ima distance of 30 feet, cisto da bude
+movement ENUM ("WALK", "BURROW", "CLIMB", "FLY", "SWIM") 
+ 
 );
 
 CREATE TABLE creature_movement(
 creature_id INT,
 movement_id INT,
 FOREIGN KEY (creature_id) REFERENCES creature_template(id),
-FOREIGN KEY (movement_id) REFERENCES movement(id)
+FOREIGN KEY (movement_id) REFERENCES movement(id) 
 );
 
 CREATE TABLE item(
@@ -168,6 +172,7 @@ item_description TEXT,
 WEIGHT NUMERIC(10, 2),
 cost_id INT, -- ??????????
 cost_amount INT 
+CHECK (cost_amount >0)
 );
 
 CREATE TABLE creature_item(
@@ -215,28 +220,6 @@ FOREIGN KEY (weapon_id) REFERENCES weapon(id),
 FOREIGN KEY (weapon_property_id) REFERENCES weapon_properties(id)
 );
 
-/*
-CREATE TABLE creature_template(
-id INT PRIMARY KEY,
-creature_name VARCHAR(64),
-size_id INT,
-creature_type_id INT,
-alignment_id INT,
-STRENGTH INT, 
-DEXTERITY INT,
-CONSTITUTION INT,
-INTELLIGENCE INT,
-WISDOM INT,
-CHARISMA INT,
-proficiency INT,
-#current_hp INT, --- ?????
-hit_dice_type INT,
-hit_dice_number INT,
-FOREIGN KEY (size_id) REFERENCES size(id),
-FOREIGN KEY (alignment_id) REFERENCES alignment(id),
-FOREIGN KEY (creature_type_id) REFERENCES creature_type(id)
-);
-*/
 CREATE TABLE time_units(
 id INT,
 unit ENUM("ACTION", "BONUS ACTION", "REACTION", "MINUTE", "HOUR", "DAY", "INSTANTANEOUS")
@@ -244,22 +227,22 @@ unit ENUM("ACTION", "BONUS ACTION", "REACTION", "MINUTE", "HOUR", "DAY", "INSTAN
 
 CREATE TABLE spell(
 id INT PRIMARY KEY,
-spell_name VARCHAR(128),
+spell_name VARCHAR(128) NOT NULL,
 spell_school ENUM ("ABJURATION", "CONJURATION", "DIVINATION", "ENCHANTMENT", "EVOCATION", "ILLUSION", "NECROMANCY", "TRANSMUTATION"),
-spell_level INT, 
-is_ritual BOOL,
-is_concentration BOOL,
-casting_unit INT,
+spell_level INT NOT NULL, 
+is_ritual BOOL NOT NULL,
+is_concentration BOOL NOT NULL,
+casting_unit INT NOT NULL,
 casting_unit_amount INT, -- ?????????????
 duration_unit INT,
-duration_unit_amount INT,
-save_type INT, 
-casting_range INT,
-number_of_targets INT,
-damage_dice_type INT,
-damage_dice_amount INT,
-uses_damage_modifier BOOL,
-is_attack_roll BOOL,
+duration_unit_amount INT NOT NULL,
+save_type INT NOT NULL, 
+casting_range INT NOT NULL,
+number_of_targets INT NOT NULL,
+damage_dice_type INT NOT NULL,
+damage_dice_amount INT NOT NULL,
+uses_damage_modifier BOOL NOT NULL,
+is_attack_roll BOOL NOT NULL,
 saving_throw_id INT,
 spell_description TEXT
 );
@@ -292,29 +275,7 @@ aoe_id INT,
 FOREIGN KEY (spell_id) REFERENCES spell(id),
 FOREIGN KEY (aoe_id) REFERENCES aoe_shape(id)
 );
-/*
-CREATE TABLE spell(
-id INT,
-spell_name VARCHAR(128),
-spell_school ENUM ("ABJURATION", "CONJURATION", "DIVINATION", "ENCHANTMENT", "EVOCATION", "ILLUSION", "NECROMANCY", "TRANSMUTATION"),
-spell_level INT, 
-is_ritual BOOL,
-is_concentration BOOL,
-casting_unit INT,
-casting_unit_amount INT, -- ?????????????
-duration_unit INT,
-duration_unit_amount INT,
-save_type INT, 
-casting_range INT,
-number_of_targets INT,
-damage_dice_type INT,
-damage_dice_amount INT,
-uses_damage_modifier BOOL,
-is_attack_roll BOOL,
-saving_throw_id INT,
-spell_description TEXT
-);
-*/
+
 CREATE TABLE spell_class(
 class_id INT, 
 spell_id INT,
@@ -441,7 +402,7 @@ flaws TEXT
 CREATE TABLE player(
 id INT PRIMARY KEY,
 player_name INT,
-character_id INT,
+character_id INT, -- unique?
 is_DM BOOL
 -- FOREIGN KEY (character_id) REFERENCES characters(id) -- ????
 );
