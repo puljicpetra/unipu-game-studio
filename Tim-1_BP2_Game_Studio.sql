@@ -2,63 +2,65 @@ DROP DATABASE IF EXISTS game_studio;
 CREATE DATABASE game_studio;
 USE game_studio;
 
-CREATE TABLE skill(
-id INT AUTO_INCREMENT PRIMARY KEY,
-skill_name VARCHAR(30) NOT NULL, #Kombinacija skill + ability score mora biti unique jer mozemo staviti saving throw ko skill!
-ability_score_id INT NOT NULL
+CREATE TABLE skill (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    skill_name VARCHAR(30) NOT NULL,
+    ability_score_id INT NOT NULL,
+    FOREIGN KEY (ability_score_id) REFERENCES ability_score (id)
 );
 
 CREATE TABLE ability_score( #kako ne bi smo morali pisati za literally svaki creature scores, mozemo imati sve varijacije od 0 do 30 jer imamo 180 kombinacija + n za sve creatures di je n broj creaturea a inace bi imali 6*n
-id INT AUTO_INCREMENT PRIMARY KEY,
-ability_name ENUM("STRENGTH", "DEXTERITY", "CONSTITUTION", "INTELLIGENCE", "WISDOM", "CHARISMA")
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	ability_name ENUM("STRENGTH", "DEXTERITY", "CONSTITUTION", "INTELLIGENCE", "WISDOM", "CHARISMA")
 );
 
 CREATE TABLE dice(
-id INT PRIMARY KEY AUTO_INCREMENT,
-dice ENUM ("d4", "d6", "d8", "d10", "d12", "d20") NOT NULL-- ???? primary key si vamo bio stavio
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	dice ENUM ("d4", "d6", "d8", "d10", "d12", "d20") NOT NULL-- ???? primary key si vamo bio stavio
 );
 
 CREATE TABLE size(
-id INT PRIMARY KEY AUTO_INCREMENT,
-size ENUM ("TINY", "SMALL", "MEDIUM", "LARGE", "HUGE", "GARGANTUAN") NOT NULL,
-space INT NOT NULL UNIQUE
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	size ENUM ("TINY", "SMALL", "MEDIUM", "LARGE", "HUGE", "GARGANTUAN") NOT NULL,
+	space INT NOT NULL UNIQUE
 );
 
 CREATE TABLE alignment(
-id INT PRIMARY KEY AUTO_INCREMENT,
-lawfulness ENUM ("LAWFUL", "NEUTRAL", "CHAOTIC") NOT NULL,
-morality ENUM ("GOOD", "NEUTRAL", "EVIL") NOT NULL
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	lawfulness ENUM ("LAWFUL", "NEUTRAL", "CHAOTIC") NOT NULL,
+	morality ENUM ("GOOD", "NEUTRAL", "EVIL") NOT NULL
 );
 
 CREATE TABLE creature_type(
-id INT PRIMARY KEY AUTO_INCREMENT,
-creature_type ENUM ("ABERRATION", "BEAST", "CELESTIAL", "CONSTRUCT", "DRAGON", "ELEMENTAL", "FEY", "FIEND", "GIANT", "HUMANOID", "MONSTROSITY", "OOZE", "PLANT", "UNDEAD") NOT  NULL -- ovdje si isto stavio mprimary key
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	creature_type ENUM ("ABERRATION", "BEAST", "CELESTIAL", "CONSTRUCT", "DRAGON", "ELEMENTAL", "FEY", "FIEND", "GIANT", "HUMANOID", "MONSTROSITY", "OOZE", "PLANT", "UNDEAD") NOT  NULL -- ovdje si isto stavio mprimary key
 );
 
 CREATE TABLE creature_template(
-id INT PRIMARY KEY AUTO_INCREMENT,
-creature_name VARCHAR(64) NOT NULL,
-size_id INT, 
-creature_type_id INT,
-alignment_id INT,
-STRENGTH INT NOT NULL, 
-DEXTERITY INT NOT NULL,
-CONSTITUTION INT NOT NULL,
-INTELLIGENCE INT NOT NULL,
-WISDOM INT NOT NULL,
-CHARISMA INT NOT NULL,
-proficiency INT,
-hit_dice_type INT NOT NULL,
-hit_dice_number INT NOT NULL,
-FOREIGN KEY (size_id) REFERENCES size(id) ON DELETE CASCADE,
-FOREIGN KEY (alignment_id) REFERENCES alignment(id) ON DELETE CASCADE,
-FOREIGN KEY (creature_type_id) REFERENCES creature_type(id) ON DELETE CASCADE
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	creature_name VARCHAR(64) NOT NULL,
+	size_id INT, 
+	creature_type_id INT,
+	alignment_id INT,
+	STRENGTH INT NOT NULL, 
+	DEXTERITY INT NOT NULL,
+	CONSTITUTION INT NOT NULL,
+	INTELLIGENCE INT NOT NULL,
+	WISDOM INT NOT NULL,
+	CHARISMA INT NOT NULL,
+	proficiency INT,
+	hit_dice_type_id INT NOT NULL,
+	hit_dice_number INT NOT NULL,
+	FOREIGN KEY (size_id) REFERENCES size(id) ON DELETE CASCADE,
+	FOREIGN KEY (creature_type_id) REFERENCES creature_type(id) ON DELETE CASCADE,
+	FOREIGN KEY (alignment_id) REFERENCES alignment(id) ON DELETE CASCADE,
+	FOREIGN KEY (hit_dice_type_id) REFERENCES dice_type (id)
 );
 
 CREATE TABLE skill_proficiency( 
 creature_id INT NOT NULL,
-skill_id INT NOT NULL ,
-expertise BOOL ,
+skill_id INT NOT NULL,
+expertise BOOL,
 PRIMARY KEY (creature_id, skill_id),
 FOREIGN KEY (skill_id) REFERENCES skill(id) ON DELETE CASCADE,
 FOREIGN KEY (creature_id) REFERENCES creature_template(id) ON DELETE CASCADE
@@ -92,7 +94,7 @@ condition_description TEXT
 CREATE TABLE creature_condition(
 creature_id INT,
 condition_id INT,
-FOREIGN KEY (creature_id) REFERENCES creature_template(id) ON DELETE CASCADE,
+FOREIGN KEY (creature_id) REFERENCES creature_instance(id) ON DELETE CASCADE,
 FOREIGN KEY (condition_id) REFERENCES conditions(id) ON DELETE CASCADE
 );
 
@@ -132,7 +134,8 @@ CHECK (experience_points>0)
 CREATE TABLE creature_challenge(
 creature_id INT,
 rating NUMERIC (10, 2),
-FOREIGN KEY (creature_id) REFERENCES creature_template(id) ON DELETE CASCADE
+FOREIGN KEY (creature_id) REFERENCES creature_template(id) ON DELETE CASCADE,
+FOREIGN KEY (ratig) REFERENCES challange_rating (rating)
 );
 
 CREATE TABLE sense(
@@ -170,13 +173,14 @@ item_description TEXT,
 WEIGHT NUMERIC(10, 2),
 cost_id INT, 
 cost_amount INT 
-CHECK (cost_amount >0)
+CHECK (cost_amount > 0)
 );
 
 CREATE TABLE creature_item(
 creature_id INT,
 item_id INT,
-FOREIGN KEY (creature_id) REFERENCES creature_template(id) ON DELETE CASCADE,
+amount INT,
+FOREIGN KEY (creature_id) REFERENCES creature_instance(id) ON DELETE CASCADE,
 FOREIGN KEY (item_id) REFERENCES item(id) ON DELETE CASCADE
 );
 
@@ -230,19 +234,22 @@ spell_school ENUM ("ABJURATION", "CONJURATION", "DIVINATION", "ENCHANTMENT", "EV
 spell_level INT NOT NULL, 
 is_ritual BOOL NOT NULL,
 is_concentration BOOL NOT NULL,
-casting_unit INT NOT NULL,
+casting_time_unit_id INT NOT NULL,
 casting_unit_amount INT, -- ?????????????
-duration_unit INT,
+duration_time_unit_id INT,
 duration_unit_amount INT NOT NULL,
-save_type INT NOT NULL, 
 casting_range INT NOT NULL,
 number_of_targets INT NOT NULL,
-damage_dice_type INT NOT NULL,
+damage_dice_type_id INT NOT NULL,
 damage_dice_amount INT NOT NULL,
 uses_damage_modifier BOOL NOT NULL,
 is_attack_roll BOOL NOT NULL,
 saving_throw_id INT,
-spell_description TEXT
+spell_description TEXT,
+FOREIGN KEY (casting_time_unit_id) REFERENCES time_units (id),
+FOREIGN KEY (duration_time_unit_id) REFERENCES time_units (id),
+FOREIGN KEY (damage_dice_type_id) REFERENCES dice (id),
+FOREIGN KEY (saving_throw_id) REFERENCES ability_score (id)
 );
 
 CREATE TABLE components(
@@ -294,6 +301,7 @@ height_max INT,
 weight_min INT,
 weight_max INT,
 FOREIGN KEY (creature_type_id) REFERENCES creature_type(id) ON DELETE CASCADE,
+FOREIGN KEY (typical_alignment_id) REFERENCES alignment(id),
 FOREIGN KEY (size_id) REFERENCES size(id) ON DELETE CASCADE
 );
 
@@ -407,17 +415,35 @@ CREATE TABLE notes(
 id INT PRIMARY KEY AUTO_INCREMENT,
 title VARCHAR(64),
 note TEXT,
-note_owner_id INT
+note_owner_id INT,
+FOREIGN KEY (note_owner_id) REFERENCES player_character (id)
 );
 
 CREATE TABLE background(
 id INT PRIMARY KEY AUTO_INCREMENT,
-skill_proficiency_1_id INT,
-skill_proficiency_2_id INT,
-item_proficiency_1_id INT,
-item_proficiency_2_id INT,
-language_1_id INT,
-language_2_id INT
+background_name VARCHAR (16),
+background_description TEXT
+);
+
+CREATE TABLE background_skills(
+background_id INT,
+skill_id INT,
+FOREIGN KEY (background_id) REFERENCES background (id),
+FOREIGN KEY (skill_id) REFERENCES skill (id)
+);
+
+CREATE TABLE background_item_prof(
+background_id INT,
+item_id INT,
+FOREIGN KEY (background_id) REFERENCES background (id),
+FOREIGN KEY (item_id) REFERENCES item (id)
+);
+
+CREATE TABLE background_languages(
+background_id INT,
+language_id INT,
+FOREIGN KEY (background_id) REFERENCES background (id),
+FOREIGN KEY (language_id) REFERENCES languages (id)
 );
 
 CREATE TABLE background_equipment(
@@ -544,9 +570,14 @@ id INT PRIMARY KEY AUTO_INCREMENT,
 class_name VARCHAR(32),
 class_description TEXT,
 hit_dice_id INT,
-primary_ability_id INT,
-saving_proficiency_id_1 INT,
-saving_proficiency_id_2 INT
+primary_ability_id INT
+);
+
+CREATE TABLE class_saving_prof(
+class_id INT,
+saving_prof_id INT,
+FOREIGN KEY (class_id) REFERENCES class (id),
+FOREIGN KEY (saving_prof_id) REFERENCES ability_score (id)
 );
 
 CREATE TABLE player_character(
@@ -556,7 +587,7 @@ creature_instance_id INT,
 race_id INT,
 background_id INT,
 class_id INT,
-class_levl INT,
+class_level INT,
 experience INT,
 death_save_fail INT,
 death_save_success INT,
