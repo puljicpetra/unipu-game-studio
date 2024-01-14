@@ -375,7 +375,7 @@ CREATE TABLE race_names (
     race_id INT,
     common_name_id INT,
     FOREIGN KEY (race_id) REFERENCES race (id) ON DELETE CASCADE,
-    FOREIGN KEY (common_name_id) REFERENCES common_names (id) ON DELETE CASCADE
+    FOREIGN KEY (goocommon_name_id) REFERENCES common_names (id) ON DELETE CASCADE
 );
 
 CREATE TABLE race_language (
@@ -398,6 +398,12 @@ CREATE TABLE personality (
     ideals TEXT,
     bonds TEXT,
     flaws TEXT
+);
+
+CREATE TABLE player (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    player_name INT,
+    is_DM BOOL
 );
 
 CREATE TABLE notes(
