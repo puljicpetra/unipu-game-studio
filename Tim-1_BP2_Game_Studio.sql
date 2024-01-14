@@ -418,10 +418,12 @@ CREATE TABLE race_condition_relationship (
 
 CREATE TABLE personality (
     id INT PRIMARY KEY AUTO_INCREMENT,
+    creature_instance_id INT NOT NULL,
     personality_traits TEXT NOT NULL,
     ideals TEXT NOT NULL,
     bonds TEXT NOT NULL,
-    flaws TEXT NOT NULL
+    flaws TEXT NOT NULL,
+    FOREIGN KEY (creature_instance_id) REFERENCES creature_instance (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE player (
@@ -472,6 +474,7 @@ CREATE TABLE background_equipment (
     background_id INT NOT NULL,
     item_id INT NOT NULL,
     amount INT NOT NULL DEFAULT (1),
+    CHECK (amount > 0),
     PRIMARY KEY (background_id, item_id),
     FOREIGN KEY (item_id) REFERENCES item (id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (background_id) REFERENCES background (id) ON UPDATE CASCADE ON DELETE CASCADE
@@ -503,166 +506,179 @@ CREATE TABLE consumable(
 
 CREATE TABLE creature_instance(
     id INT PRIMARY KEY AUTO_INCREMENT,
-    creature_template_id INT,
-    current_hp INT,
-    initiative INT
+    creature_template_id INT NOT NULL,
+    current_hp INT NOT NULL,
+    initiative INT NOT NULL DEFAULT (1)
 );
 
 CREATE TABLE creature_instance_spell_slots(
-    creature_instance_id INT,
-    slot_level INT,
-    amount INT
+    creature_instance_id INT NOT NULL,
+    slot_level INT NOT NULL,
+    amount INT NOT NULL DEFAULT (0),
+    PRIMARY KEY (creature_instance_id, slot_level),
+    FOREIGN KEY (creature_instance_id) REFERENCES creature_instance (id)
 );
 
 CREATE TABLE creature_template_spells_known(
-    creature_instance_id INT,
-    spell_id INT,
-    FOREIGN KEY (spell_id) REFERENCES spell(id),
-    FOREIGN KEY (creature_instance_id) REFERENCES creature_instance(id)
+    creature_template_id INT NOT NULL,
+    spell_id INT NOT NULL,
+    PRIMARY KEY (creature_template_id, spell_id),
+    FOREIGN KEY (spell_id) REFERENCES spell(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (creature_template_id) REFERENCES creature_template(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE creature_instance_spells_known(
-    creature_instance_id INT,
-    spell_id INT,
-    FOREIGN KEY (creature_instance_id) REFERENCES creature_instance(id),
-    FOREIGN KEY (spell_id) REFERENCES spell(id)
+    creature_instance_id INT NOT NULL,
+    spell_id INT NOT NULL,
+    PRIMARY KEY (creature_instance_id, spell_id),
+    FOREIGN KEY (creature_instance_id) REFERENCES creature_instance(id) ON UPDATE CASCADE ON DELETE CASCADE, 
+    FOREIGN KEY (spell_id) REFERENCES spell(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE creature_instance_inventory(
-    creature_instance_id INT,
-    item_id INT,
-    amount INT,
-    FOREIGN KEY (creature_instance_id) REFERENCES creature_instance(id),
-    FOREIGN KEY (item_id) REFERENCES item(id)
+    creature_instance_id INT NOT NULL,
+    item_id INT NOT NULL,
+    amount INT NOT NULL DEFAULT (1),
+    CHECK (amount > 0),
+    PRIMARY KEY (creature_instance_id, item_id),
+    FOREIGN KEY (creature_instance_id) REFERENCES creature_instance(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (item_id) REFERENCES item(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE game_instance(
     id INT PRIMARY KEY AUTO_INCREMENT,
-    game_name VARCHAR(32),
-    game_owner_id INT,
-    start_date DATETIME,
-    FOREIGN KEY (game_owner_id) REFERENCES player(id)
+    game_name VARCHAR(32) NOT NULL DEFAULT (CONCAT ('GAME: ', id)),
+    game_owner_id INT NOT NULL,
+    start_date DATETIME NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+    FOREIGN KEY (game_owner_id) REFERENCES player(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE game_players(
     game_id INT PRIMARY KEY,
-    player_id INT,
-    FOREIGN KEY (player_id) REFERENCES player(id),
-    FOREIGN KEY (game_id) REFERENCES game_instance(id)
+    player_id INT NOT NULL,
+    FOREIGN KEY (player_id) REFERENCES player(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (game_id) REFERENCES game_instance(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE map(
     id INT PRIMARY KEY AUTO_INCREMENT,
-    aoe_id INT, # ovime se definiraju dimenzije
-    game_instance_id INT,
-    FOREIGN KEY (game_instance_id) REFERENCES game_instance(id),
-    FOREIGN KEY (aoe_id) REFERENCES aoe_shape(id)
+    aoe_id INT NOT NULL,
+    game_instance_id INT NOT NULL,
+    FOREIGN KEY (game_instance_id) REFERENCES game_instance(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (aoe_id) REFERENCES aoe_shape(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE map_creatures(
-    creature_instance_id INT,
-    map_id INT,
-    coord_x INT,
-    coord_y INT,
-    coord_z INT,
-    FOREIGN KEY (creature_instance_id) REFERENCES creature_instance(id)
+    creature_instance_id INT NOT NULL,
+    map_id INT NOT NULL,
+    coord_x INT NOT NULL DEFAULT (0),
+    coord_y INT NOT NULL DEFAULT (0),
+    coord_z INT NOT NULL DEFAULT (0),
+    PRIMARY KEY (creature_instance_id, map_id),
+    FOREIGN KEY (creature_instance_id) REFERENCES creature_instance(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (map_id) REFERENCES map(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE experience_for_level(
-    which_level INT,
-    experience_needed INT
+    which_level INT NOT NULL,
+    experience_needed INT NOT NULL,
+    PRIMARY KEY (which_level, experience_needed)
 );
 
 CREATE TABLE class(
     id INT PRIMARY KEY AUTO_INCREMENT,
-    class_name VARCHAR(32),
-    class_description TEXT,
-    hit_dice_id INT,
-    primary_ability_id INT
+    class_name VARCHAR(32) NOT NULL UNIQUE,
+    class_description TEXT NOT NULL,
+    hit_dice_id INT NOT NULL DEFAULT (1),
+    primary_ability_id INT NOT NULL DEFAULT (0)
 );
 
 CREATE TABLE class_saving_prof(
-    class_id INT,
-    saving_prof_id INT,
-    FOREIGN KEY (class_id) REFERENCES class (id),
-    FOREIGN KEY (saving_prof_id) REFERENCES ability_score (id)
+    class_id INT NOT NULL,
+    saving_prof_id INT NOT NULL,
+    PRIMARY KEY (class_id, saving_prof_id),
+    FOREIGN KEY (class_id) REFERENCES class (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (saving_prof_id) REFERENCES ability_score (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE player_character(
     id INT PRIMARY KEY AUTO_INCREMENT,
-    player_id INT,
-    creature_instance_id INT,
-    race_id INT,
-    background_id INT,
-    class_id INT,
-    class_level INT,
-    experience INT,
-    death_save_fail INT,
-    death_save_success INT,
-    FOREIGN KEY (player_id) REFERENCES player(id),
-    FOREIGN KEY (creature_instance_id) REFERENCES creature_instance(id),
-    FOREIGN KEY (race_id) REFERENCES race(id),
-    FOREIGN KEY (background_id) REFERENCES background(id),
-    FOREIGN KEY (class_id) REFERENCES class(id)
+    player_id INT NOT NULL,
+    creature_instance_id INT NOT NULL,
+    race_id INT NOT NULL,
+    background_id INT NOT NULL,
+    class_id INT NOT NULL,
+    class_level INT NOT NULL DEFAULT (1),
+    experience INT NOT NULL DEFAULT (0),
+    death_save_fail INT NOT NULL DEFAULT (0),
+    death_save_success INT NOT NULL DEFAULT (0),
+    FOREIGN KEY (player_id) REFERENCES player(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (creature_instance_id) REFERENCES creature_instance(id) ON UPDATE CASCADE,
+    FOREIGN KEY (race_id) REFERENCES race(id) ON UPDATE CASCADE,
+    FOREIGN KEY (background_id) REFERENCES background(id) ON UPDATE CASCADE,
+    FOREIGN KEY (class_id) REFERENCES class(id) ON UPDATE CASCADE 
 );
 
 CREATE TABLE object_template (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    object_name VARCHAR(32),
+    object_name VARCHAR(32) NOT NULL UNIQUE,
     object_description TEXT,
-    size_id INT,
-    health_points INT,
-    FOREIGN KEY (size_id) REFERENCES size (id)
+    size_id INT NOT NULL,
+    health_points INT NOT NULL DEFAULT (1),
+    FOREIGN KEY (size_id) REFERENCES size (id) ON UPDATE CASCADE
 );
 
 CREATE TABLE object_damage_relationship (
-    object_template_id INT,
-    damage_replationship_id INT,
-    FOREIGN KEY (object_template_id) REFERENCES object_template (id),
-    FOREIGN KEY (damage_replationship_id) REFERENCES damage_relationship (id)
+    object_template_id INT NOT NULL,
+    damage_replationship_id INT NOT NULL,
+    PRIMARY KEY (object_template_id, damage_replationship_id),
+    FOREIGN KEY (object_template_id) REFERENCES object_template (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (damage_replationship_id) REFERENCES damage_relationship (id) ON UPDATE CASCADE
 );
 
 CREATE TABLE object_instance (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    object_template_id INT,
-    map_id INT,
-    current_health_points INT,
-    coord_x INT,
-    coord_y INT,
-    coord_z INT,
-    FOREIGN KEY (object_template_id) REFERENCES object_template (id),
-    FOREIGN KEY (map_id) REFERENCES map (id)
+    object_template_id INT NOT NULL,
+    map_id INT NOT NULL,
+    current_health_points INT NOT NULL DEFAULT (1),
+    coord_x INT NOT NULL DEFAULT (0),
+    coord_y INT NOT NULL DEFAULT (0),
+    coord_z INT NOT NULL DEFAULT (0),
+    FOREIGN KEY (object_template_id) REFERENCES object_template (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (map_id) REFERENCES map (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 
 CREATE TABLE class_proficiency (
-    class_id INT,
-    item_id INT,
-    FOREIGN KEY (class_id) REFERENCES class (id),
-    FOREIGN KEY (item_id) REFERENCES item (id)
+    class_id INT NOT NULL,
+    item_id INT NOT NULL,
+    PRIMARY KEY (class_id, item_id),
+    FOREIGN KEY (class_id) REFERENCES class (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (item_id) REFERENCES item (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE class_levels (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    class_level INT,
-    class_id INT,
-    proficiency_bonus INT,
-    learn_cantrip_amount INT,
-    learn_spell_amount INT,
-    FOREIGN KEY (class_id) REFERENCES class (id)
+    class_level INT NOT NULL,
+    class_id INT NOT NULL,
+    proficiency_bonus INT NOT NULL DEFAULT (2),
+    learn_cantrip_amount INT NOT NULL DEFAULT (0),
+    learn_spell_amount INT NOT NULL DEFAULT (0),
+    FOREIGN KEY (class_id) REFERENCES class (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE class_level_feature (
-    class_level_id INT,
-    feature_id INT,
-    FOREIGN KEY (class_level_id) REFERENCES class_levels (id)
+    class_level_id INT NOT NULL,
+    feature_id INT NOT NULL,
+    PRIMARY KEY (class_level_id, feature_id),
+    FOREIGN KEY (class_level_id) REFERENCES class_levels (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE class_level_spellslots (
-    class_level_id INT,
-    slot_level INT,
-    slot_amount INT,
-    FOREIGN KEY (class_level_id) REFERENCES class_levels (id)
+    class_level_id INT NOT NULL,
+    slot_level INT NOT NULL DEFAULT (0),
+    slot_amount INT NOT NULL DEFAULT (0),
+    FOREIGN KEY (class_level_id) REFERENCES class_levels (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 # features su ostali
