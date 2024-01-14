@@ -366,7 +366,7 @@ CREATE TABLE common_names(
 id INT PRIMARY KEY AUTO_INCREMENT,
 common_name VARCHAR(32),
 is_family_name BOOL,
-gender ENUM ("NEUTRAL", "MASCULINE", "FEMINENE") NOT NULL
+gender ENUM ("NEUTRAL", "MASCULINE", "FEMININE") NOT NULL
 );
 
 CREATE TABLE race_names(
