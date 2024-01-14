@@ -373,7 +373,7 @@ CREATE TABLE common_names (
 
 CREATE TABLE race_names (
     race_id INT,
-    id_common_name INT,
+    common_name_id INT,
     FOREIGN KEY (race_id) REFERENCES race (id) ON DELETE CASCADE,
     FOREIGN KEY (id_common_name) REFERENCES common_names (id) ON DELETE CASCADE
 );
