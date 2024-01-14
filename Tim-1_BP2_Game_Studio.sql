@@ -3,40 +3,40 @@ CREATE DATABASE game_studio;
 USE game_studio;
 
 CREATE TABLE skill(
-id INT PRIMARY KEY,
+id INT AUTO_INCREMENT PRIMARY KEY,
 skill_name VARCHAR(30) NOT NULL, #Kombinacija skill + ability score mora biti unique jer mozemo staviti saving throw ko skill!
 ability_score_id INT NOT NULL
 );
 
 CREATE TABLE ability_score( #kako ne bi smo morali pisati za literally svaki creature scores, mozemo imati sve varijacije od 0 do 30 jer imamo 180 kombinacija + n za sve creatures di je n broj creaturea a inace bi imali 6*n
-id INT PRIMARY KEY,
+id INT AUTO_INCREMENT PRIMARY KEY,
 ability_name ENUM("STRENGTH", "DEXTERITY", "CONSTITUTION", "INTELLIGENCE", "WISDOM", "CHARISMA")
 );
 
 CREATE TABLE dice(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 dice ENUM ("d4", "d6", "d8", "d10", "d12", "d20") NOT NULL-- ???? primary key si vamo bio stavio
 );
 
 CREATE TABLE size(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 size ENUM ("TINY", "SMALL", "MEDIUM", "LARGE", "HUGE", "GARGANTUAN") NOT NULL,
 space INT NOT NULL UNIQUE
 );
 
 CREATE TABLE alignment(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 lawfulness ENUM ("LAWFUL", "NEUTRAL", "CHAOTIC") NOT NULL,
 morality ENUM ("GOOD", "NEUTRAL", "EVIL") NOT NULL
 );
 
 CREATE TABLE creature_type(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 creature_type ENUM ("ABERRATION", "BEAST", "CELESTIAL", "CONSTRUCT", "DRAGON", "ELEMENTAL", "FEY", "FIEND", "GIANT", "HUMANOID", "MONSTROSITY", "OOZE", "PLANT", "UNDEAD") NOT  NULL -- ovdje si isto stavio mprimary key
 );
 
 CREATE TABLE creature_template(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 creature_name VARCHAR(64) NOT NULL,
 size_id INT, 
 creature_type_id INT,
@@ -58,20 +58,20 @@ FOREIGN KEY (creature_type_id) REFERENCES creature_type(id)
 
 CREATE TABLE skill_proficiency( 
 creature_id INT NOT NULL,
-skill_id INT NOT NULL,
-expertise BOOL,
+skill_id INT NOT NULL ,
+expertise BOOL ,
 PRIMARY KEY (creature_id, skill_id),
 FOREIGN KEY (skill_id) REFERENCES skill(id),
 FOREIGN KEY (creature_id) REFERENCES creature_template(id) 
 );
 
 CREATE TABLE damage_type(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 damage ENUM ("ACID", "COLD", "FIRE", "FORCE", "LIGHTNING", "NECROTIC", "POISON", "PSYCHIC", "RADIANT", "THUNDER", "BLUDGEONING", "PIERCING", "SLASHING", "MAGICAL PIERCING", "MAGICAL BLUDGEONING") NOT NULL
 );
 
 CREATE TABLE damage_relationship(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 relationship ENUM ("VULNERABILITY", "RESISTANCE", "IMMUNITY") NOT NULL
 );
 
@@ -85,7 +85,7 @@ FOREIGN KEY (damage_type_id) REFERENCES damage_type(id)
 );
 
 CREATE TABLE conditions(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 condition_name ENUM("BLINDED", "CHARMED", "DEAFENED", "FRIGHTENED", "GRAPPLED", "INCAPACITATED", "INVISIBLE", "PARALYZED", "PETRIFIED", "POISONED", "PRONE", "RESTRAINED", "STUNNED", "UNCONSCIOUS", "EXHAUSTION 1", "EXHAUSTION 2", "EXHAUSTION 3", "EXHAUSTION 4", "EXHAUSTION 5", "EXHAUSTION 6") NOT NULL,
 condition_description TEXT
 );
@@ -112,7 +112,7 @@ FOREIGN KEY (creature_id) REFERENCES creature_template(id)
 );
 
 CREATE TABLE languages(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 language_name VARCHAR(16),
 is_exotic BOOL 
 );
@@ -138,7 +138,7 @@ FOREIGN KEY (creature_id) REFERENCES creature_template(id)
 );
 
 CREATE TABLE sense(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 sense ENUM("BLINDSIGHT", "DARKVISION", "TREMORSENSE", "TRUESIGHT") NOT NULL,
 distance INT NOT NULL
 CHECK (distance>0)
@@ -152,7 +152,7 @@ FOREIGN KEY (sense_id) REFERENCES sense(id)
 );
 
 CREATE TABLE movement(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 distance INT DEFAULT 30, -- stavio sam 30 za prosjek likova, vecina njih ima distance of 30 feet, cisto da bude
 movement ENUM ("WALK", "BURROW", "CLIMB", "FLY", "SWIM") NOT NULL
  
@@ -166,7 +166,7 @@ FOREIGN KEY (movement_id) REFERENCES movement(id)
 );
 
 CREATE TABLE item(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 item_name VARCHAR(64),
 item_description TEXT,
 WEIGHT NUMERIC(10, 2),
@@ -183,7 +183,7 @@ FOREIGN KEY (item_id) REFERENCES item(id)
 );
 
 CREATE TABLE armor(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 item_id INT,
 armor_type ENUM ("CLOTHING", "LIGHT", "MEDIUM", "HEAVY") NOT NULL,
 strength_minimum INT,
@@ -194,7 +194,7 @@ FOREIGN KEY (item_id) REFERENCES item(id)
 );
 
 CREATE TABLE weapon(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 item_id INT,
 damage_type_id INT, 
 damage_dice_id INT,
@@ -208,7 +208,7 @@ FOREIGN KEY (item_id) REFERENCES item(id)
 );
 
 CREATE TABLE weapon_properties( # maybe just hardcode all the properties how to use instead of description so gameplay can be automated?
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 property_name VARCHAR(32),
 property_description TEXT
 );
@@ -226,7 +226,7 @@ unit ENUM("ACTION", "BONUS ACTION", "REACTION", "MINUTE", "HOUR", "DAY", "INSTAN
 );
 
 CREATE TABLE spell(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 spell_name VARCHAR(128) NOT NULL,
 spell_school ENUM ("ABJURATION", "CONJURATION", "DIVINATION", "ENCHANTMENT", "EVOCATION", "ILLUSION", "NECROMANCY", "TRANSMUTATION") NOT NULL,
 spell_level INT NOT NULL, 
@@ -248,7 +248,7 @@ spell_description TEXT
 );
 
 CREATE TABLE components(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 verbal BOOL,
 somatic BOOL,
 material BOOL,
@@ -264,7 +264,7 @@ FOREIGN KEY (components_id) REFERENCES components(id)
 );
 
 CREATE TABLE aoe_shape(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 shape ENUM("CONE", "CUBE", "CYLINDER", "LINE", "SPHERE") NOT NULL,
 size INT
 );
@@ -283,7 +283,7 @@ FOREIGN KEY (spell_id) REFERENCES spell(id)
 );
 
 CREATE TABLE race(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 flavor TEXT,
 culture TEXT,
 maturity_age INT,
@@ -300,7 +300,7 @@ FOREIGN KEY (size_id) REFERENCES size(id)
 );
 
 CREATE TABLE features( # OOF needs lots of work for many things to fit such as trigger uses type etc.
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 feature_description TEXT
 );
 
@@ -363,7 +363,7 @@ FOREIGN KEY (race_id) REFERENCES race(id)
 );
 
 CREATE TABLE common_names(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 common_name VARCHAR(32),
 is_family_name BOOL,
 gender ENUM ("NEUTRAL", "MASCULINE", "FEMINENE") NOT NULL
@@ -392,7 +392,7 @@ FOREIGN KEY (race_id) REFERENCES race(id)
 );
 
 CREATE TABLE personality(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 personality_traits TEXT,
 ideals TEXT,
 bonds TEXT,
@@ -400,7 +400,7 @@ flaws TEXT
 );
 
 CREATE TABLE player(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 player_name INT,
 character_id INT, -- unique?
 is_DM BOOL
@@ -408,14 +408,14 @@ is_DM BOOL
 );
 
 CREATE TABLE notes(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 title VARCHAR(64),
 note TEXT,
 note_owner_id INT
 );
 
 CREATE TABLE background(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 skill_proficiency_1_id INT,
 skill_proficiency_2_id INT,
 item_proficiency_1_id INT,
@@ -460,7 +460,7 @@ feature_id INT
 );
 
 CREATE TABLE creature_instance(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 creature_template_id INT,
 current_hp INT,
 initiative INT
@@ -489,7 +489,7 @@ amount INT
 );
 
 CREATE TABLE game_instance(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 game_name VARCHAR(32),
 game_owner_id INT,
 start_date DATETIME
@@ -501,7 +501,7 @@ player_id INT
 );
 
 CREATE TABLE map(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 aoe_id INT, # ovime se definiraju dimenzije
 game_instance_id INT
 );
@@ -520,7 +520,7 @@ experience_needed INT
 );
 
 CREATE TABLE player_character(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 player_id INT,
 creature_instance_id INT,
 race_id INT,
@@ -533,7 +533,7 @@ death_save_success INT
 );
 
 CREATE TABLE object_template(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 object_name VARCHAR(32),
 object_description TEXT,
 size_id INT,
@@ -546,7 +546,7 @@ damage_replationship_id INT
 );
 
 CREATE TABLE object_instance(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 object_template_id INT,
 map_id INT,
 current_health_points INT,
@@ -556,7 +556,7 @@ coord_z INT
 );
 
 CREATE TABLE class(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 class_name VARCHAR(32),
 class_description TEXT,
 hit_dice_id INT,
@@ -571,7 +571,7 @@ item_id INT
 );
 
 CREATE TABLE class_levels(
-id INT PRIMARY KEY,
+id INT PRIMARY KEY AUTO_INCREMENT,
 class_level INT,
 class_id INT,
 proficiency_bonus INT,
