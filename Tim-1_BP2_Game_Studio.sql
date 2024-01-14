@@ -671,7 +671,8 @@ CREATE TABLE class_level_feature (
     class_level_id INT NOT NULL,
     feature_id INT NOT NULL,
     PRIMARY KEY (class_level_id, feature_id),
-    FOREIGN KEY (class_level_id) REFERENCES class_levels (id) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (class_level_id) REFERENCES class_levels (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (feature_id) REFERENCES features (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE class_level_spellslots (
