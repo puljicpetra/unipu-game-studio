@@ -15,24 +15,24 @@ ability_name ENUM("STRENGTH", "DEXTERITY", "CONSTITUTION", "INTELLIGENCE", "WISD
 
 CREATE TABLE dice(
 id INT PRIMARY KEY,
-dice ENUM ("d4", "d6", "d8", "d10", "d12", "d20") -- ???? primary key si vamo bio stavio
+dice ENUM ("d4", "d6", "d8", "d10", "d12", "d20") NOT NULL-- ???? primary key si vamo bio stavio
 );
 
 CREATE TABLE size(
 id INT PRIMARY KEY,
-size ENUM ("TINY", "SMALL", "MEDIUM", "LARGE", "HUGE", "GARGANTUAN"),
+size ENUM ("TINY", "SMALL", "MEDIUM", "LARGE", "HUGE", "GARGANTUAN") NOT NULL,
 space INT NOT NULL UNIQUE
 );
 
 CREATE TABLE alignment(
 id INT PRIMARY KEY,
-lawfulness ENUM ("LAWFUL", "NEUTRAL", "CHAOTIC"),
-morality ENUM ("GOOD", "NEUTRAL", "EVIL")
+lawfulness ENUM ("LAWFUL", "NEUTRAL", "CHAOTIC") NOT NULL,
+morality ENUM ("GOOD", "NEUTRAL", "EVIL") NOT NULL
 );
 
 CREATE TABLE creature_type(
 id INT PRIMARY KEY,
-creature_type ENUM ("ABERRATION", "BEAST", "CELESTIAL", "CONSTRUCT", "DRAGON", "ELEMENTAL", "FEY", "FIEND", "GIANT", "HUMANOID", "MONSTROSITY", "OOZE", "PLANT", "UNDEAD") -- ovdje si isto stavio mprimary key
+creature_type ENUM ("ABERRATION", "BEAST", "CELESTIAL", "CONSTRUCT", "DRAGON", "ELEMENTAL", "FEY", "FIEND", "GIANT", "HUMANOID", "MONSTROSITY", "OOZE", "PLANT", "UNDEAD") NOT  NULL -- ovdje si isto stavio mprimary key
 );
 
 CREATE TABLE creature_template(
@@ -67,12 +67,12 @@ FOREIGN KEY (creature_id) REFERENCES creature_template(id)
 
 CREATE TABLE damage_type(
 id INT PRIMARY KEY,
-damage ENUM ("ACID", "COLD", "FIRE", "FORCE", "LIGHTNING", "NECROTIC", "POISON", "PSYCHIC", "RADIANT", "THUNDER", "BLUDGEONING", "PIERCING", "SLASHING", "MAGICAL PIERCING", "MAGICAL BLUDGEONING")
+damage ENUM ("ACID", "COLD", "FIRE", "FORCE", "LIGHTNING", "NECROTIC", "POISON", "PSYCHIC", "RADIANT", "THUNDER", "BLUDGEONING", "PIERCING", "SLASHING", "MAGICAL PIERCING", "MAGICAL BLUDGEONING") NOT NULL
 );
 
 CREATE TABLE damage_relationship(
 id INT PRIMARY KEY,
-relationship ENUM ("VULNERABILITY", "RESISTANCE", "IMMUNITY")
+relationship ENUM ("VULNERABILITY", "RESISTANCE", "IMMUNITY") NOT NULL
 );
 
 CREATE TABLE creature_damage_relationship(
@@ -86,7 +86,7 @@ FOREIGN KEY (damage_type_id) REFERENCES damage_type(id)
 
 CREATE TABLE conditions(
 id INT PRIMARY KEY,
-condition_name ENUM("BLINDED", "CHARMED", "DEAFENED", "FRIGHTENED", "GRAPPLED", "INCAPACITATED", "INVISIBLE", "PARALYZED", "PETRIFIED", "POISONED", "PRONE", "RESTRAINED", "STUNNED", "UNCONSCIOUS", "EXHAUSTION 1", "EXHAUSTION 2", "EXHAUSTION 3", "EXHAUSTION 4", "EXHAUSTION 5", "EXHAUSTION 6"),
+condition_name ENUM("BLINDED", "CHARMED", "DEAFENED", "FRIGHTENED", "GRAPPLED", "INCAPACITATED", "INVISIBLE", "PARALYZED", "PETRIFIED", "POISONED", "PRONE", "RESTRAINED", "STUNNED", "UNCONSCIOUS", "EXHAUSTION 1", "EXHAUSTION 2", "EXHAUSTION 3", "EXHAUSTION 4", "EXHAUSTION 5", "EXHAUSTION 6") NOT NULL,
 condition_description TEXT
 );
 
@@ -99,7 +99,7 @@ FOREIGN KEY (condition_id) REFERENCES conditions(id)
 
 CREATE TABLE condition_relationship(
 condition_id INT,
-condition_relationship ENUM ("ADVANTAGE", "IMMUNE"), -- ces stavit i disadvantage?
+condition_relationship ENUM ("ADVANTAGE", "IMMUNE") NOT NULL, -- ces stavit i disadvantage?
 FOREIGN KEY (condition_id) REFERENCES conditions(id),
 PRIMARY KEY (condition_id,condition_relationship)
 );
@@ -139,8 +139,8 @@ FOREIGN KEY (creature_id) REFERENCES creature_template(id)
 
 CREATE TABLE sense(
 id INT PRIMARY KEY,
-sense ENUM("BLINDSIGHT", "DARKVISION", "TREMORSENSE", "TRUESIGHT"),
-distance INT
+sense ENUM("BLINDSIGHT", "DARKVISION", "TREMORSENSE", "TRUESIGHT") NOT NULL,
+distance INT NOT NULL
 CHECK (distance>0)
 );
 
@@ -154,7 +154,7 @@ FOREIGN KEY (sense_id) REFERENCES sense(id)
 CREATE TABLE movement(
 id INT PRIMARY KEY,
 distance INT DEFAULT 30, -- stavio sam 30 za prosjek likova, vecina njih ima distance of 30 feet, cisto da bude
-movement ENUM ("WALK", "BURROW", "CLIMB", "FLY", "SWIM") 
+movement ENUM ("WALK", "BURROW", "CLIMB", "FLY", "SWIM") NOT NULL
  
 );
 
@@ -185,7 +185,7 @@ FOREIGN KEY (item_id) REFERENCES item(id)
 CREATE TABLE armor(
 id INT PRIMARY KEY,
 item_id INT,
-armor_type ENUM ("CLOTHING", "LIGHT", "MEDIUM", "HEAVY"),
+armor_type ENUM ("CLOTHING", "LIGHT", "MEDIUM", "HEAVY") NOT NULL,
 strength_minimum INT,
 stealth_disadvantage BOOL,
 base_armor_class INT,
@@ -222,13 +222,13 @@ FOREIGN KEY (weapon_property_id) REFERENCES weapon_properties(id)
 
 CREATE TABLE time_units(
 id INT,
-unit ENUM("ACTION", "BONUS ACTION", "REACTION", "MINUTE", "HOUR", "DAY", "INSTANTANEOUS")
+unit ENUM("ACTION", "BONUS ACTION", "REACTION", "MINUTE", "HOUR", "DAY", "INSTANTANEOUS") NOT NULL
 );
 
 CREATE TABLE spell(
 id INT PRIMARY KEY,
 spell_name VARCHAR(128) NOT NULL,
-spell_school ENUM ("ABJURATION", "CONJURATION", "DIVINATION", "ENCHANTMENT", "EVOCATION", "ILLUSION", "NECROMANCY", "TRANSMUTATION"),
+spell_school ENUM ("ABJURATION", "CONJURATION", "DIVINATION", "ENCHANTMENT", "EVOCATION", "ILLUSION", "NECROMANCY", "TRANSMUTATION") NOT NULL,
 spell_level INT NOT NULL, 
 is_ritual BOOL NOT NULL,
 is_concentration BOOL NOT NULL,
@@ -265,7 +265,7 @@ FOREIGN KEY (components_id) REFERENCES components(id)
 
 CREATE TABLE aoe_shape(
 id INT PRIMARY KEY,
-shape ENUM("CONE", "CUBE", "CYLINDER", "LINE", "SPHERE"),
+shape ENUM("CONE", "CUBE", "CYLINDER", "LINE", "SPHERE") NOT NULL,
 size INT
 );
 
@@ -366,7 +366,7 @@ CREATE TABLE common_names(
 id INT PRIMARY KEY,
 common_name VARCHAR(32),
 is_family_name BOOL,
-gender ENUM ("NEUTRAL", "MASCULINE", "FEMINENE")
+gender ENUM ("NEUTRAL", "MASCULINE", "FEMINENE") NOT NULL
 );
 
 CREATE TABLE race_names(
