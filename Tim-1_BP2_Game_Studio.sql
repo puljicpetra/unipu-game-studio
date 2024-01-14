@@ -48,7 +48,6 @@ INTELLIGENCE INT NOT NULL,
 WISDOM INT NOT NULL,
 CHARISMA INT NOT NULL,
 proficiency INT,
-#current_hp INT, --- ?????
 hit_dice_type INT NOT NULL,
 hit_dice_number INT NOT NULL,
 FOREIGN KEY (size_id) REFERENCES size(id) ON DELETE CASCADE,
