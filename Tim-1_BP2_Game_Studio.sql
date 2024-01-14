@@ -100,8 +100,7 @@ CREATE TABLE condition_relationship(
 id INT PRIMARY KEY,
 condition_id INT,
 condition_relationship ENUM ("ADVANTAGE", "IMMUNE") NOT NULL, -- ces stavit i disadvantage?
-FOREIGN KEY (condition_id) REFERENCES conditions(id) ON DELETE CASCADE,
-PRIMARY KEY (condition_id,condition_relationship)
+FOREIGN KEY (condition_id) REFERENCES conditions(id) ON DELETE CASCADE
 );
 
 CREATE TABLE creature_condition_relationship(
@@ -540,6 +539,16 @@ which_level INT,
 experience_needed INT
 );
 
+CREATE TABLE class(
+id INT PRIMARY KEY AUTO_INCREMENT,
+class_name VARCHAR(32),
+class_description TEXT,
+hit_dice_id INT,
+primary_ability_id INT,
+saving_proficiency_id_1 INT,
+saving_proficiency_id_2 INT
+);
+
 CREATE TABLE player_character(
 id INT PRIMARY KEY AUTO_INCREMENT,
 player_id INT,
@@ -572,7 +581,7 @@ CREATE TABLE object_damage_relationship(
 object_template_id INT,
 damage_replationship_id INT,
 FOREIGN KEY (object_template_id) REFERENCES object_template(id),
-FOREIGN KEY (damage_replationship_id) REFERENCES damage_replationship(id)
+FOREIGN KEY (damage_replationship_id) REFERENCES damage_relationship(id)
 );
 
 CREATE TABLE object_instance(
@@ -587,15 +596,6 @@ FOREIGN KEY (object_template_id) REFERENCES object_template(id),
 FOREIGN KEY (map_id) REFERENCES map(id)
 );
 
-CREATE TABLE class(
-id INT PRIMARY KEY AUTO_INCREMENT,
-class_name VARCHAR(32),
-class_description TEXT,
-hit_dice_id INT,
-primary_ability_id INT,
-saving_proficiency_id_1 INT,
-saving_proficiency_id_2 INT
-);
 
 CREATE TABLE class_proficiency(
 class_id INT,
