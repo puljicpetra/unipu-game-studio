@@ -81,7 +81,7 @@ damage_type_id INT NOT NULL,
 damage_relationship_id INT NOT NULL,
 FOREIGN KEY (creature_id) REFERENCES creature_template(id) ON DELETE CASCADE,
 FOREIGN KEY (damage_type_id) REFERENCES damage_type(id) ON DELETE CASCADE,
-FOREIGN KEY (damage_relationship_id) REFERENCES damage_relationship(id) -- FALI PRIMARY KEY
+FOREIGN KEY (damage_relationship_id) REFERENCES damage_relationship(id) 
 );
 
 CREATE TABLE conditions(
@@ -98,6 +98,7 @@ FOREIGN KEY (condition_id) REFERENCES conditions(id) ON DELETE CASCADE
 );
 
 CREATE TABLE condition_relationship(
+id INT PRIMARY KEY,
 condition_id INT,
 condition_relationship ENUM ("ADVANTAGE", "IMMUNE") NOT NULL, -- ces stavit i disadvantage?
 FOREIGN KEY (condition_id) REFERENCES conditions(id) ON DELETE CASCADE,
@@ -107,8 +108,8 @@ PRIMARY KEY (condition_id,condition_relationship)
 CREATE TABLE creature_condition_relationship(
 creature_id INT,
 condition_relationship_id INT,
-FOREIGN KEY (creature_id) REFERENCES creature_template(id) ON DELETE CASCADE
--- DOPUNITIII!!!!!!!
+FOREIGN KEY (creature_id) REFERENCES creature_template(id) ON DELETE CASCADE,
+FOREIGN KEY (condition_relationship_id) REFERENCES condition_relationship(id) 
 );
 
 CREATE TABLE languages(
@@ -129,7 +130,6 @@ rating NUMERIC (10, 2) PRIMARY KEY,
 experience_points INT
 CHECK (experience_points>0)
 );
--- NEMA SMISLAAA!!!!!!!!!!!!!!!!!!-----------
 
 CREATE TABLE creature_challenge(
 creature_id INT,
@@ -170,7 +170,7 @@ id INT PRIMARY KEY AUTO_INCREMENT,
 item_name VARCHAR(64),
 item_description TEXT,
 WEIGHT NUMERIC(10, 2),
-cost_id INT, -- ??????????
+cost_id INT, 
 cost_amount INT 
 CHECK (cost_amount >0)
 );
@@ -203,7 +203,7 @@ is_martial BOOl,
 min_range INT,
 max_range INT,
 FOREIGN KEY (damage_type_id) REFERENCES damage_type(id) ON DELETE CASCADE,
-FOREIGN KEY (damage_dice_id) REFERENCES dice(id), -- ????????
+FOREIGN KEY (damage_dice_id) REFERENCES dice(id), 
 FOREIGN KEY (item_id) REFERENCES item(id) ON DELETE CASCADE
 );
 
@@ -253,7 +253,7 @@ verbal BOOL,
 somatic BOOL,
 material BOOL,
 material_item_id INT,
-FOREIGN KEY (material_item_id) REFERENCES creature_type(id)-- ?????
+FOREIGN KEY (material_item_id) REFERENCES item(id)
 );
 
 CREATE TABLE spell_components(
@@ -358,8 +358,8 @@ CREATE TABLE race_asi(
 race_id INT,
 ability_id INT,
 increase INT,
-FOREIGN KEY (race_id) REFERENCES race(id) ON DELETE CASCADE
--- FOREIGN KEY (ability_id) REFERENCES ability(id)
+FOREIGN KEY (race_id) REFERENCES race(id) ON DELETE CASCADE,
+FOREIGN KEY (ability_id) REFERENCES ability_score(id)
 );
 
 CREATE TABLE common_names(
@@ -370,9 +370,9 @@ gender ENUM ("NEUTRAL", "MASCULINE", "FEMININE") NOT NULL
 );
 
 CREATE TABLE race_names(
-id_race INT,
+race_id INT,
 id_common_name INT,
-FOREIGN KEY (id_race) REFERENCES race(id) ON DELETE CASCADE, -- zasto odjednom id_race
+FOREIGN KEY (race_id) REFERENCES race(id) ON DELETE CASCADE, 
 FOREIGN KEY (id_common_name) REFERENCES common_names(id) ON DELETE CASCADE
 );
 
@@ -387,8 +387,8 @@ FOREIGN KEY (language_id) REFERENCES languages(id) ON DELETE CASCADE
 CREATE TABLE race_condition_relationship(
 race_id INT,
 condition_relationship_id INT,
-FOREIGN KEY (race_id) REFERENCES race(id) ON DELETE CASCADE
--- FOREIGN KEY (condition_relationship_id) REFERENCES condition_relationship(id) -- ??????????
+FOREIGN KEY (race_id) REFERENCES race(id) ON DELETE CASCADE,
+FOREIGN KEY (condition_relationship_id) REFERENCES condition_relationship(id)
 );
 
 CREATE TABLE personality(
@@ -402,9 +402,7 @@ flaws TEXT
 CREATE TABLE player(
 id INT PRIMARY KEY AUTO_INCREMENT,
 player_name INT,
-character_id INT, -- unique?
 is_DM BOOL
--- FOREIGN KEY (character_id) REFERENCES characters(id) -- ????
 );
 
 CREATE TABLE notes(
