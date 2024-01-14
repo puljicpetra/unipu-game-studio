@@ -424,13 +424,16 @@ language_2_id INT
 CREATE TABLE background_equipment(
 background_id INT,
 item_id INT,
-FOREIGN KEY (item_id) REFERENCES item(id) ON DELETE CASCADE
+FOREIGN KEY (item_id) REFERENCES item(id) ON DELETE CASCADE,
+FOREIGN KEY (background_id) REFERENCES background(id)
 );
 
 CREATE TABLE light_source(
 item_id INT,
 aoe_id INT, # oblik u kojem sija svjetlo
-duration_in_minutes INT
+duration_in_minutes INT,
+FOREIGN KEY (item_id) REFERENCES item(id),
+FOREIGN KEY (aoe_id) REFERENCES aoe_shape(id)
 );
 
 CREATE TABLE throwable(
@@ -442,7 +445,11 @@ saving_throw_ability_id INT,
 saving_throw_DC INT,
 damage_dice_id INT,
 damage_dice_amount INT,
-damage_type_id INT 
+damage_type_id INT ,
+FOREIGN KEY (item_id) REFERENCES item(id),
+FOREIGN KEY (saving_throw_ability_id) REFERENCES ability_score(id),
+FOREIGN KEY (damage_dice_id) REFERENCES dice(id),
+FOREIGN KEY (damage_type_id) REFERENCES damage_type(id)
 );
 
 CREATE TABLE consumable(
@@ -453,7 +460,12 @@ is_healing BOOl,
 saving_throw_ability_id INT,
 saving_throw_DC INT,
 condition_id INT,
-feature_id INT
+feature_id INT,
+FOREIGN KEY (item_id) REFERENCES item(id),
+FOREIGN KEY (dice_id) REFERENCES dice(id),
+FOREIGN KEY (saving_throw_ability_id) REFERENCES ability_score(id),
+FOREIGN KEY (condition_id) REFERENCES conditions(id),
+FOREIGN KEY (feature_id) REFERENCES features(id)
 );
 
 CREATE TABLE creature_instance(
