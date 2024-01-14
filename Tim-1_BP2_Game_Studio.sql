@@ -3,7 +3,7 @@ CREATE DATABASE game_studio;
 USE game_studio;
 
 CREATE TABLE skill (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     skill_name VARCHAR(30) NOT NULL,
     ability_score_id INT NOT NULL,
     FOREIGN KEY (ability_score_id) REFERENCES ability_score (id)
@@ -11,7 +11,7 @@ CREATE TABLE skill (
 
 CREATE TABLE ability_score( #kako ne bi smo morali pisati za literally svaki creature scores, mozemo imati sve varijacije od 0 do 30 jer imamo 180 kombinacija + n za sve creatures di je n broj creaturea a inace bi imali 6*n
 	id INT AUTO_INCREMENT PRIMARY KEY,
-	ability_name ENUM("STRENGTH", "DEXTERITY", "CONSTITUTION", "INTELLIGENCE", "WISDOM", "CHARISMA")
+	ability_name ENUM("STRENGTH", "DEXTERITY", "CONSTITUTION", "INTELLIGENCE", "WISDOM", "CHARISMA") NOT NULL
 );
 
 CREATE TABLE dice(
@@ -99,7 +99,7 @@ CREATE TABLE creature_condition(
 );
 
 CREATE TABLE condition_relationship (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     condition_id INT,
     condition_relationship ENUM('ADVANTAGE', 'IMMUNE') NOT NULL, -- ces stavit i disadvantage?
     FOREIGN KEY (condition_id) REFERENCES conditions (id) ON DELETE CASCADE
@@ -212,7 +212,7 @@ CREATE TABLE weapon_properties( # maybe just hardcode all the properties how to 
 );
 
 CREATE TABLE time_units(
-    id INT,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     unit ENUM("ACTION", "BONUS ACTION", "REACTION", "MINUTE", "HOUR", "DAY", "INSTANTANEOUS") NOT NULL
 );
 
@@ -299,11 +299,6 @@ CREATE TABLE weapon_property_match (
     weapon_property_id INT,
     FOREIGN KEY (weapon_id) REFERENCES weapon (id) ON DELETE CASCADE,
     FOREIGN KEY (weapon_property_id) REFERENCES weapon_properties (id) ON DELETE CASCADE
-);
-
-CREATE TABLE time_units (
-    id INT,
-    unit ENUM('ACTION', 'BONUS ACTION', 'REACTION', 'MINUTE', 'HOUR', 'DAY', 'INSTANTANEOUS') NOT NULL
 );
 
 CREATE TABLE features ( # OOF needs lots of work for many things to fit such as trigger uses type etc.
@@ -574,7 +569,7 @@ CREATE TABLE player_character(
     FOREIGN KEY (race_id) REFERENCES race(id),
     FOREIGN KEY (background_id) REFERENCES background(id),
     FOREIGN KEY (class_id) REFERENCES class(id)
-)
+);
 
 CREATE TABLE object_template (
     id INT PRIMARY KEY AUTO_INCREMENT,
