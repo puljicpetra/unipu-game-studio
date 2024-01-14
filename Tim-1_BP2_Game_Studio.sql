@@ -471,36 +471,47 @@ amount INT
 
 CREATE TABLE creature_template_spells_known(
 creature_instance_id INT,
-spell_id INT
+spell_id INT,
+FOREIGN KEY (spell_id) REFERENCES spell(id),
+FOREIGN KEY (creature_instance_id) REFERENCES creature_instance(id)
 );
 
 CREATE TABLE creature_instance_spells_known(
 creature_instance_id INT,
-spell_id INT
+spell_id INT,
+FOREIGN KEY (creature_instance_id) REFERENCES creature_instance(id),
+FOREIGN KEY (spell_id) REFERENCES spell(id)
 );
 
 CREATE TABLE creature_instance_inventory(
 creature_instance_id INT,
 item_id INT,
-amount INT
+amount INT,
+FOREIGN KEY (creature_instance_id) REFERENCES creature_instance(id),
+FOREIGN KEY (item_id) REFERENCES item(id)
 );
 
 CREATE TABLE game_instance(
 id INT PRIMARY KEY AUTO_INCREMENT,
 game_name VARCHAR(32),
 game_owner_id INT,
-start_date DATETIME
+start_date DATETIME,
+FOREIGN KEY (game_owner_id) REFERENCES player(id)
 );
 
 CREATE TABLE game_players(
 game_id INT PRIMARY KEY,
-player_id INT 
+player_id INT,
+FOREIGN KEY (player_id) REFERENCES player(id),
+FOREIGN KEY (game_id) REFERENCES game_instance(id)
 );
 
 CREATE TABLE map(
 id INT PRIMARY KEY AUTO_INCREMENT,
 aoe_id INT, # ovime se definiraju dimenzije
-game_instance_id INT
+game_instance_id INT,
+FOREIGN KEY (game_instance_id) REFERENCES game_instance(id),
+FOREIGN KEY (aoe_id) REFERENCES aoe_shape(id)
 );
 
 CREATE TABLE map_creatures(
@@ -508,7 +519,8 @@ creature_instance_id INT,
 map_id INT,
 coord_x INT,
 coord_y INT,
-coord_z INT 
+coord_z INT,
+FOREIGN KEY (creature_instance_id) REFERENCES creature_instance(id)
 );
 
 CREATE TABLE experience_for_level(
@@ -526,7 +538,13 @@ class_id INT,
 class_levl INT,
 experience INT,
 death_save_fail INT,
-death_save_success INT
+death_save_success INT,
+FOREIGN KEY (player_id) REFERENCES player(id),
+FOREIGN KEY (creature_instance_id) REFERENCES creature_instance(id),
+FOREIGN KEY (race_id) REFERENCES race(id),
+FOREIGN KEY (background_id) REFERENCES background(id),
+FOREIGN KEY (class_id) REFERENCES class(id)
+
 );
 
 CREATE TABLE object_template(
@@ -534,12 +552,15 @@ id INT PRIMARY KEY AUTO_INCREMENT,
 object_name VARCHAR(32),
 object_description TEXT,
 size_id INT,
-health_points INT 
+health_points INT,
+FOREIGN KEY (size_id) REFERENCES size(id)
 );
 
 CREATE TABLE object_damage_relationship(
 object_template_id INT,
-damage_replationship_id INT 
+damage_replationship_id INT,
+FOREIGN KEY (object_template_id) REFERENCES object_template(id),
+FOREIGN KEY (damage_replationship_id) REFERENCES damage_replationship(id)
 );
 
 CREATE TABLE object_instance(
@@ -549,7 +570,9 @@ map_id INT,
 current_health_points INT,
 coord_x INT,
 coord_y INT,
-coord_z INT 
+coord_z INT,
+FOREIGN KEY (object_template_id) REFERENCES object_template(id),
+FOREIGN KEY (map_id) REFERENCES map(id)
 );
 
 CREATE TABLE class(
@@ -564,7 +587,9 @@ saving_proficiency_id_2 INT
 
 CREATE TABLE class_proficiency(
 class_id INT,
-item_id INT 
+item_id INT,
+FOREIGN KEY (class_id) REFERENCES class(id),
+FOREIGN KEY (item_id) REFERENCES item(id)
 );
 
 CREATE TABLE class_levels(
@@ -573,18 +598,21 @@ class_level INT,
 class_id INT,
 proficiency_bonus INT,
 learn_cantrip_amount INT,
-learn_spell_amount INT
+learn_spell_amount INT,
+FOREIGN KEY (class_id) REFERENCES class(id)
 );
 
 CREATE TABLE class_level_feature(
 class_level_id INT,
-feature_id INT
+feature_id INT,
+FOREIGN KEY (class_level_id) REFERENCES class_levels(id)
 );
 
 CREATE TABLE class_level_spellslots(
 class_level_id INT,
 slot_level INT,
-slot_amount INT
+slot_amount INT,
+FOREIGN KEY (class_level_id) REFERENCES class_levels(id)
 );
 
 # features su ostali
