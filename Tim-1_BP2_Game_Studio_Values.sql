@@ -40,7 +40,18 @@ INSERT INTO damage_type (damage) VALUES
 INSERT INTO damage_relationship (relationship) VALUES
 	('VULNERABILITY'), ('RESISTANCE'), ('IMMUNITY');
 
+INSERT INTO languages (language_name) VALUES
+('Common'), ('Dwarvish'), ('Elvish'), ('Giant'), ('Gnomish'), ('Goblin'), ('Halfling'), ('Orc'); 
+
+INSERT INTO languages (language_name, is_exotic) VALUES
+('Abyssal', true), ('Celestial', true), ('Draconic', true), ('Deep Speech', true), ('Infernal', true), ('Primordial', true), ('Sylvan', true), ('Undercommon', true);
+
 # CREATURE TEMPLATE
 
 # SKILL PROFICIENCY
     
+# CONDITION RELATIONSHIP KAKO TREBA 
+
+# creature_condition_relationship kako treba
+
+

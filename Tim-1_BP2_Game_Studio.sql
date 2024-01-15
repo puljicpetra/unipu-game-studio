@@ -108,8 +108,6 @@ CREATE TABLE conditions (
     condition_description TEXT
 );
 
-
-
 CREATE TABLE condition_relationship (
     id INT PRIMARY KEY AUTO_INCREMENT,
     condition_id INT,
