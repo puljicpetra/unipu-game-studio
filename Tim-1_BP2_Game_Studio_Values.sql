@@ -11,7 +11,8 @@ INSERT INTO skill (skill_name, ability_score_id) VALUES
 	('Athletics', 1), ('Acrobatics', 2), ('Sleight of Hand', 2), ('Stealth', 2), 
     ('Arcana', 4), ('History', 4), ('Investigation', 4), ('Nature', 4), ('Religion', 4), 
     ('Animal Handling', 5), ('Insight', 5), ('Medicine', 5), ('Perception', 5), ('Survival', 5), 
-    ('Deception', 6), ('Intimidation', 6), ('Performance', 6), ('Persuasion', 6);
+    ('Deception', 6), ('Intimidation', 6), ('Performance', 6), ('Persuasion', 6),
+    ('Saving throw', 1), ('Saving throw', 2),  ('Saving throw', 3), ('Saving throw', 4), ('Saving throw', 5), ('Saving throw', 6);
 
 INSERT INTO dice (dice) VALUES
 	('d4'), ('d6'), ('d8'), ('d10'), ('d12'), ('d20');
