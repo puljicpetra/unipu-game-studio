@@ -326,6 +326,7 @@ CREATE TABLE race(
 CREATE TABLE weapon_property_match (
     weapon_id INT NOT NULL,
     weapon_property_id INT NOT NULL,
+    PRIMARY KEY (weapon_id, weapon_property_id),
     FOREIGN KEY (weapon_id) REFERENCES weapon (id) ON DELETE CASCADE,
     FOREIGN KEY (weapon_property_id) REFERENCES weapon_properties (id) ON DELETE CASCADE
 );
