@@ -111,7 +111,8 @@ CREATE TABLE conditions (
 CREATE TABLE condition_relationship (
     id INT PRIMARY KEY AUTO_INCREMENT,
     condition_id INT,
-    condition_relationship ENUM('ADVANTAGE', "DISADVANTAGE", 'IMMUNE') NOT NULL,
+    condition_relationship ENUM('ADVANTAGE', "DISADVANTAGE", 'IMMUNE') NOT NULL DEFAULT 'IMMUNE',
+    UNIQUE (condition_id, condition_relationship),
     FOREIGN KEY (condition_id) REFERENCES conditions (id) ON DELETE CASCADE
 );
 
@@ -122,7 +123,7 @@ CREATE TABLE creature_condition_relationship (
     FOREIGN KEY (creature_id) REFERENCES creature_template (id) ON DELETE CASCADE,
     FOREIGN KEY (condition_relationship_id) REFERENCES condition_relationship (id) ON DELETE CASCADE
 );
-
+    
 CREATE TABLE languages (
     id INT PRIMARY KEY AUTO_INCREMENT,
     language_name VARCHAR(16) NOT NULL UNIQUE,
@@ -155,8 +156,8 @@ CREATE TABLE creature_sense (
 
 CREATE TABLE movement (
     id INT PRIMARY KEY AUTO_INCREMENT,
+	movement ENUM('WALK', 'BURROW', 'CLIMB', 'FLY', 'SWIM') NOT NULL DEFAULT 'WALK',
     distance INT NOT NULL DEFAULT 30,
-    movement ENUM('WALK', 'BURROW', 'CLIMB', 'FLY', 'SWIM') NOT NULL DEFAULT 'WALK',
     UNIQUE (distance, movement)
 );
 
@@ -654,10 +655,10 @@ CREATE TABLE object_template (
 
 CREATE TABLE object_damage_relationship (
     object_template_id INT,
-    damage_replationship_id INT,
-    PRIMARY KEY (object_template_id, damage_replationship_id),
+    damage_relationship_id INT,
+    PRIMARY KEY (object_template_id, damage_relationship_id),
     FOREIGN KEY (object_template_id) REFERENCES object_template (id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (damage_replationship_id) REFERENCES damage_relationship (id) ON UPDATE CASCADE
+    FOREIGN KEY (damage_relationship_id) REFERENCES damage_relationship (id) ON UPDATE CASCADE
 );
 
 CREATE TABLE object_instance (
