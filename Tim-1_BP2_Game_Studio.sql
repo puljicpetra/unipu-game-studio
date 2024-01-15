@@ -641,10 +641,10 @@ CREATE TABLE object_template (
 
 CREATE TABLE object_damage_relationship (
     object_template_id INT,
-    damage_replationship_id INT,
-    PRIMARY KEY (object_template_id, damage_replationship_id),
+    damage_relationship_id INT,
+    PRIMARY KEY (object_template_id, damage_relationship_id),
     FOREIGN KEY (object_template_id) REFERENCES object_template (id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (damage_replationship_id) REFERENCES damage_relationship (id) ON UPDATE CASCADE
+    FOREIGN KEY (damage_relationship_id) REFERENCES damage_relationship (id) ON UPDATE CASCADE
 );
 
 CREATE TABLE object_instance (
