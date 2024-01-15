@@ -27,7 +27,7 @@ CREATE TABLE dice(
 
 CREATE TABLE size(
 	id INT PRIMARY KEY AUTO_INCREMENT,
-	size ENUM ("TINY", "SMALL", "MEDIUM", "LARGE", "HUGE", "GARGANTUAN") UNIQUE NOT NULL,
+	size ENUM ("TINY", "SMALL", "MEDIUM", "LARGE", "HUGE", "GARGANTUAN") NOT NULL,
 	space INT NOT NULL UNIQUE,
     UNIQUE (size, space)
 );
@@ -694,7 +694,7 @@ CREATE TABLE class_level_spellslots (
 );
 
 # features su ostali
-# takodjer i guess actions??
+# takodjer i guess actions???
 
 #------------------------------------
 # TRIGGERS
