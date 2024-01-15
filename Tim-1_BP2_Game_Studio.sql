@@ -693,6 +693,23 @@ CREATE TABLE class_level_spellslots (
     FOREIGN KEY (class_level_id) REFERENCES class_levels (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+CREATE TABLE throwable (
+    item_id INT PRIMARY KEY,
+    range_min INT,
+    range_max INT,
+    aoe_id INT,
+    saving_throw_ability_id INT,
+    saving_throw_DC INT,
+    damage_dice_id INT,
+    damage_dice_amount INT,
+    damage_type_id INT,
+    FOREIGN KEY (item_id) REFERENCES item (id),
+    FOREIGN KEY (saving_throw_ability_id) REFERENCES ability_score (id),
+    FOREIGN KEY (damage_dice_id) REFERENCES dice (id),
+    FOREIGN KEY (damage_type_id) REFERENCES damage_type (id)
+);
+
+
 # features su ostali
 # takodjer i guess actions???
 
@@ -732,7 +749,6 @@ INSERT INTO challenge_rating (rating, experience_points) VALUES
 INSERT INTO damage_type (damage) VALUES
 ('ACID'), ('COLD'), ('FIRE'), ('FORCE'), ('LIGHTNING'), ('NECROTIC'), ('POISON'), ('PSYCHIC'), ('RADIANT'), 
 ('THUNDER'), ('BLUDGEONING'), ('PIERCING'), ('SLASHING'), ('MAGICAL PIERCING'), ('MAGICAL BLUDGEONING'), ('MAGICAL SLASHING');
-
 
 # CREATURE TEMPLATE
 
