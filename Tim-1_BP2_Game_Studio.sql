@@ -175,7 +175,8 @@ CREATE TABLE item (
     item_description TEXT,
     WEIGHT NUMERIC(10 , 2) NOT NULL DEFAULT 0,
     cost_id INT NOT NULL DEFAULT 0,
-    cost_amount INT CHECK (cost_amount >= 0)
+    cost_amount INT CHECK (cost_amount >= 0),
+    FOREIGN KEY (cost_id) REFERENCES item (id)
 );
 
 CREATE TABLE creature_instance(

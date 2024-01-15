@@ -60,6 +60,9 @@ INSERT INTO creature_template (creature_name, size_id, creature_type_id, alignme
 INSERT INTO skill_proficiency (creature_id, skill_id) VALUES
 	(1, 1), (1, 13), (1, 14), (2, 13);
     
+INSERT INTO item (item_name, item_description, WEIGHT, cost_id, cost_amount) VALUES # ADD WEIGHTS
+	('Copper Coin', 'A humble old copper coin', 0, 1, 1), ('Silver Coin', 'A plain old Silver coin', 0, 1, 10), ('Electrum Coin', 'A weird old electrum coin', 0, 2, 5) , ('Gold Coin', 'A mighty old gold coin', 0, 3, 10), ('Platinum Coin', 'A legendary old platinum coin', 0, 4, 10); 
+    
 # conditions
 INSERT INTO conditions (condition_name, condition_description) VALUES
 ('BLINDED', 'Description of Blinded...'),
