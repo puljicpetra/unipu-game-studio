@@ -4,9 +4,9 @@ USE game_studio;
 
 CREATE TABLE skill (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    skill_name VARCHAR(30) UNIQUE NOT NULL,
+    skill_name VARCHAR(30) NOT NULL,
     ability_score_id INT NOT NULL,
-    UNIQUE (skill_name, ability_score),
+    UNIQUE (skill_name, ability_score_id),
     FOREIGN KEY (ability_score_id) REFERENCES ability_score (id) ON UPDATE CASCADE
 );
 
