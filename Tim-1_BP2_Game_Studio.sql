@@ -134,6 +134,7 @@ CREATE TABLE languages (
 CREATE TABLE creature_language (
     creature_id INT,
     language_id INT,
+    PRIMARY KEY (creature_id, language_id),
     FOREIGN KEY (creature_id) REFERENCES creature_template (id) ON DELETE CASCADE,
     FOREIGN KEY (language_id) REFERENCES languages (id) ON DELETE CASCADE
 );
@@ -728,6 +729,11 @@ INSERT INTO challenge_rating (rating, experience_points) VALUES
     (6, 2300), (7, 2900), (8, 3900), (9, 5000), (10, 5900), (11, 7200), (12, 8400), (13, 10000), (14, 11500), (15, 13000), 
     (16, 15000), (17, 18000), (18, 20000), (19, 22000), (20, 25000), (21, 33000), (22, 41000), (23, 50000), (24, 62000), (25, 75000), 
     (26, 90000), (27, 105000), (28, 120000), (29, 135000), (30, 115000);
+
+# CREATURE TEMPLATE
+
+# SKILL PROFICIENCY
+
 
 #------------------------------------
 # VIEWS
