@@ -36,25 +36,25 @@ CREATE TABLE alignment(
 
 CREATE TABLE creature_type(
 	id INT PRIMARY KEY AUTO_INCREMENT,
-	creature_type ENUM ("ABERRATION", "BEAST", "CELESTIAL", "CONSTRUCT", "DRAGON", "ELEMENTAL", "FEY", "FIEND", "GIANT", "HUMANOID", "MONSTROSITY", "OOZE", "PLANT", "UNDEAD") UNIQUE NOT NULL DEFAULT ("HUMANOID")
+	creature_type ENUM ("ABERRATION", "BEAST", "CELESTIAL", "CONSTRUCT", "DRAGON", "ELEMENTAL", "FEY", "FIEND", "GIANT", "HUMANOID", "MONSTROSITY", "OOZE", "PLANT", "UNDEAD") UNIQUE NOT NULL DEFAULT "HUMANOID"
 );
 
 CREATE TABLE creature_template (
 	id INT PRIMARY KEY AUTO_INCREMENT,
 	creature_name VARCHAR (64) UNIQUE NOT NULL,
-	size_id INT NOT NULL DEFAULT (2), 
-	creature_type_id INT NOT NULL DEFAULT (10),
-	alignment_id INT NOT NULL DEFAULT (0),
-	STRENGTH INT NOT NULL DEFAULT (10), 
-	DEXTERITY INT NOT NULL DEFAULT (10),
-	CONSTITUTION INT NOT NULL DEFAULT (10),
-	INTELLIGENCE INT NOT NULL DEFAULT (10),
-	WISDOM INT NOT NULL DEFAULT (10),
-	CHARISMA INT NOT NULL DEFAULT (10),
-	proficiency INT NOT NULL DEFAULT (0),
-	hit_dice_type_id INT NOT NULL DEFAULT (2),
-	hit_dice_number INT NOT NULL DEFAULT (1),
-    challenge_rating NUMERIC (10, 2) NOT NULL DEFAULT (0),
+	size_id INT NOT NULL DEFAULT 2, 
+	creature_type_id INT NOT NULL DEFAULT 10,
+	alignment_id INT NOT NULL DEFAULT 0,
+	STRENGTH INT NOT NULL DEFAULT 10, 
+	DEXTERITY INT NOT NULL DEFAULT 10,
+	CONSTITUTION INT NOT NULL DEFAULT 10,
+	INTELLIGENCE INT NOT NULL DEFAULT 10,
+	WISDOM INT NOT NULL DEFAULT 10,
+	CHARISMA INT NOT NULL DEFAULT 10,
+	proficiency INT NOT NULL DEFAULT 0,
+	hit_dice_type_id INT NOT NULL DEFAULT 2,
+	hit_dice_number INT NOT NULL DEFAULT 1,
+    challenge_rating NUMERIC (10, 2) NOT NULL DEFAULT 0,
     FOREIGN KEY (challenge_rating) REFERENCES challenge_rating (rating),
 	FOREIGN KEY (size_id) REFERENCES size(id) ON UPDATE CASCADE,
 	FOREIGN KEY (creature_type_id) REFERENCES creature_type(id) ON UPDATE CASCADE,
@@ -65,7 +65,7 @@ CREATE TABLE creature_template (
 CREATE TABLE skill_proficiency( 
     creature_id INT,
     skill_id INT,
-    expertise BOOL NOT NULL DEFAULT (false),
+    expertise BOOL NOT NULL DEFAULT false,
     PRIMARY KEY (creature_id, skill_id),
     FOREIGN KEY (skill_id) REFERENCES skill(id) ON UPDATE CASCADE,
     FOREIGN KEY (creature_id) REFERENCES creature_template(id) ON DELETE CASCADE
@@ -73,7 +73,7 @@ CREATE TABLE skill_proficiency(
 
 CREATE TABLE damage_type (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    damage ENUM('ACID', 'COLD', 'FIRE', 'FORCE', 'LIGHTNING', 'NECROTIC', 'POISON', 'PSYCHIC', 'RADIANT', 'THUNDER', 'BLUDGEONING', 'PIERCING', 'SLASHING', 'MAGICAL PIERCING', 'MAGICAL BLUDGEONING') NOT NULL DEFAULT ("BLUDGEONING")
+    damage ENUM('ACID', 'COLD', 'FIRE', 'FORCE', 'LIGHTNING', 'NECROTIC', 'POISON', 'PSYCHIC', 'RADIANT', 'THUNDER', 'BLUDGEONING', 'PIERCING', 'SLASHING', 'MAGICAL PIERCING', 'MAGICAL BLUDGEONING') NOT NULL DEFAULT 'BLUDGEONING'
 );
 
 CREATE TABLE damage_relationship (
@@ -122,7 +122,7 @@ CREATE TABLE creature_condition_relationship (
 CREATE TABLE languages (
     id INT PRIMARY KEY AUTO_INCREMENT,
     language_name VARCHAR(16) NOT NULL UNIQUE,
-    is_exotic BOOL NOT NULL DEFAULT (false)
+    is_exotic BOOL NOT NULL DEFAULT false
 );
 
 CREATE TABLE creature_language (
@@ -134,7 +134,7 @@ CREATE TABLE creature_language (
 
 CREATE TABLE challenge_rating (
     rating NUMERIC(10, 2) PRIMARY KEY,
-    experience_points INT NOT NULL DEFAULT (0), 
+    experience_points INT NOT NULL DEFAULT 0, 
     CHECK (experience_points >= 0)
 );
 
@@ -142,7 +142,7 @@ CREATE TABLE challenge_rating (
 CREATE TABLE sense (
     id INT PRIMARY KEY AUTO_INCREMENT,
     sense ENUM('BLINDSIGHT', 'DARKVISION', 'TREMORSENSE', 'TRUESIGHT') NOT NULL,
-    distance INT NOT NULL DEFAULT (30),
+    distance INT NOT NULL DEFAULT 30,
     CHECK (distance > 0),
     UNIQUE (sense, distance)
 );
@@ -158,7 +158,7 @@ CREATE TABLE creature_sense (
 CREATE TABLE movement (
     id INT PRIMARY KEY AUTO_INCREMENT,
     distance INT NOT NULL DEFAULT (30),
-    movement ENUM('WALK', 'BURROW', 'CLIMB', 'FLY', 'SWIM') NOT NULL DEFAULT ('WALK'),
+    movement ENUM('WALK', 'BURROW', 'CLIMB', 'FLY', 'SWIM') NOT NULL DEFAULT 'WALK',
     UNIQUE (distance, movement)
 );
 
@@ -174,15 +174,15 @@ CREATE TABLE item (
     id INT PRIMARY KEY AUTO_INCREMENT,
     item_name VARCHAR(64) NOT NULL UNIQUE,
     item_description TEXT,
-    WEIGHT NUMERIC(10 , 2) NOT NULL DEFAULT (0),
-    cost_id INT NOT NULL DEFAULT (0),
+    WEIGHT NUMERIC(10 , 2) NOT NULL DEFAULT 0,
+    cost_id INT NOT NULL DEFAULT 0,
     cost_amount INT CHECK (cost_amount >= 0)
 );
 
 CREATE TABLE creature_item(
     creature_id INT,
     item_id INT,
-    amount INT NOT NULL DEFAULT (1),
+    amount INT NOT NULL DEFAULT 1,
     CHECK (amount > 0),
     PRIMARY KEY (creature_id, item_id),
     FOREIGN KEY (creature_id) REFERENCES creature_instance(id) ON DELETE CASCADE,
@@ -193,10 +193,10 @@ CREATE TABLE armor(
     id INT PRIMARY KEY AUTO_INCREMENT,
     item_id INT NOT NULL UNIQUE,
     armor_type ENUM ("CLOTHING", "LIGHT", "MEDIUM", "HEAVY") NOT NULL,
-    strength_minimum INT NOT NULL DEFAULT (0),
-    stealth_disadvantage BOOL NOT NULL DEFAULT (false),
-    base_armor_class INT NOT NULL DEFAULT (10),
-    maximum_dex_modifier INT DEFAULT (NULL),
+    strength_minimum INT NOT NULL DEFAULT 0,
+    stealth_disadvantage BOOL NOT NULL DEFAULT false,
+    base_armor_class INT NOT NULL DEFAULT 10,
+    maximum_dex_modifier INT DEFAULT NULL,
     FOREIGN KEY (item_id) REFERENCES item(id) ON DELETE CASCADE
 );
 
@@ -204,11 +204,11 @@ CREATE TABLE weapon(
     id INT PRIMARY KEY AUTO_INCREMENT,
     item_id INT NOT NULL UNIQUE,
     damage_type_id INT NOT NULL, 
-    damage_dice_id INT NOT NULL DEFAULT (0),
-    damage_dice_amount INT NOT NULL DEFAULT (1),
-    is_martial BOOl NOT NULL DEFAULT (false),
-    min_range INT NOT NULL DEFAULT (5),
-    max_range INT NOT NULL DEFAULT (5),
+    damage_dice_id INT NOT NULL DEFAULT 0,
+    damage_dice_amount INT NOT NULL DEFAULT 1,
+    is_martial BOOl NOT NULL DEFAULT false,
+    min_range INT NOT NULL DEFAULT 5,
+    max_range INT NOT NULL DEFAULT 5,
     FOREIGN KEY (damage_type_id) REFERENCES damage_type(id) ON UPDATE CASCADE,
     FOREIGN KEY (damage_dice_id) REFERENCES dice(id) ON UPDATE CASCADE, 
     FOREIGN KEY (item_id) REFERENCES item(id) ON DELETE CASCADE
@@ -229,20 +229,20 @@ CREATE TABLE spell(
     id INT PRIMARY KEY AUTO_INCREMENT,
     spell_name VARCHAR(128) NOT NULL UNIQUE,
     spell_school ENUM ("ABJURATION", "CONJURATION", "DIVINATION", "ENCHANTMENT", "EVOCATION", "ILLUSION", "NECROMANCY", "TRANSMUTATION") NOT NULL,
-    spell_level INT NOT NULL DEFAULT (0), 
-    is_ritual BOOL NOT NULL DEFAULT (false),
-    is_concentration BOOL NOT NULL DEFAULT (false),
-    casting_time_unit_id INT NOT NULL DEFAULT (1),
-    casting_unit_amount INT NOT NULL DEFAULT (1), 
-    duration_time_unit_id INT NOT NULL DEFAULT (0),
-    duration_unit_amount INT NOT NULL DEFAULT (1),
-    casting_range INT NOT NULL DEFAULT (5),
-    number_of_targets INT NOT NULL DEFAULT (1),
-    damage_dice_type_id INT NOT NULL DEFAULT (0),
-    damage_dice_amount INT NOT NULL DEFAULT (0),
-    uses_damage_modifier BOOL NOT NULL DEFAULT (false),
+    spell_level INT NOT NULL DEFAULT 0, 
+    is_ritual BOOL NOT NULL DEFAULT false,
+    is_concentration BOOL NOT NULL DEFAULT false,
+    casting_time_unit_id INT NOT NULL DEFAULT 1,
+    casting_unit_amount INT NOT NULL DEFAULT 1, 
+    duration_time_unit_id INT NOT NULL DEFAULT 0,
+    duration_unit_amount INT NOT NULL DEFAULT 1,
+    casting_range INT NOT NULL DEFAULT 5,
+    number_of_targets INT NOT NULL DEFAULT 1,
+    damage_dice_type_id INT NOT NULL DEFAULT 0,
+    damage_dice_amount INT NOT NULL DEFAULT 0,
+    uses_damage_modifier BOOL NOT NULL DEFAULT false,
     is_attack_roll BOOL NOT NULL,
-    saving_throw_id INT DEFAULT (NULL),
+    saving_throw_id INT DEFAULT NULL,
     spell_description TEXT NOT NULL,
     FOREIGN KEY (casting_time_unit_id) REFERENCES time_units (id) ON UPDATE CASCADE,
     FOREIGN KEY (duration_time_unit_id) REFERENCES time_units (id) ON UPDATE CASCADE,
@@ -252,10 +252,10 @@ CREATE TABLE spell(
 
 CREATE TABLE components(
     id INT PRIMARY KEY AUTO_INCREMENT,
-    verbal BOOL NOT NULL DEFAULT (false),
-    somatic BOOL NOT NULL DEFAULT (false),
-    material BOOL NOT NULL DEFAULT (false),
-    material_item_id INT DEFAULT (NULL),
+    verbal BOOL NOT NULL DEFAULT false,
+    somatic BOOL NOT NULL DEFAULT false,
+    material BOOL NOT NULL DEFAULT false,
+    material_item_id INT DEFAULT NULL,
     FOREIGN KEY (material_item_id) REFERENCES item(id) ON UPDATE CASCADE
 );
 
@@ -270,7 +270,7 @@ CREATE TABLE spell_components(
 CREATE TABLE aoe_shape(
     id INT PRIMARY KEY AUTO_INCREMENT,
     shape ENUM("CONE", "CUBE", "CYLINDER", "LINE", "SPHERE") NOT NULL,
-    shape_size INT NOT NULL DEFAULT (5)
+    shape_size INT NOT NULL DEFAULT 5
 );
 
 CREATE TABLE spell_aoe_shape(
@@ -293,15 +293,15 @@ CREATE TABLE race(
     id INT PRIMARY KEY AUTO_INCREMENT,
     flavor TEXT NOT NULL,
     culture TEXT NOT NULL,
-    maturity_age INT NOT NULL DEFAULT (18),
-    maximum_age INT NOT NULL DEFAULT (100),
+    maturity_age INT NOT NULL DEFAULT 18,
+    maximum_age INT NOT NULL DEFAULT 100,
     typical_alignment_id INT NOT NULL,
     size_id INT NOT NULL,  
     creature_type_id INT NOT NULL,
-    height_min INT NOT NULL DEFAULT (150),
-    height_max INT NOT NULL DEFAULT (200),
-    weight_min INT NOT NULL DEFAULT (80),
-    weight_max INT NOT NULL DEFAULT (300),
+    height_min INT NOT NULL DEFAULT 150,
+    height_max INT NOT NULL DEFAULT 200,
+    weight_min INT NOT NULL DEFAULT 80,
+    weight_max INT NOT NULL DEFAULT 300,
     FOREIGN KEY (creature_type_id) REFERENCES creature_type(id) ON UPDATE CASCADE,
     FOREIGN KEY (typical_alignment_id) REFERENCES alignment(id) ON UPDATE CASCADE,
     FOREIGN KEY (size_id) REFERENCES size(id) ON UPDATE CASCADE
@@ -388,8 +388,8 @@ CREATE TABLE race_asi (
 CREATE TABLE common_names (
     id INT PRIMARY KEY AUTO_INCREMENT,
     common_name VARCHAR(32) NOT NULL,
-    is_family_name BOOL NOT NULL DEFAULT (false),
-    gender ENUM('NEUTRAL', 'MASCULINE', 'FEMININE') NOT NULL DEFAULT ('NEUTRAL')
+    is_family_name BOOL NOT NULL DEFAULT false,
+    gender ENUM('NEUTRAL', 'MASCULINE', 'FEMININE') NOT NULL DEFAULT 'NEUTRAL'
 );
 
 CREATE TABLE race_names (
@@ -428,13 +428,13 @@ CREATE TABLE personality (
 
 CREATE TABLE player (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    player_name INT NOT NULL DEFAULT (CONCAT('player ', id)),
-    is_DM BOOL NOT NULL DEFAULT (false)
+    player_name INT, # napraviti concat player + id ako je null after insert i provjeriti da nije null
+    is_DM BOOL NOT NULL DEFAULT false
 );
 
 CREATE TABLE notes(
     id INT PRIMARY KEY AUTO_INCREMENT,
-    title VARCHAR(64) NOT NULL DEFAULT (CONCAT('Note: ', id)),
+    title VARCHAR(64), # isto ko i player name NOT NULL DEFAULT (CONCAT('Note: ', id)),
     note TEXT NOT NULL,
     note_owner_id INT NOT NULL,
     FOREIGN KEY (note_owner_id) REFERENCES player_character (id) ON UPDATE CASCADE ON DELETE CASCADE
@@ -473,7 +473,7 @@ CREATE TABLE background_languages(
 CREATE TABLE background_equipment (
     background_id INT,
     item_id INT,
-    amount INT NOT NULL DEFAULT (1),
+    amount INT NOT NULL DEFAULT 1,
     CHECK (amount > 0),
     PRIMARY KEY (background_id, item_id),
     FOREIGN KEY (item_id) REFERENCES item (id) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -483,20 +483,20 @@ CREATE TABLE background_equipment (
 CREATE TABLE light_source (
     item_id INT PRIMARY KEY,
     aoe_id INT NOT NULL, 
-    duration_in_minutes INT NOT NULL DEFAULT (1),
+    duration_in_minutes INT NOT NULL DEFAULT 1,
     FOREIGN KEY (item_id) REFERENCES item (id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (aoe_id) REFERENCES aoe_shape (id) ON UPDATE CASCADE
 );
 
 CREATE TABLE consumable(
     item_id INT NOT NULL,
-    dice_id INT DEFAULT (NULL),
-    dice_amount INT DEFAULT (NULL),
-    is_healing BOOl NOT NULL DEFAULT (false),
-    saving_throw_ability_id INT DEFAULT (NULL),
-    saving_throw_DC INT DEFAULT (NULL),
-    condition_id INT DEFAULT (NULL),
-    feature_id INT DEFAULT (NULL),
+    dice_id INT DEFAULT NULL,
+    dice_amount INT DEFAULT NULL,
+    is_healing BOOl NOT NULL DEFAULT false,
+    saving_throw_ability_id INT DEFAULT NULL,
+    saving_throw_DC INT DEFAULT NULL,
+    condition_id INT DEFAULT NULL,
+    feature_id INT DEFAULT NULL,
     FOREIGN KEY (item_id) REFERENCES item(id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (dice_id) REFERENCES dice(id) ON UPDATE CASCADE,
     FOREIGN KEY (saving_throw_ability_id) REFERENCES ability_score(id) ON UPDATE CASCADE,
@@ -508,13 +508,13 @@ CREATE TABLE creature_instance(
     id INT PRIMARY KEY AUTO_INCREMENT,
     creature_template_id INT NOT NULL,
     current_hp INT NOT NULL,
-    initiative INT NOT NULL DEFAULT (1)
+    initiative INT NOT NULL DEFAULT 1
 );
 
 CREATE TABLE creature_instance_spell_slots(
     creature_instance_id INT,
     slot_level INT,
-    amount INT NOT NULL DEFAULT (0),
+    amount INT NOT NULL DEFAULT 0,
     PRIMARY KEY (creature_instance_id, slot_level),
     FOREIGN KEY (creature_instance_id) REFERENCES creature_instance (id)
 );
@@ -538,7 +538,7 @@ CREATE TABLE creature_instance_spells_known(
 CREATE TABLE creature_instance_inventory(
     creature_instance_id INT,
     item_id INT,
-    amount INT NOT NULL DEFAULT (1),
+    amount INT NOT NULL DEFAULT 1,
     CHECK (amount > 0),
     PRIMARY KEY (creature_instance_id, item_id),
     FOREIGN KEY (creature_instance_id) REFERENCES creature_instance(id) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -547,9 +547,9 @@ CREATE TABLE creature_instance_inventory(
 
 CREATE TABLE game_instance(
     id INT PRIMARY KEY AUTO_INCREMENT,
-    game_name VARCHAR(32) NOT NULL DEFAULT (CONCAT ('GAME: ', id)),
+    game_name VARCHAR(32), # isto ko note i playername NOT NULL DEFAULT (CONCAT ('GAME: ', id)),
     game_owner_id INT NOT NULL,
-    start_date DATETIME NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+    start_date DATETIME, # dodati timestamp after insert isto NOT NULL DEFAULT (CURRENT_TIMESTAMP),
     FOREIGN KEY (game_owner_id) REFERENCES player(id) ON UPDATE CASCADE
 );
 
@@ -571,9 +571,9 @@ CREATE TABLE map(
 CREATE TABLE map_creatures(
     creature_instance_id INT,
     map_id INT,
-    coord_x INT NOT NULL DEFAULT (0),
-    coord_y INT NOT NULL DEFAULT (0),
-    coord_z INT NOT NULL DEFAULT (0),
+    coord_x INT NOT NULL DEFAULT 0,
+    coord_y INT NOT NULL DEFAULT 0,
+    coord_z INT NOT NULL DEFAULT 0,
     PRIMARY KEY (creature_instance_id, map_id),
     FOREIGN KEY (creature_instance_id) REFERENCES creature_instance(id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (map_id) REFERENCES map(id) ON UPDATE CASCADE ON DELETE CASCADE
@@ -589,8 +589,8 @@ CREATE TABLE class(
     id INT PRIMARY KEY AUTO_INCREMENT,
     class_name VARCHAR(32) NOT NULL UNIQUE,
     class_description TEXT NOT NULL,
-    hit_dice_id INT NOT NULL DEFAULT (1),
-    primary_ability_id INT NOT NULL DEFAULT (0)
+    hit_dice_id INT NOT NULL DEFAULT 1,
+    primary_ability_id INT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE class_saving_prof(
@@ -608,10 +608,10 @@ CREATE TABLE player_character(
     race_id INT NOT NULL,
     background_id INT NOT NULL,
     class_id INT NOT NULL,
-    class_level INT NOT NULL DEFAULT (1),
-    experience INT NOT NULL DEFAULT (0),
-    death_save_fail INT NOT NULL DEFAULT (0),
-    death_save_success INT NOT NULL DEFAULT (0),
+    class_level INT NOT NULL DEFAULT 1,
+    experience INT NOT NULL DEFAULT 0,
+    death_save_fail INT NOT NULL DEFAULT 0,
+    death_save_success INT NOT NULL DEFAULT 0,
     FOREIGN KEY (player_id) REFERENCES player(id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (creature_instance_id) REFERENCES creature_instance(id) ON UPDATE CASCADE,
     FOREIGN KEY (race_id) REFERENCES race(id) ON UPDATE CASCADE,
@@ -624,7 +624,7 @@ CREATE TABLE object_template (
     object_name VARCHAR(32) NOT NULL UNIQUE,
     object_description TEXT,
     size_id INT NOT NULL,
-    health_points INT NOT NULL DEFAULT (1),
+    health_points INT NOT NULL DEFAULT 1,
     FOREIGN KEY (size_id) REFERENCES size (id) ON UPDATE CASCADE
 );
 
@@ -640,10 +640,10 @@ CREATE TABLE object_instance (
     id INT PRIMARY KEY AUTO_INCREMENT,
     object_template_id INT NOT NULL,
     map_id INT NOT NULL,
-    current_health_points INT NOT NULL DEFAULT (1),
-    coord_x INT NOT NULL DEFAULT (0),
-    coord_y INT NOT NULL DEFAULT (0),
-    coord_z INT NOT NULL DEFAULT (0),
+    current_health_points INT NOT NULL DEFAULT 1,
+    coord_x INT NOT NULL DEFAULT 0,
+    coord_y INT NOT NULL DEFAULT 0,
+    coord_z INT NOT NULL DEFAULT 0,
     FOREIGN KEY (object_template_id) REFERENCES object_template (id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (map_id) REFERENCES map (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
@@ -661,9 +661,9 @@ CREATE TABLE class_levels (
     id INT PRIMARY KEY AUTO_INCREMENT,
     class_level INT NOT NULL,
     class_id INT NOT NULL,
-    proficiency_bonus INT NOT NULL DEFAULT (2),
-    learn_cantrip_amount INT NOT NULL DEFAULT (0),
-    learn_spell_amount INT NOT NULL DEFAULT (0),
+    proficiency_bonus INT NOT NULL DEFAULT 2,
+    learn_cantrip_amount INT NOT NULL DEFAULT 0,
+    learn_spell_amount INT NOT NULL DEFAULT 0,
     FOREIGN KEY (class_id) REFERENCES class (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -677,8 +677,8 @@ CREATE TABLE class_level_feature (
 
 CREATE TABLE class_level_spellslots (
     class_level_id INT NOT NULL,
-    slot_level INT NOT NULL DEFAULT (0),
-    slot_amount INT NOT NULL DEFAULT (0),
+    slot_level INT NOT NULL DEFAULT 0,
+    slot_amount INT NOT NULL DEFAULT 0,
     FOREIGN KEY (class_level_id) REFERENCES class_levels (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
