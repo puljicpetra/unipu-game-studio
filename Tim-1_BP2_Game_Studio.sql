@@ -91,15 +91,21 @@ CREATE TABLE damage_relationship (
     id INT PRIMARY KEY AUTO_INCREMENT,
     relationship ENUM('VULNERABILITY', 'RESISTANCE', 'IMMUNITY') NOT NULL UNIQUE
 );
-    
+
+CREATE TABLE damage_type_relationship (
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	damage_id INT NOT NULL,
+    damage_relationship_id INT NOT NULL,
+    UNIQUE (damage_id, damage_relationship_id),
+    FOREIGN KEY (damage_id) REFERENCES damage_type (id) ON UPDATE CASCADE,
+    FOREIGN KEY (damage_relationship_id) REFERENCES damage_relationship (id) ON UPDATE CASCADE
+);
+
 CREATE TABLE creature_damage_relationship (
     creature_id INT,
-    damage_type_id INT,
-    damage_relationship_id INT,
-    PRIMARY KEY (creature_id, damage_type_id, damage_relationship_id),
-    FOREIGN KEY (creature_id) REFERENCES creature_template (id) ON DELETE CASCADE,
-    FOREIGN KEY (damage_type_id) REFERENCES damage_type (id) ON UPDATE CASCADE,
-    FOREIGN KEY (damage_relationship_id) REFERENCES damage_relationship (id) ON UPDATE CASCADE
+    damage_type_relationship_id INT,
+    PRIMARY KEY (creature_id, damage_type_relationship_id),  
+    FOREIGN KEY (damage_type_relationship_id) REFERENCES damage_type_relationship (id) ON UPDATE CASCADE
 );
 
 CREATE TABLE conditions (
@@ -115,6 +121,7 @@ CREATE TABLE condition_relationship (
     UNIQUE (condition_id, condition_relationship),
     FOREIGN KEY (condition_id) REFERENCES conditions (id) ON DELETE CASCADE
 );
+
 
 CREATE TABLE creature_condition_relationship (
     creature_id INT,
@@ -221,16 +228,6 @@ CREATE TABLE weapon(
     FOREIGN KEY (damage_dice_id) REFERENCES dice(id) ON UPDATE CASCADE, 
     FOREIGN KEY (item_id) REFERENCES item(id) ON DELETE CASCADE
 );
-/*INSERT INTO weapon (weapon_name, damage, damage_type_id, weapon_category, range, properties)
-VALUES
-    ('Longsword', '1d8', 11, 'Melee', NULL, 'Versatile (1d10)'),
-    ('Shortbow', '1d6', 10, 'Ranged', '80/320', 'Ammunition, Two-Handed'),
-    ('Dagger', '1d4', 13, 'Melee', '20/60', 'Finesse, Light, Thrown (20/60)'),
-    ('Warhammer', '1d8', 11, 'Melee', NULL, 'Versatile (1d10)'),
-    ('Fireball Staff', '2d6', 3, 'Melee', NULL, 'Spellcasting (Fireball)');
-*/
-
-
 
 CREATE TABLE weapon_properties( # maybe just hardcode all the properties how to use instead of description so gameplay can be automated?
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -381,12 +378,13 @@ CREATE TABLE race_skill_prof (
     FOREIGN KEY (skill_id) REFERENCES skill (id) ON DELETE CASCADE
 );
 
+
 CREATE TABLE race_damage_relationship (
     race_id INT,
-    damage_relationship_id INT,
-    PRIMARY KEY (race_id, damage_relationship_id),
+    damage_type_relationship_id INT,
+    PRIMARY KEY (race_id, damage_type_relationship_id),
     FOREIGN KEY (race_id) REFERENCES race (id) ON DELETE CASCADE,
-    FOREIGN KEY (damage_relationship_id) REFERENCES damage_relationship (id) ON DELETE CASCADE
+    FOREIGN KEY (damage_type_relationship_id) REFERENCES damage_type_relationship (id) ON DELETE CASCADE
 );
 
 CREATE TABLE race_movement (
@@ -527,8 +525,6 @@ CREATE TABLE consumable(
     FOREIGN KEY (feature_id) REFERENCES features(id) ON UPDATE CASCADE
 );
 
-
-
 CREATE TABLE creature_condition(
     creature_id INT,
     condition_id INT,
@@ -656,10 +652,10 @@ CREATE TABLE object_template (
 
 CREATE TABLE object_damage_relationship (
     object_template_id INT,
-    damage_relationship_id INT,
-    PRIMARY KEY (object_template_id, damage_relationship_id),
+    damage_type_relationship_id INT,
+    PRIMARY KEY (object_template_id, damage_type_relationship_id),
     FOREIGN KEY (object_template_id) REFERENCES object_template (id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (damage_relationship_id) REFERENCES damage_relationship (id) ON UPDATE CASCADE
+    FOREIGN KEY (damage_type_relationship_id) REFERENCES damage_type_relationship (id) ON UPDATE CASCADE
 );
 
 CREATE TABLE object_instance (
@@ -673,7 +669,6 @@ CREATE TABLE object_instance (
     FOREIGN KEY (object_template_id) REFERENCES object_template (id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (map_id) REFERENCES map (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
-
 
 CREATE TABLE class_proficiency (
     class_id INT,
