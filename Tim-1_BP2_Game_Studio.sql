@@ -47,7 +47,7 @@ CREATE TABLE creature_type(
 CREATE TABLE challenge_rating (
     rating NUMERIC(10, 2) PRIMARY KEY,
     experience_points INT NOT NULL DEFAULT 0, 
-    CHECK (experience_points >= 0)
+    CHECK (experience_points > 0)
 );
     
 CREATE TABLE creature_template (
