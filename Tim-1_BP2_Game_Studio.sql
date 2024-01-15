@@ -9,7 +9,7 @@ USE game_studio;
 
 CREATE TABLE ability_score( #kako ne bi smo morali pisati za literally svaki creature scores, mozemo imati sve varijacije od 0 do 30 jer imamo 180 kombinacija + n za sve creatures di je n broj creaturea a inace bi imali 6*n
 	id INT AUTO_INCREMENT PRIMARY KEY,
-	ability_name ENUM("STRENGTH", "DEXTERITY", "CONSTITUTION", "INTELLIGENCE", "WISDOM", "CHARISMA") UNIQUE NOT NULL 
+	ability_name ENUM('STRENGTH', 'DEXTERITY', 'CONSTITUTION', 'INTELLIGENCE', 'WISDOM', 'CHARISMA') UNIQUE NOT NULL 
 );
 
 CREATE TABLE skill (
@@ -695,6 +695,29 @@ CREATE TABLE class_level_spellslots (
 
 # features su ostali
 # takodjer i guess actions???
+
+#------------------------------------
+# VALUES
+#------------------------------------
+INSERT INTO ability_score (ability_name) VALUES
+	('STRENGTH'), ('DEXTERITY'), ('CONSTITUTION'), ('INTELLIGENCE'),  ('WISDOM'), ('CHARISMA');
+
+
+INSERT INTO skill (skill_name, ability_score_id) VALUES
+	('Athletics', 1), ('Acrobatics', 2), ('Sleight of Hand', 2), ('Stealth', 2), 
+    ('Arcana', 4), ('History', 4), ('Investigation', 4), ('Nature', 4), ('Religion', 4), 
+    ('Animal Handling', 5), ('Insight', 5), ('Medicine', 5), ('Perception', 5), ('Survival', 5), 
+    ('Deception', 6), ('Intimidation', 6), ('Performance', 6), ('Persuasion', 6);
+
+
+#------------------------------------
+# VIEWS
+#------------------------------------
+
+CREATE VIEW skill_ability_view AS
+SELECT s.skill_name, a.ability_name AS ability_score_name
+FROM skill s
+JOIN ability_score a ON s.ability_score_id = a.id;
 
 #------------------------------------
 # TRIGGERS
