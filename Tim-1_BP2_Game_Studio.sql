@@ -184,7 +184,7 @@ CREATE TABLE creature_instance(
     creature_template_id INT NOT NULL,
     current_hp INT NOT NULL,
     initiative INT NOT NULL DEFAULT 1,
-    PRIMARY KEY (creature_template_id) REFERENCES creature_template(id) 
+    FOREIGN KEY (creature_template_id) REFERENCES creature_template(id) 
 );
 
 CREATE TABLE creature_item(
