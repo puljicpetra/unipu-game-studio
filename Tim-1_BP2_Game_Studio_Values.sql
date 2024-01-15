@@ -54,12 +54,15 @@ INSERT INTO experience_for_level (which_level, experience_needed) VALUES
 # CREATURE TEMPLATE
 INSERT INTO creature_template (creature_name, size_id, creature_type_id, alignment_id, STRENGTH, DEXTERITY, CONSTITUTION, INTELLIGENCE, WISDOM, CHARISMA, proficiency, hit_dice_type_id, hit_dice_number, challenge_rating) VALUES
 	('Centaur', 4, 11, 4, 18, 14, 14, 9, 13, 11, 2, 4, 6, 2),
-    ('Chuul', 4, 1, 9, 19, 10, 16, 5, 11, 5, 4, 4, 11, 4);
+    ('Chuul', 4, 1, 9, 19, 10, 16, 5, 11, 5, 4, 4, 11, 4),
+    ('Death Knight', 3, 14, 9, 20, 11, 20, 12, 16, 18, 6, 3, 19, 17);
 
 # SKILL PROFICIENCY
 INSERT INTO skill_proficiency (creature_id, skill_id) VALUES
-	(1, 1), (1, 13), (1, 14), (2, 13);
+	(1, 1), (1, 13), (1, 14), (2, 13),
+    (3, 20), (3, 23), (3, 24);
     
+
 # conditions
 INSERT INTO conditions (condition_name, condition_description) VALUES
 ('BLINDED', 'Description of Blinded...'),
