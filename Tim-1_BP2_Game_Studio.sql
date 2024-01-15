@@ -517,6 +517,7 @@ CREATE TABLE consumable(
 CREATE TABLE creature_condition(
     creature_id INT,
     condition_id INT,
+    PRIMARY KEY (creature_id, condition_id),
     FOREIGN KEY (creature_id) REFERENCES creature_instance(id) ON DELETE CASCADE,
     FOREIGN KEY (condition_id) REFERENCES conditions(id) ON DELETE CASCADE
 );
