@@ -183,7 +183,8 @@ CREATE TABLE creature_instance(
     id INT PRIMARY KEY AUTO_INCREMENT,
     creature_template_id INT NOT NULL,
     current_hp INT NOT NULL,
-    initiative INT NOT NULL DEFAULT 1
+    initiative INT NOT NULL DEFAULT 1,
+    PRIMARY KEY (creature_template_id) REFERENCES creature_template(id) 
 );
 
 CREATE TABLE creature_item(
