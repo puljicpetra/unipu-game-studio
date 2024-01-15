@@ -5,6 +5,8 @@
 
 INSERT INTO ability_score (ability_name) VALUES
 	('STRENGTH'), ('DEXTERITY'), ('CONSTITUTION'), ('INTELLIGENCE'),  ('WISDOM'), ('CHARISMA');
+    select*
+    from ability_score;
 
 
 INSERT INTO skill (skill_name, ability_score_id) VALUES
@@ -50,6 +52,44 @@ INSERT INTO experience_for_level (which_level, experience_needed) VALUES
 (1, 0), (2, 300), (3, 900), (4, 2700), (5, 6500), (6, 14000), (7, 23000), (8, 34000), (9, 48000), (10, 64000), (11, 85000), (12, 100000),
 (13, 120000), (14, 140000), (15, 165000), (16, 195000), (17, 225000), (18, 265000), (19, 305000), (20, 355000);
 
+INSERT INTO race VALUES
+(1,'Elf','Elves are a magical people of otherworldly grace, living in the world but not entirely part of it. They live in places of ethereal beauty, in the midst of ancient forests or in silvery spires glittering with faerie light, where soft music drifts through the air and gentle fragrances waft on the breeze. Elves love nature and magic, art and artistry, music and poetry, and the good things of the world.',
+'Elves who lived among humans, of whom there were many, tended to take on roles that favored the arts, such as minstrels, artists, or sages. Many were also valued as martial instructors, given the elven races well-known skills with both the bow and the sword.',
+110,700,7,3,10,160,190,90,190),
+(2,'Dwarf','Bold and hardy, dwarves are known as skilled warriors, miners, and workers of stone and metal. Though they stand well under 5 feet tall, dwarves are so broad and compact that they can weigh as much as a human standing nearly two feet taller. Their courage and endurance are also easily a match for any of the larger folk.',
+'Dwarves highly valued the ties between family members and friends, weaving tightly knit clans. Dwarves particularly respected elders, from whom they expected sound leadership and the wisdom of experience, as well as ancestral heroes or clan founders. This idea carried on to relations with other races and dwarves were deferential even to the elders of another, non-dwarven race',
+50,400,1,3,10,110,140,140,180),
+(3,'Human','In the reckonings of most worlds, humans are the youngest of the common races, late to arrive on the world scene and short-lived in comparison to dwarves, elves, and dragons. Perhaps it is because of their shorter lives that they strive to achieve as much as they can in the years they are given. Or maybe they feel they have something to prove to the elder races, and that’s why they build their mighty empires on the foundation of conquest and trade. Whatever drives them, humans are the innovators, the achievers, and the pioneers of the worlds.',
+'Their cosmopolitan nature encourages openness, fostering cultural exchange. Religion varies widely, encompassing diverse pantheons and belief systems. Political structures range from monarchies to tribal councils, showcasing the ever-evolving societal landscapes.',
+25,100,5,3,10,150,200,40,310),
+(4,'Tiefling','Tieflings are descended from fiends, demons, and other dark entities. As a result, they often bear infernal traits such as horns, pointed tails, and glowing eyes. Despite their ominous appearance, tieflings are not inherently evil and can be found pursuing various paths in life.',
+'Tieflings are often shunned by other races due to their infernal heritage, leading many to become adept at stealth and subterfuge. Some embrace their dark lineage and become formidable rogues and thieves, navigating the shadows with finesse and cunning.',
+18,100,9,3,10,160,180,80,220);
+
+INSERT INTO features VALUES
+(1,'Dwarven Resilience', 'You have advantage on saving throws against poison, and you have resistance against poison damage.'),
+(2,'Darkvision','You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light.'),
+(3,'Hellish Resistance', 'You have resistance to fire damage.'),
+(4,'Fey Ancestry', 'You have advantage on saving throws against being charmed');
+
+INSERT INTO race_feature  VALUES
+    (2,5),
+    (1,1),
+    (3,4),
+    (4,4);
+    
+insert into race_asi values
+(3,1,1),
+(3,2,1),
+(3,3,1),
+(3,4,1),
+(3,5,1),
+(3,6,1);
+
+    
+
+
+
 # CREATURE TEMPLATE
 # SKILL PROFICIENCY
 # CONDITION RELATIONSHIP KAKO TREBA 
@@ -70,6 +110,7 @@ INSERT INTO experience_for_level (which_level, experience_needed) VALUES
 # spell_aoe_shape as needed 
 # class ass needed
 # spell_class as needed 
+
 # race as needed
 # weapon_property_match as needed 
 # features as needed

@@ -219,6 +219,16 @@ CREATE TABLE weapon(
     FOREIGN KEY (damage_dice_id) REFERENCES dice(id) ON UPDATE CASCADE, 
     FOREIGN KEY (item_id) REFERENCES item(id) ON DELETE CASCADE
 );
+/*INSERT INTO weapon (weapon_name, damage, damage_type_id, weapon_category, range, properties)
+VALUES
+    ('Longsword', '1d8', 11, 'Melee', NULL, 'Versatile (1d10)'),
+    ('Shortbow', '1d6', 10, 'Ranged', '80/320', 'Ammunition, Two-Handed'),
+    ('Dagger', '1d4', 13, 'Melee', '20/60', 'Finesse, Light, Thrown (20/60)'),
+    ('Warhammer', '1d8', 11, 'Melee', NULL, 'Versatile (1d10)'),
+    ('Fireball Staff', '2d6', 3, 'Melee', NULL, 'Spellcasting (Fireball)');
+*/
+
+
 
 CREATE TABLE weapon_properties( # maybe just hardcode all the properties how to use instead of description so gameplay can be automated?
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -305,6 +315,7 @@ CREATE TABLE spell_class(
 
 CREATE TABLE race(
     id INT PRIMARY KEY AUTO_INCREMENT,
+    race_name VARCHAR(32) NOT NULL UNIQUE,
     flavor TEXT NOT NULL,
     culture TEXT NOT NULL,
     maturity_age INT NOT NULL DEFAULT 18,
@@ -331,6 +342,7 @@ CREATE TABLE weapon_property_match (
 
 CREATE TABLE features ( # OOF needs lots of work for many things to fit such as trigger uses type etc.
     id INT PRIMARY KEY AUTO_INCREMENT,
+    feature_name VARCHAR(32),
     feature_description TEXT NOT NULL
 );
 
@@ -406,6 +418,8 @@ CREATE TABLE common_names (
     is_family_name BOOL NOT NULL DEFAULT false,
     gender ENUM('NEUTRAL', 'MASCULINE', 'FEMININE') NOT NULL DEFAULT 'NEUTRAL'
 );
+select*
+from race_asi;
 
 CREATE TABLE race_names (
     race_id INT,
