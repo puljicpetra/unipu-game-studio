@@ -102,7 +102,7 @@ INSERT INTO skill_proficiency VALUES
 INSERT INTO damage_type_relationship (damage_id, damage_relationship_id) VALUES
 	(7, 2), (1, 3);
 
-INSERT INTO creature_damage_relationship (creature_id, damage_relationship_id) VALUES
+INSERT INTO creature_damage_relationship (creature_id, damage_type_relationship_id) VALUES
 	(7, 2);
     
 INSERT INTO item (item_name, item_description, WEIGHT, cost_id, cost_amount) VALUES # ADD WEIGHTS
