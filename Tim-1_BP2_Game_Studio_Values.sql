@@ -94,15 +94,15 @@ SELECT * FROM creature_template;
 # SKILL PROFICIENCY
 INSERT INTO skill_proficiency (creature_id, skill_id) VALUES
 	(1, 1), (1, 13), (1, 14), (2, 13),
-    (3, 20), (3, 23), (3, 24);
+    (3, 20), (3, 23), (3, 24), (7, 4);
     
 INSERT INTO skill_proficiency VALUES
-	(4, 4, true), (5, 4, true), (7, 4, true);
+	(4, 4, true), (5, 4, true);
 
 INSERT INTO damage_type_relationship (damage_id, damage_relationship_id) VALUES
 	(7, 2), (1, 3);
 
-INSERT INTO creature_damage_relationship (creature_id, damage_relationship_id) VALUES
+INSERT INTO creature_damage_relationship (creature_id, damage_type_relationship_id) VALUES
 	(7, 2);
     
 INSERT INTO item (item_name, item_description, WEIGHT, cost_id, cost_amount) VALUES # ADD WEIGHTS

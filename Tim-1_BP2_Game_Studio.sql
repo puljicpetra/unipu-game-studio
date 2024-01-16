@@ -720,16 +720,3 @@ CREATE TABLE throwable (
 
 # features su ostali
 # takodjer i guess actions???
-
-#------------------------------------
-# VIEWS
-#------------------------------------
-
-CREATE VIEW skill_ability_view AS
-SELECT s.skill_name, a.ability_name AS ability_score_name
-FROM skill s
-JOIN ability_score a ON s.ability_score_id = a.id;
-
-#------------------------------------
-# TRIGGERS
-#------------------------------------
