@@ -67,7 +67,7 @@ INSERT INTO race_asi VALUES
 
 
 INSERT INTO race_skill_prof VALUES
-	(1, 13);
+	(1, 13), (2, 6);
     
     SELECT * FROM skill;
 
@@ -126,7 +126,7 @@ INSERT INTO race_condition_relationship VALUES
 	(1, 2), (2, 3);
     
 INSERT INTO race_language VALUES
-	(1, 1), (1, 3);
+	(1, 1), (1, 3), (2, 1), (2, 2), (3, 1);
     
 # creature_condition_relationship kako treba
 INSERT INTO creature_condition_relationship (creature_id, condition_relationship_id) VALUES
@@ -149,14 +149,14 @@ INSERT INTO movement (movement, distance) VALUES
 
 # creature_movement
 INSERT INTO creature_movement VALUES
-	(1, 3), (2, 1), (2, 2);
+	(1, 3), (2, 1), (2, 2), (3, 1);
 
 # creature_language
 INSERT INTO creature_language VALUES
 	(1, 3), (1, 15), (2, 12);
     
 INSERT INTO race_movement VALUES
-	(1, 1), (2, 4);
+	(1, 1), (2, 4), (3, 1), (4, 1);
 
 INSERT INTO damage_type_relationship (damage_id, damage_relationship_id) VALUES
 	(7, 2);

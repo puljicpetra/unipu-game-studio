@@ -105,6 +105,7 @@ CREATE TABLE creature_damage_relationship (
     creature_id INT,
     damage_type_relationship_id INT,
     PRIMARY KEY (creature_id, damage_type_relationship_id),  
+    FOREIGN KEY (creature_id) REFERENCES creature_template (id),
     FOREIGN KEY (damage_type_relationship_id) REFERENCES damage_type_relationship (id) ON UPDATE CASCADE
 );
 
@@ -418,8 +419,6 @@ CREATE TABLE common_names (
     is_family_name BOOL NOT NULL DEFAULT false,
     gender ENUM('NEUTRAL', 'MASCULINE', 'FEMININE') NOT NULL DEFAULT 'NEUTRAL'
 );
-select*
-from race_asi;
 
 CREATE TABLE race_names (
     race_id INT,
