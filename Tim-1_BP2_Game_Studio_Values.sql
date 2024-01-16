@@ -48,52 +48,6 @@ INSERT INTO experience_for_level (which_level, experience_needed) VALUES
 	(1, 0), (2, 300), (3, 900), (4, 2700), (5, 6500), (6, 14000), (7, 23000), (8, 34000), (9, 48000), (10, 64000), (11, 85000), (12, 100000),
 	(13, 120000), (14, 140000), (15, 165000), (16, 195000), (17, 225000), (18, 265000), (19, 305000), (20, 355000);
 
-INSERT INTO race VALUES
-	(1,'Elf','Elves are a magical people of otherworldly grace, living in the world but not entirely part of it. They live in places of ethereal beauty, in the midst of ancient forests or in silvery spires glittering with faerie light, where soft music drifts through the air and gentle fragrances waft on the breeze. Elves love nature and magic, art and artistry, music and poetry, and the good things of the world.',
-		'Elves who lived among humans, of whom there were many, tended to take on roles that favored the arts, such as minstrels, artists, or sages. Many were also valued as martial instructors, given the elven races well-known skills with both the bow and the sword.',
-		110,700,7,3,10,160,190,90,190),
-	(2,'Dwarf','Bold and hardy, dwarves are known as skilled warriors, miners, and workers of stone and metal. Though they stand well under 5 feet tall, dwarves are so broad and compact that they can weigh as much as a human standing nearly two feet taller. Their courage and endurance are also easily a match for any of the larger folk.',
-		'Dwarves highly valued the ties between family members and friends, weaving tightly knit clans. Dwarves particularly respected elders, from whom they expected sound leadership and the wisdom of experience, as well as ancestral heroes or clan founders. This idea carried on to relations with other races and dwarves were deferential even to the elders of another, non-dwarven race',
-		50,400,1,3,10,110,140,140,180),
-	(3,'Human','In the reckonings of most worlds, humans are the youngest of the common races, late to arrive on the world scene and short-lived in comparison to dwarves, elves, and dragons. Perhaps it is because of their shorter lives that they strive to achieve as much as they can in the years they are given. Or maybe they feel they have something to prove to the elder races, and that’s why they build their mighty empires on the foundation of conquest and trade. Whatever drives them, humans are the innovators, the achievers, and the pioneers of the worlds.',
-		'Their cosmopolitan nature encourages openness, fostering cultural exchange. Religion varies widely, encompassing diverse pantheons and belief systems. Political structures range from monarchies to tribal councils, showcasing the ever-evolving societal landscapes.',
-		25,100,5,3,10,150,200,40,310),
-	(4,'Tiefling','Tieflings are descended from fiends, demons, and other dark entities. As a result, they often bear infernal traits such as horns, pointed tails, and glowing eyes. Despite their ominous appearance, tieflings are not inherently evil and can be found pursuing various paths in life.',
-		'Tieflings are often shunned by other races due to their infernal heritage, leading many to become adept at stealth and subterfuge. Some embrace their dark lineage and become formidable rogues and thieves, navigating the shadows with finesse and cunning.',
-		18,100,9,3,10,160,180,80,220);
-
-INSERT INTO race_asi VALUES
-	(1,2,2), (1,4,1), (2,1,2), (2,3,2), (3,1,1), (3,2,1), (3,3,1), (3,4,1),	(3,5,1), (3,6,1), (4,4,1), (4,6,2);    
-
-
-INSERT INTO race_skill_prof VALUES
-	(1, 13), (2, 6);
-    
-    SELECT * FROM skill;
-
-# CREATURE TEMPLATE
-INSERT INTO creature_template (creature_name, size_id, creature_type_id, alignment_id, STRENGTH, DEXTERITY, CONSTITUTION, INTELLIGENCE, WISDOM, CHARISMA, proficiency, hit_dice_type_id, hit_dice_number, challenge_rating) VALUES
-	('Centaur', 4, 11, 4, 18, 14, 14, 9, 13, 11, 2, 4, 6, 2),
-    ('Chuul', 4, 1, 9, 19, 10, 16, 5, 11, 5, 4, 4, 11, 4),
-    ('Death Knight', 3, 14, 9, 20, 11, 20, 12, 16, 18, 6, 3, 19, 17);
-
-# SKILL PROFICIENCY
-INSERT INTO skill_proficiency (creature_id, skill_id) VALUES
-	(1, 1), (1, 13), (1, 14), (2, 13),
-    (3, 20), (3, 23), (3, 24);
-    
-INSERT INTO item (item_name, item_description, WEIGHT, cost_id, cost_amount) VALUES # ADD WEIGHTS
-	('Copper Coin', 'A humble old copper coin', 0, 1, 1), ('Silver Coin', 'A plain old Silver coin', 0, 1, 10), ('Electrum Coin', 'A weird old electrum coin', 0, 2, 5) , ('Gold Coin', 'A mighty old gold coin', 0, 3, 10), ('Platinum Coin', 'A legendary old platinum coin', 0, 4, 10); 
-    
-/*INSERT INTO weapon (weapon_name, damage, damage_type_id, weapon_category, range, properties)
-VALUES
-    ('Longsword', '1d8', 11, 'Melee', NULL, 'Versatile (1d10)'),
-    ('Shortbow', '1d6', 10, 'Ranged', '80/320', 'Ammunition, Two-Handed'),
-    ('Dagger', '1d4', 13, 'Melee', '20/60', 'Finesse, Light, Thrown (20/60)'),
-    ('Warhammer', '1d8', 11, 'Melee', NULL, 'Versatile (1d10)'),
-    ('Fireball Staff', '2d6', 3, 'Melee', NULL, 'Spellcasting (Fireball)');
-*/
-    
 # conditions
 INSERT INTO conditions (condition_name, condition_description) VALUES
 ('BLINDED', 'A blinded creature can’t see and automatically fails any ability check that requires sight. Attack rolls against the creature have advantage, and the creature’s attack rolls have disadvantage.'),
@@ -116,50 +70,104 @@ INSERT INTO conditions (condition_name, condition_description) VALUES
 ('EXHAUSTION 4', 'Hit point maximum halved'),
 ('EXHAUSTION 5', 'Speed reduced to 0'),
 ('EXHAUSTION 6', 'Death');
+
+    
+    SELECT * FROM skill;
+
+# CREATURE TEMPLATE # ('', size, type, align, str, dex, con, int, wis, chr, prof, hitdice, hitdicenum, cr)
+INSERT INTO creature_template (creature_name, size_id, creature_type_id, alignment_id, STRENGTH, DEXTERITY, CONSTITUTION, INTELLIGENCE, WISDOM, CHARISMA, proficiency, hit_dice_type_id, hit_dice_number, challenge_rating) VALUES
+	('Centaur', 		4, 11, 	4, 18, 	14, 14, 9, 13, 11, 	2, 4, 6, 2),
+    ('Chuul', 			4, 1, 	9, 19, 	10, 16, 5, 11, 5, 	4, 4, 11, 4),
+    ('Death Knight', 	3, 14, 	9, 20, 	11, 20, 12, 16, 18, 6, 3, 19, 17),
+	('Goblin', 			2, 10, 	6, 8, 	14, 10, 10, 8, 8, 	2, 2, 2, 0.25),
+	('Giant Spider', 	4, 2, 	5, 14, 	16, 12, 2, 11, 4, 	2, 4, 4, 1),
+	('Ogre', 			4, 9, 	9, 19, 	8, 16, 	5, 7, 7, 	2, 4, 7, 2),
+	('Mimic', 			3, 11, 	5, 17, 	12, 15, 5, 13, 8, 	4, 3, 9, 2),
+	('Displacer Beast', 4, 11, 	3, 18, 	15, 16, 6, 12, 8, 	2, 4, 10, 3);
+
+SELECT * FROM size;
+SELECT * FROM creature_type;
+SELECT * FROM alignment;
+SELECT * FROM dice;
+SELECT * FROM creature_template;
+
+# SKILL PROFICIENCY
+INSERT INTO skill_proficiency (creature_id, skill_id) VALUES
+	(1, 1), (1, 13), (1, 14), (2, 13),
+    (3, 20), (3, 23), (3, 24);
+    
+INSERT INTO skill_proficiency VALUES
+	(4, 4, true), (5, 4, true), (7, 4, true);
+
+INSERT INTO damage_type_relationship (damage_id, damage_relationship_id) VALUES
+	(7, 2), (1, 3);
+
+INSERT INTO creature_damage_relationship (creature_id, damage_relationship_id) VALUES
+	(7, 2);
+    
+INSERT INTO item (item_name, item_description, WEIGHT, cost_id, cost_amount) VALUES # ADD WEIGHTS
+	('Copper Coin', 'A humble old copper coin', 0, 1, 1), ('Silver Coin', 'A plain old Silver coin', 0, 1, 10), ('Electrum Coin', 'A weird old electrum coin', 0, 2, 5) , ('Gold Coin', 'A mighty old gold coin', 0, 3, 10), ('Platinum Coin', 'A legendary old platinum coin', 0, 4, 10); 
+    
     
 # CONDITION RELATIONSHIP KAKO TREBA
 INSERT INTO condition_relationship (condition_id, condition_relationship) VALUES
-	(10, 'IMMUNE'), (2, 'ADVANTAGE'), (10, 'ADVANTAGE');
+	(10, 'IMMUNE'), (2, 'ADVANTAGE'), (10, 'ADVANTAGE'), (11, 'IMMUNE');
+
+# creature_condition_relationship kako treba
+INSERT INTO creature_condition_relationship (creature_id, condition_relationship_id) VALUES
+	(2, 1), (7, 4);    
     
-    
+# creature_language
+INSERT INTO creature_language VALUES
+	(1, 3), (1, 15), (2, 12), (4, 1), (4, 6), (6, 1), (6, 4);
+
+# sense as needed
+INSERT INTO sense (sense, distance) VALUES
+	('DARKVISION', 60), ('BLINDSIGHT', 10);
+
+# creature_sense as needed
+INSERT INTO creature_sense VALUES
+	(2, 1), (4, 1), (5, 1), (6, 1), (7, 1), (8, 1), (5, 2);
+
+# movement as needed
+INSERT INTO movement (movement, distance) VALUES
+ 	('WALK', 30), ('SWIM', 30), ('WALK', 50), ('WALK', 25), ('WALK', 40), ('WALK', 15), ('CLIMB', 30);
+
+# creature_movement
+INSERT INTO creature_movement VALUES
+	(1, 3), (2, 1), (2, 2), (3, 1), (4, 1), (5, 1), (6, 5), (7, 6), (8, 5), (5, 7);
+
+INSERT INTO race VALUES
+	(1,'Elf','Elves are a magical people of otherworldly grace, living in the world but not entirely part of it. They live in places of ethereal beauty, in the midst of ancient forests or in silvery spires glittering with faerie light, where soft music drifts through the air and gentle fragrances waft on the breeze. Elves love nature and magic, art and artistry, music and poetry, and the good things of the world.',
+		'Elves who lived among humans, of whom there were many, tended to take on roles that favored the arts, such as minstrels, artists, or sages. Many were also valued as martial instructors, given the elven races well-known skills with both the bow and the sword.',
+		110,700,7,3,10,160,190,90,190),
+	(2,'Dwarf','Bold and hardy, dwarves are known as skilled warriors, miners, and workers of stone and metal. Though they stand well under 5 feet tall, dwarves are so broad and compact that they can weigh as much as a human standing nearly two feet taller. Their courage and endurance are also easily a match for any of the larger folk.',
+		'Dwarves highly valued the ties between family members and friends, weaving tightly knit clans. Dwarves particularly respected elders, from whom they expected sound leadership and the wisdom of experience, as well as ancestral heroes or clan founders. This idea carried on to relations with other races and dwarves were deferential even to the elders of another, non-dwarven race',
+		50,400,1,3,10,110,140,140,180),
+	(3,'Human','In the reckonings of most worlds, humans are the youngest of the common races, late to arrive on the world scene and short-lived in comparison to dwarves, elves, and dragons. Perhaps it is because of their shorter lives that they strive to achieve as much as they can in the years they are given. Or maybe they feel they have something to prove to the elder races, and that’s why they build their mighty empires on the foundation of conquest and trade. Whatever drives them, humans are the innovators, the achievers, and the pioneers of the worlds.',
+		'Their cosmopolitan nature encourages openness, fostering cultural exchange. Religion varies widely, encompassing diverse pantheons and belief systems. Political structures range from monarchies to tribal councils, showcasing the ever-evolving societal landscapes.',
+		25,100,5,3,10,150,200,40,310),
+	(4,'Tiefling','Tieflings are descended from fiends, demons, and other dark entities. As a result, they often bear infernal traits such as horns, pointed tails, and glowing eyes. Despite their ominous appearance, tieflings are not inherently evil and can be found pursuing various paths in life.',
+		'Tieflings are often shunned by other races due to their infernal heritage, leading many to become adept at stealth and subterfuge. Some embrace their dark lineage and become formidable rogues and thieves, navigating the shadows with finesse and cunning.',
+		18,100,9,3,10,160,180,80,220);
+
+INSERT INTO race_asi VALUES
+	(1,2,2), (1,4,1), (2,1,2), (2,3,2), (3,1,1), (3,2,1), (3,3,1), (3,4,1),	(3,5,1), (3,6,1), (4,4,1), (4,6,2);    
+
+INSERT INTO race_skill_prof VALUES
+	(1, 13), (2, 6);
+
 INSERT INTO race_condition_relationship VALUES
 	(1, 2), (2, 3);
     
 INSERT INTO race_language VALUES
 	(1, 1), (1, 3), (2, 1), (2, 2), (3, 1);
     
-# creature_condition_relationship kako treba
-INSERT INTO creature_condition_relationship (creature_id, condition_relationship_id) VALUES
-	(2, 1);
-
-# sense as needed
-INSERT INTO sense (sense, distance) VALUES
-	('DARKVISION', 60);
-    
 INSERT INTO race_sense VALUES 
 	(1, 1), (2, 1), (4, 1);
 
-# creature_sense as needed
-INSERT INTO creature_sense VALUES
-	(2, 1);
-
-# movement as needed
-INSERT INTO movement (movement, distance) VALUES
-	('WALK', 30), ('SWIM', 30), ('WALK', 50), ('WALK', 25);
-
-# creature_movement
-INSERT INTO creature_movement VALUES
-	(1, 3), (2, 1), (2, 2), (3, 1);
-
-# creature_language
-INSERT INTO creature_language VALUES
-	(1, 3), (1, 15), (2, 12);
-    
 INSERT INTO race_movement VALUES
 	(1, 1), (2, 4), (3, 1), (4, 1);
-
-INSERT INTO damage_type_relationship (damage_id, damage_relationship_id) VALUES
-	(7, 2);
 
 INSERT INTO race_damage_relationship VALUES
 	(2, 1);
@@ -175,17 +183,13 @@ INSERT INTO race_damage_relationship VALUES
 # spell_aoe_shape as needed 
 # class ass needed
 # spell_class as needed 
-
 # race as needed
 # weapon_property_match as needed 
 # features as needed
-
-
 # creature instance as needed
 # creature item as needed
 # class ass needed
 # spell_class as needed 
-
 # race as needed
 # race_feature as needed 
 # race_item_prof as needed
