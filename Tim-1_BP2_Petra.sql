@@ -62,11 +62,8 @@ BEGIN
         RETURN 'Player character does not exist';
     END IF;
     
-    SELECT 
-        CONCAT('Player Name: ', p.player_name, ', Race: ', r.race_name, ', Class: ', c.class_name, ', Level: ', pc.class_level) 
-    INTO player_info
-    FROM 
-        player_character pc
+    SELECT CONCAT('Player Name: ', p.player_name, ', Race: ', r.race_name, ', Class: ', c.class_name, ', Level: ', pc.class_level) INTO player_info
+    FROM player_character pc
     JOIN player p ON pc.player_id = p.id
     JOIN race r ON pc.race_id = r.id
     JOIN class c ON pc.class_id = c.id
