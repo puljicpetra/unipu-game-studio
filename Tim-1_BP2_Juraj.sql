@@ -17,6 +17,35 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
+
+DROP FUNCTION IF EXISTS calculate_skill_bonus;
+DELIMITER //
+CREATE FUNCTION calculate_skill_bonus(ability_score INT, proficiency_bonus INT, has_expertise BOOL)
+RETURNS VARCHAR(10)
+DETERMINISTIC
+BEGIN
+    DECLARE modifier INT;
+    DECLARE skill_bonus INT;
+    DECLARE result VARCHAR(10);
+    
+    SET modifier = FLOOR((ability_score - 10) / 2);
+    IF has_expertise THEN
+        SET skill_bonus = modifier + (2 * proficiency_bonus);
+    ELSE
+        SET skill_bonus = modifier + proficiency_bonus;
+    END IF;
+        IF skill_bonus > 0 THEN
+        SET result = CONCAT('+', skill_bonus);
+    ELSEIF skill_bonus < 0 THEN
+        SET result = CAST(skill_bonus AS CHAR);
+    ELSE
+        SET result = '0';
+    END IF;
+    
+    RETURN result;
+END //
+
+DELIMITER ;
 #------------------------------------
 # VIEWS
 #------------------------------------
@@ -41,27 +70,29 @@ SELECT
     CONCAT(crea.INTELLIGENCE, ' (', calc_mod(crea.INTELLIGENCE), ')') AS INTE,
     CONCAT(crea.WISDOM, ' (', calc_mod(crea.WISDOM), ')') AS WIS,
     CONCAT(crea.CHARISMA, ' (', calc_mod(crea.CHARISMA), ')') AS CHR,
-    GROUP_CONCAT(lang.language_name ORDER BY lang.language_name SEPARATOR ', ') AS languages,
+    GROUP_CONCAT(DISTINCT lang.language_name ORDER BY lang.language_name SEPARATOR ', ') AS languages,
     GROUP_CONCAT(DISTINCT CONCAT(sen.sense, ' ', sen.distance, 'ft') ORDER BY sen.sense SEPARATOR ', ') AS senses,
     GROUP_CONCAT(DISTINCT CONCAT(sk.skill_name, ': ', 
-        IF(sp.expertise, crea.proficiency * 2, crea.proficiency) + 
-        CASE 
-            WHEN ascore.ability_name = 'STRENGTH' THEN FLOOR((crea.STRENGTH - 10) / 2)
-            WHEN ascore.ability_name = 'DEXTERITY' THEN FLOOR((crea.DEXTERITY - 10) / 2)
-WHEN ascore.ability_name = 'CONSTITUTION' THEN FLOOR((crea.CONSTITUTION - 10) / 2)
-WHEN ascore.ability_name = 'INTELLIGENCE' THEN FLOOR((crea.INTELLIGENCE - 10) / 2)
-WHEN ascore.ability_name = 'WISDOM' THEN FLOOR((crea.WISDOM - 10) / 2)
-WHEN ascore.ability_name = 'CHARISMA' THEN FLOOR((crea.CHARISMA - 10) / 2)
-END
-) ORDER BY sk.skill_name SEPARATOR ', ') AS skills,
-crea.challenge_rating,
-cr.experience_points
+        calculate_skill_bonus(
+            CASE 
+                WHEN ascore.ability_name = 'STRENGTH' THEN crea.STRENGTH
+                WHEN ascore.ability_name = 'DEXTERITY' THEN crea.DEXTERITY
+                WHEN ascore.ability_name = 'CONSTITUTION' THEN crea.CONSTITUTION
+                WHEN ascore.ability_name = 'INTELLIGENCE' THEN crea.INTELLIGENCE
+                WHEN ascore.ability_name = 'WISDOM' THEN crea.WISDOM
+                WHEN ascore.ability_name = 'CHARISMA' THEN crea.CHARISMA
+            END,
+            crea.proficiency, sp.expertise
+        ) ) ORDER BY sk.skill_name SEPARATOR ', ') AS skills,
+GROUP_CONCAT(DISTINCT CONCAT(c.condition_name, ' ', cr.condition_relationship) ORDER BY c.condition_name SEPARATOR ', ') AS condition_relationships,
+GROUP_CONCAT(DISTINCT CONCAT(dt.damage, ' ', dr.relationship) ORDER BY dt.damage SEPARATOR ', ') AS damage_relationships,
+crea.challenge_rating, crt.experience_points
 FROM creature_template AS crea
 JOIN size AS s ON crea.size_id = s.id
 JOIN creature_type AS t ON crea.creature_type_id = t.id
 JOIN alignment AS a ON crea.alignment_id = a.id
 JOIN dice AS d ON crea.hit_dice_type_id = d.id
-JOIN challenge_rating AS cr ON crea.challenge_rating = cr.rating
+JOIN challenge_rating AS crt ON crea.challenge_rating = crt.rating
 LEFT JOIN creature_language AS cl ON crea.id = cl.creature_id
 LEFT JOIN languages AS lang ON cl.language_id = lang.id
 LEFT JOIN creature_sense AS cs ON crea.id = cs.creature_id
@@ -71,7 +102,14 @@ LEFT JOIN movement AS mov ON cmov.movement_id = mov.id
 LEFT JOIN skill_proficiency AS sp ON crea.id = sp.creature_id
 LEFT JOIN skill AS sk ON sp.skill_id = sk.id
 LEFT JOIN ability_score AS ascore ON sk.ability_score_id = ascore.id
-GROUP BY crea.creature_name, s.size, t.creature_type, a.lawfulness, a.morality, crea.hit_dice_number, d.dice, crea.STRENGTH, crea.DEXTERITY, crea.CONSTITUTION, crea.INTELLIGENCE, crea.WISDOM, crea.CHARISMA, crea.proficiency, crea.challenge_rating, cr.experience_points;
+LEFT JOIN creature_damage_relationship AS cdr ON crea.id = cdr.creature_id
+LEFT JOIN damage_type_relationship AS dtr ON cdr.damage_type_relationship_id = dtr.id
+LEFT JOIN damage_type AS dt ON dtr.damage_id = dt.id
+LEFT JOIN damage_relationship AS dr ON dtr.damage_relationship_id = dr.id
+LEFT JOIN creature_condition_relationship AS ccr ON crea.id = ccr.creature_id
+LEFT JOIN condition_relationship AS cr ON ccr.condition_relationship_id = cr.id
+LEFT JOIN conditions AS c ON cr.condition_id = c.id
+GROUP BY crea.creature_name, s.size, t.creature_type, a.lawfulness, a.morality, crea.hit_dice_number, d.dice, crea.STRENGTH, crea.DEXTERITY, crea.CONSTITUTION, crea.INTELLIGENCE, crea.WISDOM, crea.CHARISMA, crea.proficiency, crea.challenge_rating, crt.experience_points;
 
 
  
@@ -80,3 +118,4 @@ SELECT * FROM stat_block_template;
 #------------------------------------
 # TRIGGERS
 #------------------------------------
+

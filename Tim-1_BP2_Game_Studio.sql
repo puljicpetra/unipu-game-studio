@@ -22,7 +22,7 @@ CREATE TABLE skill (
 
 CREATE TABLE dice(
 	id INT PRIMARY KEY AUTO_INCREMENT,
-	dice ENUM ('d4', 'd6', 'd8', 'd10', 'd12', 'd20') UNIQUE NOT NULL
+	dice ENUM ('d4', 'd6', 'd8', 'd10', 'd12', 'd20', 'd100') UNIQUE NOT NULL
 );
     
 CREATE TABLE size(

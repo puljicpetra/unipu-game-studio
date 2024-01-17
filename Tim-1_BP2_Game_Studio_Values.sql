@@ -9,10 +9,10 @@ INSERT INTO skill (skill_name, ability_score_id) VALUES
     ('Arcana', 4), ('History', 4), ('Investigation', 4), ('Nature', 4), ('Religion', 4), 
     ('Animal Handling', 5), ('Insight', 5), ('Medicine', 5), ('Perception', 5), ('Survival', 5), 
     ('Deception', 6), ('Intimidation', 6), ('Performance', 6), ('Persuasion', 6),
-    ('Saving throw', 1), ('Saving throw', 2),  ('Saving throw', 3), ('Saving throw', 4), ('Saving throw', 5), ('Saving throw', 6);
+    ('Strength Saving Throw', 1), ('Dexterity Saving Throw', 2),  ('Constitution Saving Throw', 3), ('Intelligence Saving Throw', 4), ('Wisdom Saving Throw', 5), ('Charisma Saving Throw', 6);
 
 INSERT INTO dice (dice) VALUES
-	('d4'), ('d6'), ('d8'), ('d10'), ('d12'), ('d20');
+	('d4'), ('d6'), ('d8'), ('d10'), ('d12'), ('d20'), ('d100');
     
 INSERT INTO size (size, space) VALUES
 	('TINY', 2), ('SMALL', 3), ('MEDIUM', 5), ('LARGE', 10), ('HUGE', 15), ('GARGANTUAN', 20);
@@ -119,15 +119,15 @@ INSERT INTO creature_condition_relationship (creature_id, condition_relationship
     
 # creature_language
 INSERT INTO creature_language VALUES
-	(1, 3), (1, 15), (2, 12), (4, 1), (4, 6), (6, 1), (6, 4);
+	(1, 3), (1, 15), (2, 12), (4, 1), (4, 6), (6, 1), (6, 4), (3, 1), (3, 9);
 
 # sense as needed
 INSERT INTO sense (sense, distance) VALUES
-	('DARKVISION', 60), ('BLINDSIGHT', 10);
+	('DARKVISION', 60), ('BLINDSIGHT', 10), ('DARKVISION', 120);
 
 # creature_sense as needed
 INSERT INTO creature_sense VALUES
-	(2, 1), (4, 1), (5, 1), (6, 1), (7, 1), (8, 1), (5, 2);
+	(2, 1), (4, 1), (5, 1), (6, 1), (7, 1), (8, 1), (5, 2), (3,3);
 
 # movement as needed
 INSERT INTO movement (movement, distance) VALUES
