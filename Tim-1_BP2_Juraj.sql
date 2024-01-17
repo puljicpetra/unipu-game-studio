@@ -55,20 +55,23 @@ SELECT s.skill_name, a.ability_name AS ability_score_name
 FROM skill s
 JOIN ability_score a ON s.ability_score_id = a.id;
 
+DROP VIEW IF EXISTS items_armor;
 CREATE VIEW items_armor AS
 SELECT 
     itm.item_name, 
     itm.item_description,
     itm.WEIGHT, 
-    itm.cost_id, 
-    itm.cost_amount,
+    CONCAT(itm.cost_amount, 'x ', cost_item.item_name) AS cost,
     arm.armor_type, 
     arm.strength_minimum, 
     arm.stealth_disadvantage, 
     arm.base_armor_class, 
     arm.maximum_dex_modifier
 FROM armor AS arm
-JOIN item AS itm ON arm.item_id = itm.id;
+JOIN item AS itm ON arm.item_id = itm.id
+LEFT JOIN item AS cost_item ON itm.cost_id = cost_item.id;
+
+SELECT * FROM items_armor;
 
 DROP VIEW IF EXISTS items_weapons;
 CREATE VIEW items_weapons AS
@@ -76,8 +79,7 @@ SELECT
     itm.item_name, 
     itm.item_description,
     itm.WEIGHT, 
-    itm.cost_id, 
-    itm.cost_amount,
+    CONCAT(itm.cost_amount, 'x ', cost_item.item_name) AS cost,
     wpn.damage_type_id, 
     wpn.damage_dice_id, 
     wpn.damage_dice_amount,
@@ -87,9 +89,12 @@ SELECT
     GROUP_CONCAT(wp.property_name ORDER BY wp.property_name SEPARATOR ', ') AS weapon_properties
 FROM weapon AS wpn
 JOIN item AS itm ON wpn.item_id = itm.id
+LEFT JOIN item AS cost_item ON itm.cost_id = cost_item.id
 LEFT JOIN weapon_property_match AS wpm ON wpn.id = wpm.weapon_id
 LEFT JOIN weapon_properties AS wp ON wpm.weapon_property_id = wp.id
-GROUP BY itm.item_name, itm.item_description, itm.WEIGHT, itm.cost_id, itm.cost_amount, wpn.damage_type_id, wpn.damage_dice_id, wpn.damage_dice_amount, wpn.is_martial, wpn.min_range, wpn.max_range;
+GROUP BY itm.item_name, itm.item_description, itm.WEIGHT, cost, wpn.damage_type_id, wpn.damage_dice_id, wpn.damage_dice_amount, wpn.is_martial, wpn.min_range, wpn.max_range;
+
+SELECT * FROM items_weapons;
 
 DROP VIEW IF EXISTS stat_block_template;
 CREATE VIEW stat_block_template AS

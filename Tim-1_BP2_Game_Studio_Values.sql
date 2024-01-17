@@ -122,7 +122,7 @@ INSERT INTO item (item_name, item_description, WEIGHT, cost_id, cost_amount) VAL
 ('Splint Armor'				, 'This armor is made of narrow vertical strips of metal riveted to a backing of leather that is worn over cloth padding. Flexible chain mail protects the joints.', 60	, 4, 20),
 ('Plate Armor'				, 'Plate consists of shaped, interlocking metal plates to cover the entire body. A suit of plate includes gauntlets, heavy leather boots, a visored helmet, and thick layers of padding underneath the armor. Buckles and straps distribute the weight over the body.', 65	, 4, 1500),
 ('Shield'					, 'A shield is made from wood or metal and is carried in one hand. Wielding a shield increases your Armor Class by 2. You can benefit from only one shield at a time.', 6, 4, 10),
-('Dagger'			, '', 1, 3, 5),
+('Dagger'			, '', 1, 2, 5),
 ('Mace'				, '', 4, 4, 5),
 ('Spear'			, '', 3, 4, 1),
 ('Shortbow'			, '', 2, 4, 25),
@@ -163,11 +163,14 @@ INSERT INTO weapon (item_id, damage_type_id, damage_dice_id, damage_dice_amount,
 (29, 12, 3, 1, true, 10, 600);
 
 
-INSERT INTO weapon_properties (propert_name, property_description) VALUES
+INSERT INTO weapon_properties (property_name, property_description) VALUES
 	('Finesse', 'You use dexterity instead of strength'), ('Ammunition', 'Your weapons use arrows each attack'), ('Heavy', 'Small creatures have disadvantage');
 
+SELECT * FROM weapon;
+SELECT * FROM weapon_properties;
+
 INSERT INTO weapon_property_match (weapon_id, weapon_property_id) VALUES
-	(19, 1), (22, 2), (23, 2), (26, 1), (27, 1), (28, 2), (28, 3), (29, 2);
+	(1, 1), (4, 2), (5, 2), (8, 1), (9, 1), (10, 2), (10, 3), (11, 2);
 
 # CONDITION RELATIONSHIP KAKO TREBA
 INSERT INTO condition_relationship (condition_id, condition_relationship) VALUES
