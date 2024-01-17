@@ -44,4 +44,4 @@ FROM creature_template AS ct
 INNER JOIN size AS s ON ct.size_id = s.id
 ORDER BY FIELD(size, 'TINY', 'SMALL', 'MEDIUM', 'LARGE', 'HUGE', 'GARGANTUAN');
 
-SELECT * FROM AllCreaturesSortedBySize;
+SELECT * FROM creatures_size_sorted;
