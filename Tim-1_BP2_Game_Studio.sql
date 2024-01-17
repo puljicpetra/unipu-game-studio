@@ -195,16 +195,6 @@ CREATE TABLE creature_instance(
     FOREIGN KEY (creature_template_id) REFERENCES creature_template(id) 
 );
 
-CREATE TABLE creature_item(
-    creature_id INT,
-    item_id INT,
-    amount INT NOT NULL DEFAULT 1,
-    CHECK (amount > 0),
-    PRIMARY KEY (creature_id, item_id),
-    FOREIGN KEY (creature_id) REFERENCES creature_instance(id) ON DELETE CASCADE,
-    FOREIGN KEY (item_id) REFERENCES item(id) ON UPDATE CASCADE
-);
-
 CREATE TABLE armor(
     id INT PRIMARY KEY AUTO_INCREMENT,
     item_id INT NOT NULL UNIQUE,

@@ -80,19 +80,19 @@ SELECT
     itm.item_description,
     itm.WEIGHT, 
     CONCAT(itm.cost_amount, 'x ', cost_item.item_name) AS cost,
-    wpn.damage_type_id, 
-    wpn.damage_dice_id, 
-    wpn.damage_dice_amount,
     wpn.is_martial, 
     wpn.min_range, 
     wpn.max_range,
+    CONCAT(wpn.damage_dice_amount, dice.dice, ' ', dt.damage) AS damage,
     GROUP_CONCAT(wp.property_name ORDER BY wp.property_name SEPARATOR ', ') AS weapon_properties
 FROM weapon AS wpn
 JOIN item AS itm ON wpn.item_id = itm.id
 LEFT JOIN item AS cost_item ON itm.cost_id = cost_item.id
+LEFT JOIN dice ON wpn.damage_dice_id = dice.id
+LEFT JOIN damage_type AS dt ON wpn.damage_type_id = dt.id
 LEFT JOIN weapon_property_match AS wpm ON wpn.id = wpm.weapon_id
 LEFT JOIN weapon_properties AS wp ON wpm.weapon_property_id = wp.id
-GROUP BY itm.item_name, itm.item_description, itm.WEIGHT, cost, wpn.damage_type_id, wpn.damage_dice_id, wpn.damage_dice_amount, wpn.is_martial, wpn.min_range, wpn.max_range;
+GROUP BY itm.item_name, itm.item_description, itm.WEIGHT, cost, wpn.is_martial, wpn.min_range, wpn.max_range, damage;
 
 SELECT * FROM items_weapons;
 
