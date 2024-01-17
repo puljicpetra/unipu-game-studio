@@ -1,3 +1,5 @@
+
+-- trigger
 DROP TRIGGER IF EXISTS death;
 DELIMITER //
 CREATE TRIGGER death
@@ -6,12 +8,14 @@ BEGIN
 	IF new.current_hp <= 0 THEN
 		DELETE FROM creature_instance WHERE id = new.id;
 	END IF;
-END;
-DELIMITER;
+END //
+DELIMITER ;
 
+
+-- funkcija
 DROP FUNCTION IF EXISTS characters_level;
 DELIMITER //
-CREATE FUNCTION characters_level(p_id INTEGER) RETURNS VARCHAR(150)
+CREATE FUNCTION characters_level(p_id INTEGER) RETURNS VARCHAR(300)
 DETERMINISTIC
 BEGIN
 	DECLARE min_level INT;
@@ -32,3 +36,12 @@ BEGIN
 	RETURN CONCAT('Character with the lowest level: ', min_character, ' Level ', min_level, ' | Character with the highest level: ', max_character, ' Level ', max_level,'');
 END //
 DELIMITER ;
+
+-- pogled
+CREATE VIEW creatures_size_sorted AS
+SELECT creature_name, s.size
+FROM creature_template AS ct
+INNER JOIN size AS s ON ct.size_id = s.id
+ORDER BY FIELD(size, 'TINY', 'SMALL', 'MEDIUM', 'LARGE', 'HUGE', 'GARGANTUAN');
+
+SELECT * FROM AllCreaturesSortedBySize;
