@@ -107,8 +107,68 @@ INSERT INTO creature_damage_relationship (creature_id, damage_type_relationship_
     
 INSERT INTO item (item_name, item_description, WEIGHT, cost_id, cost_amount) VALUES # ADD WEIGHTS
 	('Copper Coin', 'A humble old copper coin', 0, 1, 1), ('Silver Coin', 'A plain old Silver coin', 0, 1, 10), ('Electrum Coin', 'A weird old electrum coin', 0, 2, 5) , ('Gold Coin', 'A mighty old gold coin', 0, 3, 10), ('Platinum Coin', 'A legendary old platinum coin', 0, 4, 10); 
-    
-    
+
+INSERT INTO item (item_name, item_description, WEIGHT, cost_id, cost_amount) VALUES
+('Padded Armor'				, 'Padded armor consists of quilted layers of cloth and batting.', 8		, 4, 5),
+('Leather Armor'			, 'The breastplate and shoulder protectors of this armor are made of leather that has been stiffened by being boiled in oil. The rest of the armor is made of softer and more flexible materials.', 10	, 4, 10),
+('Studded Leather Armor'	, 'Made from tough but flexible leather, studded leather is reinforced with close-set rivets or spikes.', 13	, 4, 45),
+('Hide Armor'				, 'This crude armor consists of thick furs and pelts. It is commonly worn by barbarian tribes, evil humanoids, and other folk who lack access to the tools and materials needed to create better armor.', 12	, 4, 10),
+('Chain Armor'				, 'Made of interlocking metal rings, a chain shirt is worn between layers of clothing or leather. This armor offers modest protection to the wearer’s upper body and allows the sound of the rings rubbing against one another to be muffled by outer layers.', 20	, 4, 50),
+('Scale Armor'				, 'This armor consists of a coat and leggings (and perhaps a separate skirt) of leather covered with overlapping pieces of metal, much like the scales of a fish. The suit includes gauntlets.', 45	, 4, 50),
+('Breastplate Armor'		, 'This armor consists of a fitted metal chest piece worn with supple leather. Although it leaves the legs and arms relatively unprotected, this armor provides good protection for the wearer’s vital organs while leaving the wearer relatively unencumbered.', 20	, 4, 400),
+('Halfplate Armor'			, 'Half plate consists of shaped metal plates that cover most of the wearer’s body. It does not include leg protection beyond simple greaves that are attached with leather straps.', 40	, 4, 750),
+('Ring Mail Armor'			, 'This armor is leather armor with heavy rings sewn into it. The rings help reinforce the armor against blows from swords and axes. Ring mail is inferior to chain mail, and its usually worn only by those who can’t afford better armor.', 40	, 4, 30),
+('Chain Mail Armor'			, 'Made of interlocking metal rings, chain mail includes a layer of quilted fabric worn underneath the mail to prevent chafing and to cushion the impact of blows. The suit includes gauntlets.', 55	, 4, 75),
+('Splint Armor'				, 'This armor is made of narrow vertical strips of metal riveted to a backing of leather that is worn over cloth padding. Flexible chain mail protects the joints.', 60	, 4, 20),
+('Plate Armor'				, 'Plate consists of shaped, interlocking metal plates to cover the entire body. A suit of plate includes gauntlets, heavy leather boots, a visored helmet, and thick layers of padding underneath the armor. Buckles and straps distribute the weight over the body.', 65	, 4, 1500),
+('Shield'					, 'A shield is made from wood or metal and is carried in one hand. Wielding a shield increases your Armor Class by 2. You can benefit from only one shield at a time.', 6, 4, 10),
+('Dagger'			, '', 1, 3, 5),
+('Mace'				, '', 4, 4, 5),
+('Spear'			, '', 3, 4, 1),
+('Shortbow'			, '', 2, 4, 25),
+('Crossbow, Light'	, '', 5, 4, 25),
+('Battleaxe'		, '', 4, 4, 10),
+('Longsword'		, '', 3, 4, 15),
+('Rapier'			, '', 2, 4, 25),
+('Scimitar'			, '', 3, 4, 25),
+('Crossbow, Heavy'	, '', 18, 4, 50),
+('Longbow'			, '', 2, 4, 50);
+
+INSERT INTO armor (item_id, armor_type, strength_minimum, stealth_disadvantage, base_armor_class, maximum_dex_modifier) VALUES
+ (6, 	"LIGHT", 	0, 	true, 11, NULL),
+ (7, 	"LIGHT", 	0, 	false, 11, NULL),
+ (8, 	"LIGHT", 	0, 	false, 12, NULL),
+ (9, 	"MEDIUM", 	0, 	false, 12, 2),
+ (10, 	"MEDIUM", 	0, 	false, 13, 2),
+ (11, 	"MEDIUM", 	0, 	true, 14, 2),
+ (12, 	"MEDIUM", 	0, 	false, 14, 2),
+ (13, 	"MEDIUM", 	0, 	true, 15, 2),
+ (14, 	"HEAVY", 	0, 	true, 14, 0),
+ (15, 	"HEAVY", 	13, true, 16, 0),
+ (16, 	"HEAVY", 	15, true, 17, 0),
+ (17, 	"HEAVY", 	15, true, 18, 0),
+ (18, 	"SHIELD",	0,	false, 2, 0);
+ 
+INSERT INTO weapon (item_id, damage_type_id, damage_dice_id, damage_dice_amount, is_martial, min_range, max_range) VALUES
+(19, 12, 1, 1, false, 0, 5),
+(20, 11, 2, 1, false, 0, 5),
+(21, 12, 2, 1, false, 0, 5),
+(22, 12, 2, 1, false, 10, 80),
+(23, 12, 3, 1, false, 10, 60),
+(24, 13, 2, 2, true, 0, 5),
+(25, 13, 3, 1, true, 0, 5),
+(26, 12, 3, 1, true, 0, 5),
+(27, 13, 2, 1, true, 0, 5),
+(28, 12, 4, 1, true, 10, 400),
+(29, 12, 3, 1, true, 10, 600);
+
+
+INSERT INTO weapon_properties (propert_name, property_description) VALUES
+	('Finesse', 'You use dexterity instead of strength'), ('Ammunition', 'Your weapons use arrows each attack'), ('Heavy', 'Small creatures have disadvantage');
+
+INSERT INTO weapon_property_match (weapon_id, weapon_property_id) VALUES
+	(19, 1), (22, 2), (23, 2), (26, 1), (27, 1), (28, 2), (28, 3), (29, 2);
+
 # CONDITION RELATIONSHIP KAKO TREBA
 INSERT INTO condition_relationship (condition_id, condition_relationship) VALUES
 	(10, 'IMMUNE'), (2, 'ADVANTAGE'), (10, 'ADVANTAGE'), (11, 'IMMUNE');

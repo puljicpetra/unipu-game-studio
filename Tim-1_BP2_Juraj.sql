@@ -55,6 +55,42 @@ SELECT s.skill_name, a.ability_name AS ability_score_name
 FROM skill s
 JOIN ability_score a ON s.ability_score_id = a.id;
 
+CREATE VIEW items_armor AS
+SELECT 
+    itm.item_name, 
+    itm.item_description,
+    itm.WEIGHT, 
+    itm.cost_id, 
+    itm.cost_amount,
+    arm.armor_type, 
+    arm.strength_minimum, 
+    arm.stealth_disadvantage, 
+    arm.base_armor_class, 
+    arm.maximum_dex_modifier
+FROM armor AS arm
+JOIN item AS itm ON arm.item_id = itm.id;
+
+DROP VIEW IF EXISTS items_weapons;
+CREATE VIEW items_weapons AS
+SELECT 
+    itm.item_name, 
+    itm.item_description,
+    itm.WEIGHT, 
+    itm.cost_id, 
+    itm.cost_amount,
+    wpn.damage_type_id, 
+    wpn.damage_dice_id, 
+    wpn.damage_dice_amount,
+    wpn.is_martial, 
+    wpn.min_range, 
+    wpn.max_range,
+    GROUP_CONCAT(wp.property_name ORDER BY wp.property_name SEPARATOR ', ') AS weapon_properties
+FROM weapon AS wpn
+JOIN item AS itm ON wpn.item_id = itm.id
+LEFT JOIN weapon_property_match AS wpm ON wpn.id = wpm.weapon_id
+LEFT JOIN weapon_properties AS wp ON wpm.weapon_property_id = wp.id
+GROUP BY itm.item_name, itm.item_description, itm.WEIGHT, itm.cost_id, itm.cost_amount, wpn.damage_type_id, wpn.damage_dice_id, wpn.damage_dice_amount, wpn.is_martial, wpn.min_range, wpn.max_range;
+
 DROP VIEW IF EXISTS stat_block_template;
 CREATE VIEW stat_block_template AS
 SELECT 
@@ -111,10 +147,6 @@ LEFT JOIN condition_relationship AS cr ON ccr.condition_relationship_id = cr.id
 LEFT JOIN conditions AS c ON cr.condition_id = c.id
 GROUP BY crea.creature_name, s.size, t.creature_type, a.lawfulness, a.morality, crea.hit_dice_number, d.dice, crea.STRENGTH, crea.DEXTERITY, crea.CONSTITUTION, crea.INTELLIGENCE, crea.WISDOM, crea.CHARISMA, crea.proficiency, crea.challenge_rating, crt.experience_points;
 
-
- 
-
-SELECT * FROM stat_block_template;
 #------------------------------------
 # TRIGGERS
 #------------------------------------

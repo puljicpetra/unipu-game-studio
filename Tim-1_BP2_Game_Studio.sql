@@ -208,7 +208,7 @@ CREATE TABLE creature_item(
 CREATE TABLE armor(
     id INT PRIMARY KEY AUTO_INCREMENT,
     item_id INT NOT NULL UNIQUE,
-    armor_type ENUM ("CLOTHING", "LIGHT", "MEDIUM", "HEAVY") NOT NULL,
+    armor_type ENUM ('CLOTHING', 'LIGHT', 'MEDIUM', 'HEAVY', 'SHIELD') NOT NULL,
     strength_minimum INT NOT NULL DEFAULT 0,
     stealth_disadvantage BOOL NOT NULL DEFAULT false,
     base_armor_class INT NOT NULL DEFAULT 10,
