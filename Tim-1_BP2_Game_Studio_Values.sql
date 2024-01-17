@@ -163,7 +163,7 @@ INSERT INTO weapon (item_id, damage_type_id, damage_dice_id, damage_dice_amount,
 (29, 12, 3, 1, true, 10, 600);
 
 
-INSERT INTO weapon_properties (propert_name, property_description) VALUES
+INSERT INTO weapon_properties (property_name, property_description) VALUES
 	('Finesse', 'You use dexterity instead of strength'), ('Ammunition', 'Your weapons use arrows each attack'), ('Heavy', 'Small creatures have disadvantage');
 
 INSERT INTO weapon_property_match (weapon_id, weapon_property_id) VALUES
