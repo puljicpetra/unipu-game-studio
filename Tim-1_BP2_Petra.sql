@@ -30,9 +30,9 @@ BEGIN
     DECLARE totalExperience INT;
 
     SELECT SUM(cr.experience_points) INTO totalExperience
-		  FROM creature_template ct
+    FROM creature_template ct
     JOIN challenge_rating cr ON ct.challenge_rating = cr.rating
-		 	WHERE ct.id = creature_id;
+    WHERE ct.id = creature_id;
 
     IF totalExperience IS NOT NULL THEN
         SET totalExperience = totalExperience * (player1_level + player2_level + player3_level + player4_level);
