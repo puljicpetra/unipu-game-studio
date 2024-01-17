@@ -1,7 +1,6 @@
 -- TRIGGERI 
 
 DROP TRIGGER IF EXISTS bi_notes;
-
 DELIMITER //
 
 CREATE TRIGGER bi_notes
@@ -52,6 +51,7 @@ DELIMITER ;
 
 -- FUNKCIJE
 
+DROP FUNCTION IF EXISTS get_player_character_info;
 DELIMITER //
 CREATE FUNCTION get_player_character_info(player_character_id INT) RETURNS VARCHAR(255)
 DETERMINISTIC
