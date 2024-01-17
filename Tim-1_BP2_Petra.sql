@@ -1,5 +1,6 @@
-DROP TRIGGER IF EXISTS bi_notes;
+-- TRIGGERI 
 
+DROP TRIGGER IF EXISTS bi_notes;
 DELIMITER //
 
 CREATE TRIGGER bi_notes
@@ -46,3 +47,30 @@ BEGIN
 END;
 //
 DELIMITER ;
+
+
+-- FUNKCIJE
+
+DROP FUNCTION IF EXISTS get_player_character_info;
+DELIMITER //
+CREATE FUNCTION get_player_character_info(player_character_id INT) RETURNS VARCHAR(255)
+DETERMINISTIC
+BEGIN
+    DECLARE player_info VARCHAR(255);
+
+    IF NOT EXISTS (SELECT 1 FROM player_character WHERE id = player_character_id) THEN
+        RETURN 'Player character does not exist';
+    END IF;
+    
+    SELECT CONCAT('Player Name: ', p.player_name, ', Race: ', r.race_name, ', Class: ', c.class_name, ', Level: ', pc.class_level) INTO player_info
+    FROM player_character pc
+    JOIN player p ON pc.player_id = p.id
+    JOIN race r ON pc.race_id = r.id
+    JOIN class c ON pc.class_id = c.id
+    WHERE pc.id = player_character_id;
+    
+    RETURN player_info;
+END //
+DELIMITER ;
+
+SELECT get_player_character_info(6) AS player_character_info;
