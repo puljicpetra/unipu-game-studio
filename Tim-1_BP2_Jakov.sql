@@ -1,5 +1,5 @@
 
--- trigger
+-- trigger za smrt creaturea u igrici
 DROP TRIGGER IF EXISTS death;
 DELIMITER //
 CREATE TRIGGER death
@@ -12,7 +12,7 @@ END //
 DELIMITER ;
 
 
--- funkcija
+-- funkcija koja pokazuje creaturea s najnizim levelom i najvisim levelom koje igrac ima
 DROP FUNCTION IF EXISTS characters_level;
 DELIMITER //
 CREATE FUNCTION characters_level(p_id INTEGER) RETURNS VARCHAR(300)
@@ -37,7 +37,8 @@ BEGIN
 END //
 DELIMITER ;
 
--- pogled
+-- pogled koji sam sortira stvorenja u igrici prema velicini
+DROP VIEW IF EXISTS creatures_size_sorted;
 CREATE VIEW creatures_size_sorted AS
 SELECT creature_name, s.size
 	FROM creature_template AS ct
@@ -46,10 +47,10 @@ SELECT creature_name, s.size
 
 SELECT * FROM creatures_size_sorted;
 
--- procedura
+-- procedura koja dodaje igraca u određeni game
 DROP PROCEDURE IF EXISTS add_player_to_game;
 DELIMITER //
-CREATE PROCEDURE add_player_to_game( IN p_game_instance_id INT, p_player_id INT, OUT rez VARCHAR(50))
+CREATE PROCEDURE add_player_to_game( IN p_game_instance_id INT, p_player_id INT)
 BEGIN
 	DECLARE l_num INTEGER;
     SELECT COUNT(*) INTO l_num
@@ -62,7 +63,8 @@ BEGIN
         INSERT INTO game_players (game_id, player_id)
         VALUES (p_game_instance_id, p_player_id);
         
-        SET rez = 'Player added successfully';
+        SELECT  'Player added successfully' AS result;
     END IF;
 END //
 DELIMITER ;
+
