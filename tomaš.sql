@@ -1,20 +1,5 @@
 drop function  if exists initiative_roll;
 DELIMITER //
-CREATE FUNCTION roll_die (p_dice_type INTEGER) RETURNS INTEGER
-DETERMINISTIC
-BEGIN
-    DECLARE rezultat,dice_type INTEGER;
-    
-    SELECT p_dice_type INTO dice_type
-    FROM dice
-    WHERE p_dice_type=(CAST(SUBSTRING(dice, 2) AS SIGNED));
-    
-    SET rezultat=FLOOR(1 + RAND() * dice_type);
-    RETURN rezultat;
-    END//
-DELIMITER ;
-
-DELIMITER //
 CREATE FUNCTION initiative_roll(p_creature_id INTEGER) RETURNS INTEGER
 DETERMINISTIC
 BEGIN
@@ -53,8 +38,8 @@ JOIN
 
     IF total_weight > x
  THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Prekoracili ste maximalnu kolicinu tereta kojeg mozete nositi';
+        SIGNAL SQLSTATE '45001'
+        SET MESSAGE_TEXT = 'Prekoracili ste maksimalnu kolicinu tereta kojeg mozete nositi';
     END IF;
 END;
 //
@@ -84,6 +69,55 @@ RETURN carry_limit;
 
 END//
 DELIMITER ;
+
+DELIMITER //
+CREATE FUNCTION roll_die(p_dice_type INTEGER) RETURNS INTEGER
+DETERMINISTIC
+BEGIN
+    DECLARE rezultat,dice_type INTEGER;
+    
+    IF p_dice_type IN (4, 6, 8, 10, 12,20,100) THEN
+        SET rezultat = FLOOR(1 + RAND() * p_dice_type);
+        RETURN rezultat;
+    ELSE
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Pogresan unos kocke, dozvoljene kocke su tipa: 4, 6, 8, 10, 12,20 ili 100.';
+    END IF;
+END//
+DELIMITER ;
+
+drop function if exists roll_die;
+
+-- view koji prikazuje sva  'finesse' oruzja te prikazati silazno najjaca, tj. maksimalni damage output
+
+drop view if exists strongest_finesse_weapon;
+CREATE VIEW strongest_finesse_weapon AS
+SELECT
+    w.id AS weapon_id,
+    i.item_name,
+    d.dice,
+    w.damage_dice_amount,
+    CASE WHEN w.is_martial = 1 THEN 'Yes' ELSE 'No' END AS is_martial,
+    w.min_range,
+    w.max_range,
+    (w.damage_dice_amount * SUBSTRING(d.dice, 2)) AS damage_potential
+FROM
+    weapon AS w
+JOIN
+    item AS i ON w.item_id = i.id
+JOIN
+    weapon_property_match AS wpm ON w.id = wpm.weapon_id
+JOIN
+    weapon_properties AS wp ON wpm.weapon_property_id = wp.id
+JOIN
+    dice AS d ON w.damage_dice_id = d.id
+WHERE
+    wp.property_name = 'Finesse'
+ORDER BY
+    damage_potential DESC;
+    
+    
+
 
 
 
