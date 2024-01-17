@@ -1,3 +1,5 @@
+DROP TRIGGER IF EXISTS bi_notes;
+
 DELIMITER //
 
 CREATE TRIGGER bi_notes
