@@ -135,11 +135,29 @@ INSERT INTO item (item_name, item_description, WEIGHT, cost_id, cost_amount) VAL
 ('Longbow'			, '', 2, 4, 50),
 ('Candle'			, '', 0, 1, 1),
 ('Torch'			, '', 1, 1, 1),
-('Bullseye Lantern'	, '', 2, 4, 10)
+('Bullseye Lantern'	, '', 2, 4, 10),
+('Acid Vial'		, '', 2, 4, 2),
+('Alchemist Fire'	, '', 1, 4, 25),
+('Smokepowder Bomb'	, '', 4, 4, 50),
+('Potion of Healing'			, '', 1, 4, 50),
+('Greater Potion of Healing'	, '', 1, 4, 150),
+('Poison'						, '', 1, 4, 100)
+;
+
+INSERT INTO consumable VALUES
+(36, 1, 2, true, null, null, null, null),
+(37, 1, 4, true, null, null, null, null),
+(38, 3, 3, false, 3, 15, 10, null)
 ;
 
 INSERT INTO aoe_shape (shape, shape_size) VALUES 
-('SPHERE', 10), ('SPHERE', 60), ('CONE', 120);
+('SPHERE', 10), ('SPHERE', 60), ('CONE', 120), ('SPHERE', 15), ('SPHERE', 20);
+
+INSERT INTO throwable VALUES
+(33, 10, 30, 1, 2, 15, 1, 2, 1),
+(34, 10, 45, 4, 2, 12, 2, 1, 3),
+(35, 10, 25, 5, 2, 18, 4, 4, 10)
+;
 
 INSERT INTO light_source (item_id, aoe_id, duration_in_minutes) VALUES
 (30, 1, 30), (31, 2, 60), (32, 3, 180);

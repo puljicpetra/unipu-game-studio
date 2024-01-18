@@ -71,8 +71,6 @@ FROM armor AS arm
 JOIN item AS itm ON arm.item_id = itm.id
 LEFT JOIN item AS cost_item ON itm.cost_id = cost_item.id;
 
-SELECT * FROM items_armor;
-
 DROP VIEW IF EXISTS items_weapons;
 CREATE VIEW items_weapons AS
 SELECT 
@@ -94,7 +92,63 @@ LEFT JOIN weapon_property_match AS wpm ON wpn.id = wpm.weapon_id
 LEFT JOIN weapon_properties AS wp ON wpm.weapon_property_id = wp.id
 GROUP BY itm.item_name, itm.item_description, itm.WEIGHT, cost, wpn.is_martial, wpn.min_range, wpn.max_range, damage;
 
-SELECT * FROM items_weapons;
+DROP VIEW IF EXISTS items_consumable;
+CREATE VIEW items_consumable AS
+SELECT 
+    itm.item_name, 
+    itm.item_description,
+    itm.WEIGHT, 
+    CONCAT(itm.cost_amount, 'x ', cost_item.item_name) AS cost,
+    IF(con.is_healing, CONCAT(con.dice_amount, dice.dice, ' Healing'), NULL) AS healing,
+    CASE 
+        WHEN con.saving_throw_ability_id IS NOT NULL THEN CONCAT(ability.ability_name, ' DC ', con.saving_throw_DC)
+        ELSE NULL
+    END AS saving_throw,
+    cond.condition_name AS condition_effect,
+    feat.feature_name AS feature
+FROM consumable AS con
+JOIN item AS itm ON con.item_id = itm.id
+LEFT JOIN item AS cost_item ON itm.cost_id = cost_item.id
+LEFT JOIN dice ON con.dice_id = dice.id
+LEFT JOIN ability_score AS ability ON con.saving_throw_ability_id = ability.id
+LEFT JOIN conditions AS cond ON con.condition_id = cond.id
+LEFT JOIN features AS feat ON con.feature_id = feat.id;
+
+DROP VIEW IF EXISTS items_throwable;
+CREATE VIEW items_throwable AS
+SELECT 
+    itm.item_name, 
+    itm.item_description,
+    itm.WEIGHT, 
+    CONCAT(itm.cost_amount, 'x ', cost_item.item_name) AS cost,
+    CONCAT(throw.range_min, '/', throw.range_max, ' ft.') AS throw_range,
+    CONCAT(aoe.shape, ' (', aoe.shape_size, ' ft.)') AS aoe,
+    CASE 
+        WHEN throw.saving_throw_ability_id IS NOT NULL THEN CONCAT(ability.ability_name, ' DC ', throw.saving_throw_DC)
+        ELSE NULL
+    END AS saving_throw,
+    CONCAT(throw.damage_dice_amount, dice.dice, ' ', dt.damage) AS damage
+FROM throwable AS throw
+JOIN item AS itm ON throw.item_id = itm.id
+LEFT JOIN item AS cost_item ON itm.cost_id = cost_item.id
+LEFT JOIN aoe_shape AS aoe ON throw.aoe_id = aoe.id
+LEFT JOIN ability_score AS ability ON throw.saving_throw_ability_id = ability.id
+LEFT JOIN dice ON throw.damage_dice_id = dice.id
+LEFT JOIN damage_type AS dt ON throw.damage_type_id = dt.id;
+
+DROP VIEW IF EXISTS items_light_source;
+CREATE VIEW items_light_source AS
+SELECT 
+    itm.item_name, 
+    itm.item_description,
+    itm.WEIGHT, 
+    CONCAT(itm.cost_amount, 'x ', cost_item.item_name) AS cost,
+    CONCAT(aoe.shape, ' (', aoe.shape_size, ' ft.)') AS light_aoe,
+    CONCAT(light.duration_in_minutes, ' minutes') AS duration
+FROM light_source AS light
+JOIN item AS itm ON light.item_id = itm.id
+LEFT JOIN item AS cost_item ON itm.cost_id = cost_item.id
+LEFT JOIN aoe_shape AS aoe ON light.aoe_id = aoe.id;
 
 DROP VIEW IF EXISTS stat_block_template;
 CREATE VIEW stat_block_template AS
