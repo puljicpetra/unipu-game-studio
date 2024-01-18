@@ -1,7 +1,5 @@
 USE game_studio;
 
-
- 
 INSERT INTO player VALUES
     (1,222, true);
 
@@ -18,16 +16,12 @@ INSERT INTO creature_instance VALUES
     (4,7,100,2),
     (5,8,100,2);
 
-
-
 INSERT INTO map_creatures VALUES
     (1,1,200,450,0),
     (2,1,200,400,0),
     (3,1,200,350,0),
     (4,1,200,700,0),
     (5,1,200,500,0);
-
-
 
 DROP FUNCTION IF EXISTS calculateDistance;
 DELIMITER //
@@ -39,14 +33,12 @@ BEGIN
   DECLARE instances_count INT;
   DECLARE distance INT;
 
-  -- Provjera da li su creature instance u istom gameu na istoj mapi
   SELECT COUNT(*)
   INTO instances_count
   FROM map_creatures mc1
   JOIN map_creatures mc2 ON mc1.map_id = mc2.map_id
   WHERE mc1.creature_instance_id = creature1_id AND mc2.creature_instance_id = creature2_id;
 
-  -- Ako su u istom gameu na istoj mapi, izračunaj udaljenost
   IF instances_count > 0 THEN
     SELECT SQRT(POWER(mc1.coord_x - mc2.coord_x, 2) + POWER(mc1.coord_y - mc2.coord_y, 2) + POWER(mc1.coord_z - mc2.coord_z, 2))
     INTO distance
@@ -55,12 +47,12 @@ BEGIN
     WHERE mc1.creature_instance_id = creature1_id AND mc2.creature_instance_id = creature2_id;
     RETURN distance;
   ELSE
-    RETURN NULL; -- Ako nisu u istom gameu na istoj mapi, vrati NULL
+    RETURN NULL;
   END IF;
 END //
 
-
 DELIMITER ;
+
 SELECT calculateDistance(1, 2) AS distance;
 
 INSERT INTO creature_instance_inventory VALUES
@@ -71,21 +63,24 @@ INSERT INTO creature_instance_inventory VALUES
 INSERT INTO object_template VALUES
 	(1,"chest","Includes the items or other type of treasures.",1,30);
     
-
 SELECT ci.item_id, i.item_name, w.min_range, w.max_range, calculateDistance(1, 2) AS distance
 FROM creature_instance_inventory ci
 JOIN weapon w ON ci.item_id = w.item_id
 JOIN item i ON ci.item_id = i.id
 WHERE ci.creature_instance_id = 1
   AND calculateDistance(1, 2) >= w.min_range AND calculateDistance(1, 2) <= w.max_range;
+  
 -------
+
 SELECT * FROM 
 creature_instance_inventory cii 
 join item on item.id = cii.item_id
 join weapon on weapon.item_id = item.id
 where cii.creature_instance_id = 1
 ;
+
 ------
+CREATE VIEW Creatures_distance AS 
 SELECT
     mc2.creature_instance_id AS target_creature_instance_id,
     SQRT(POWER(mc1.coord_x - mc2.coord_x, 2) + POWER(mc1.coord_y - mc2.coord_y, 2) + POWER(mc1.coord_z - mc2.coord_z, 2)) AS distance
@@ -95,7 +90,11 @@ JOIN
     map_creatures mc2 ON mc1.map_id = mc2.map_id
 WHERE
     mc1.creature_instance_id = 1;
+    
+SELECT * FROM Creatures_distance;
+
 -----
+
 SELECT
     ci.id AS attacker_id,
     i.item_name AS weapon_name,
@@ -118,8 +117,10 @@ WHERE
     AND SQRT(POWER(mc1.coord_x - mc2.coord_x, 2) + POWER(mc1.coord_y - mc2.coord_y, 2) + POWER(mc1.coord_z - mc2.coord_z, 2)) BETWEEN w.min_range AND w.max_range
 LIMIT 0, 1000;
 
--- --
+----
+
 DROP PROCEDURE IF EXISTS HandleCreatureDeath;
+
 DELIMITER //
 CREATE PROCEDURE HandleCreatureDeath(creature_instance_id INT)
 BEGIN
@@ -128,20 +129,22 @@ BEGIN
     DECLARE coord_x INT;
     DECLARE coord_y INT;
     DECLARE coord_z INT;
+    DECLARE creature_map_id INT;
 
-    -- Dohvati podatke o creature_instance koji umire
     SELECT
         ct.creature_name,
         CONCAT('Inventory of ', ct.creature_name),
         mc.coord_x,
         mc.coord_y,
-        mc.coord_z
+        mc.coord_z,
+		mc.map_id
     INTO
         creature_name,
         creature_description,
         coord_x,
         coord_y,
-        coord_z
+        coord_z,
+		creature_map_id
     FROM
         creature_instance ci
     JOIN
@@ -151,33 +154,25 @@ BEGIN
     WHERE
         ci.id = creature_instance_id;
 
-    -- Ubaci novi red u object_template
     INSERT INTO object_template (object_name, object_description, size_id, health_points)
     VALUES
         (CONCAT(creature_name, '_chest'), creature_description, 1, 1);
 
-
-    -- Ubaci novi red u object_instance
     INSERT INTO object_instance (object_template_id, map_id, coord_x, coord_y, coord_z)
     VALUES
-        ((SELECT id FROM object_template WHERE object_template.object_name=(CONCAT(creature_name, '_chest'))), 1, coord_x, coord_y, coord_z);
+        ((SELECT id FROM object_template WHERE object_template.object_name=(CONCAT(creature_name, '_chest'))),creature_map_id, coord_x, coord_y, coord_z);
 
 END //
 DELIMITER ;
 
-call HandleCreatureDeath(1);
-select * from creature_instance;
-select * from creature_template;
-select * from object_instance;
-select * from object_template;
-select * from map_creatures;
-select * from creature_instance_inventory;
+-- CALL HandleCreatureDeath(1);
 
-DELETE FROM object_instance WHERE id = 1;
-DELETE FROM object_template WHERE id = 6;
+SELECT * FROM creature_instance;
+SELECT * FROM creature_template;
+SELECT * FROM object_instance;
+SELECT * FROM object_template;
+SELECT * FROM map_creatures;
+-- SELECT * FROM creature_instance_inventory;
 
-INSERT INTO object_instance VALUES
-	();
-INSERT INTO object_template VALUES
-	();
+
 
