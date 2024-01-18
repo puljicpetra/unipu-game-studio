@@ -23,62 +23,48 @@ END;
 //
 DELIMITER ;
 
-DELIMITER //
-CREATE FUNCTION calculate_combat_power(player_character_id INT) RETURNS INT
-DETERMINISTIC
-BEGIN
-    DECLARE ability_score_bonus INT DEFAULT 0;
-    DECLARE spell_bonus INT DEFAULT 0;
-    DECLARE combat_power INT DEFAULT 0;
+CREATE VIEW player_character_overview AS
+SELECT 
+    pc.id AS PlayerCharacterID,
+    p.player_name AS PlayerName,
+    SUM(i.cost_amount) AS TotalItemValue,
+    COUNT(DISTINCT cis.spell_id) AS NumberOfSpellsKnown,
+    ci.current_hp AS CurrentHitPoints,
+    SUM(a.base_armor_class) AS TotalArmorClass
+FROM 
+    player_character pc
+    JOIN player p ON pc.player_id = p.id
+    JOIN creature_instance ci ON pc.creature_instance_id = ci.id
+    LEFT JOIN creature_item ci2 ON ci.id = ci2.creature_id
+    LEFT JOIN item i ON ci2.item_id = i.id
+    LEFT JOIN armor a ON i.id = a.item_id
+    LEFT JOIN creature_instance_spells_known cis ON ci.id = cis.creature_instance_id
+GROUP BY 
+    pc.id, p.player_name, ci.current_hp;
     
-    SELECT SUM(STRENGTH + DEXTERITY + CONSTITUTION + INTELLIGENCE + WISDOM + CHARISMA) INTO ability_score_bonus
-    FROM creature_template
-    WHERE id = (SELECT creature_template_id FROM player_character WHERE id = player_character_id);
 
-    SELECT COUNT(*) * 5 INTO spell_bonus
-    FROM spell
-    INNER JOIN creature_instance_spells_known ON spell.id = creature_instance_spells_known.spell_id
-    WHERE creature_instance_spells_known.creature_instance_id = (SELECT creature_instance_id FROM player_character WHERE id = player_character_id);
+CREATE VIEW player_character_summary AS
+SELECT 
+    pc.id AS PlayerCharacterID,
+    p.player_name AS PlayerName,
+    r.race_name AS Race,
+    cl.class_name AS Class,
+    COUNT(DISTINCT cis.spell_id) AS NumberOfSpellsKnown,
+    GROUP_CONCAT(i.item_name SEPARATOR ', ') AS InventoryItems
+FROM 
+    player_character pc
+    JOIN player p ON pc.player_id = p.id
+    JOIN race r ON pc.race_id = r.id
+    JOIN class cl ON pc.class_id = cl.id
+    LEFT JOIN creature_instance_spells_known cis ON pc.creature_instance_id = cis.creature_instance_id
+    LEFT JOIN creature_instance_inventory cii ON pc.creature_instance_id = cii.creature_instance_id
+    LEFT JOIN item i ON cii.item_id = i.id
+GROUP BY 
+    pc.id, p.player_name, r.race_name, cl.class_name;
+    
+SELECT * FROM player_character_summary;
 
-    SET combat_power = ability_score_bonus + spell_bonus;
 
-    RETURN combat_power;
-END;
-//
-DELIMITER ;
 
-DELIMITER //
-
-CREATE FUNCTION calculate_spell_aoe(spell_id INT, target_x INT, target_y INT) RETURNS INT
-DETERMINISTIC
-BEGIN
-    DECLARE p_aoe_shape VARCHAR(32);
-    DECLARE p_aoe_size INT;
-    DECLARE affected_tiles INT;
-
-    SELECT a_s.aoe_shape, sas.spell_aoe_shape INTO p_aoe_shape, p_aoe_size
-    FROM spell_aoe_shape AS sas
-    INNER JOIN aoe_shape AS a_s ON sas.aoe_id = a_s.id
-    WHERE sas.spell_id = spell_id;
-
-    CASE aoe_shape
-        WHEN 'CONE' THEN
-            SET affected_tiles = POW(aoe_size, 2);
-        WHEN 'CUBE' THEN
-            SET affected_tiles = POW(aoe_size, 2);
-        WHEN 'CYLINDER' THEN
-            SET affected_tiles = PI() * POW(aoe_size / 2, 2);
-        WHEN 'LINE' THEN
-            SET affected_tiles = aoe_size;
-        WHEN 'SPHERE' THEN
-            SET affected_tiles = (4/3) * PI() * POW(aoe_size / 2, 3);
-        ELSE
-            SET affected_tiles = 0;
-    END CASE;
-
-    RETURN affected_tiles;
-END;
-//
-DELIMITER ;
 
 
