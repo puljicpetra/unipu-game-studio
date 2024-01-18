@@ -35,7 +35,8 @@ BEGIN
         INNER JOIN creature_instance AS ci ON ci.id = pc.creature_instance.id
         INNER JOIN creature_template AS ct ON ct.id = ci.creature_template.id
         WHERE pc.class_level = min_level;
-	RETURN CONCAT('Character with the lowest level: ', min_character, ' Level ', min_level, ' | Character with the highest level: ', max_character, ' Level ', max_level,'');
+	RETURN CONCAT('Character with the lowest level: ', min_character, ' Level ', min_level, ' 
+					| Character with the highest level: ', max_character, ' Level ', max_level,'');
 END //
 DELIMITER ;
 
