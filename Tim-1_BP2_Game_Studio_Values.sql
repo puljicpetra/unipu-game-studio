@@ -314,8 +314,22 @@ INSERT INTO race_names (race_id, common_name_id) VALUES
     (3, 1), (3, 2), (3, 3), (3, 10), (4, 11), (4, 12), (3, 13), (2, 26), (2, 27), 
     (2, 28), (2, 29), (2, 30), (4, 31), (4, 32),(4, 33),(4, 34),(4, 35), (4, 36); 
 
-SELECT * FROM race_names
-JOIN common_names ON race_names.common_name_id = common_names.id;
+INSERT INTO time_units (unit) VALUES
+    ('INSTANTANEOUS'), ('ACTION'), ('BONUS ACTION'), ('REACTION'), ('MINUTE'), ('HOUR'), ('DAY');
+
+INSERT INTO spell VALUES
+(1, 'Firebolt', 'EVOCATION', 0, false, false, 2, 1, 1, 1, 60, 1, 4, 1, false, true, null, 'Hurls a bolt of fire'),
+(2, 'Acid Splash', 'CONJURATION', 0, false, false, 2, 1, 1, 1, 30, 1, 2, 1, false, true, null, 'Hurls two bubbles of acid'),
+(3, 'Fireball', 'EVOCATION', 1, false, false, 2, 1, 1, 1, 120, 1, 3, 6, false, false, 2, 'Hurls a ball of fire');
+
+INSERT INTO components VALUES 
+(1, true, true, false, null);
+
+INSERT INTO spell_components VALUES
+(1, 1), (2, 1), (3, 1);
+
+INSERT INTO spell_aoe_shape VALUES 
+(3, 1);
 
 # item as needed 
 # armor as needed

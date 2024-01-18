@@ -255,6 +255,22 @@ CREATE TABLE spell(
     FOREIGN KEY (damage_dice_type_id) REFERENCES dice (id) ON UPDATE CASCADE,
     FOREIGN KEY (saving_throw_id) REFERENCES ability_score (id) ON UPDATE CASCADE
 );
+INSERT INTO time_units (time_unit) VALUES
+    ('INSTANTANEOUS'), ('ACTION'), ('BONUS ACTION'), ('REACTION'), ('MINUTE'), ('HOUR'), ('DAY');
+
+INSERT INTO spell VALUES
+(1, 'Firebolt', 'EVOCATION', 0, false, false, 2, 1, 1, 1, 60, 1, 4, 1, false, true, null, 'Hurls a bolt of fire'),
+(2, 'Acid Splash', 'CONJURATION', 0, false, false, 2, 1, 1, 1, 30, 1, 2, 1, false, true, null, 'Hurls two bubbles of acid'),
+(3, 'Fireball', 'EVOCATION', 1, false, false, 2, 1, 1, 1, 120, 1, 3, 6, false, false, 2, 'Hurls a ball of fire');
+
+INSERT INTO components VALUES 
+(1, true, true, false, null);
+
+INSERT INTO spell_components VALUES
+(1, 1), (2, 1), (3, 1);
+
+INSERT INTO spell_aoe_shape VALUES 
+(3, 1);
 
 CREATE TABLE components(
     id INT PRIMARY KEY AUTO_INCREMENT,
