@@ -64,6 +64,41 @@ GROUP BY
     
 SELECT * FROM player_character_summary;
 
+SELECT 
+    ct.creature_type AS 'Creature Type',
+    ctemp.creature_name AS 'Creature Name',
+    ctemp.challenge_rating AS 'Challenge Rating',
+    (ctemp.STRENGTH + ctemp.DEXTERITY + ctemp.CONSTITUTION + ctemp.INTELLIGENCE + ctemp.WISDOM + ctemp.CHARISMA) AS 'Total Ability Score',
+    ctemp.proficiency AS 'Proficiency Bonus'
+FROM 
+    creature_template ctemp
+    JOIN creature_type ct ON ctemp.creature_type_id = ct.id
+ORDER BY 
+    ct.creature_type, ctemp.challenge_rating DESC;
+    
+    
+
+CREATE VIEW race_summary AS
+SELECT 
+    r.race_name,
+    a.lawfulness,
+    a.morality,
+    s.size,
+    CONCAT(r.height_min, ' - ', r.height_max, ' cm') AS HeightRange,
+    CONCAT(r.weight_min, ' - ', r.weight_max, ' kg') AS WeightRange,
+    CONCAT(r.maturity_age, ' - ', r.maximum_age, ' years') AS Lifespan,
+    GROUP_CONCAT(l.language_name SEPARATOR ', ') AS Languages
+FROM 
+    race r
+    JOIN alignment a ON r.typical_alignment_id = a.id
+    JOIN size s ON r.size_id = s.id
+    JOIN race_language rl ON r.id = rl.race_id
+    JOIN languages l ON rl.language_id = l.id
+GROUP BY 
+    r.id;
+
+SELECT * FROM race_summary;
+
 
 
 
