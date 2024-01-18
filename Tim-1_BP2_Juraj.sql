@@ -310,6 +310,37 @@ GROUP BY r.race_name, r.flavor, r.culture, r.maturity_age, r.maximum_age, typica
 
 SELECT * FROM player_race;
 
+DROP VIEW IF EXISTS spell_overview;
+CREATE VIEW spell_overview AS
+SELECT 
+    s.id AS spell_id,
+    s.spell_name,
+    s.spell_school,
+    s.spell_level,
+    s.is_ritual,
+    s.is_concentration,
+    CONCAT(s.casting_unit_amount, ' ', ctu.unit) AS casting_time,
+    CONCAT(s.duration_unit_amount, ' ', dtu.unit) AS duration,
+    s.casting_range,
+    s.number_of_targets,
+    CONCAT(s.damage_dice_amount, dd.dice) AS damage_dice,
+    s.uses_damage_modifier,
+    s.is_attack_roll,
+    comp.verbal,
+    comp.somatic,
+    comp.material,
+    aoe.shape AS aoe_shape,
+    aoe.shape_size AS aoe_size
+FROM spell AS s
+LEFT JOIN time_units AS ctu ON s.casting_time_unit_id = ctu.id
+LEFT JOIN time_units AS dtu ON s.duration_time_unit_id = dtu.id
+LEFT JOIN dice AS dd ON s.damage_dice_type_id = dd.id
+LEFT JOIN spell_components AS sc ON s.id = sc.spell_id
+LEFT JOIN components AS comp ON sc.components_id = comp.id
+LEFT JOIN spell_aoe_shape AS sas ON s.id = sas.spell_id
+LEFT JOIN aoe_shape AS aoe ON sas.aoe_id = aoe.id;
+
+SELECT * FROM spell_overview;
 #------------------------------------
 # TRIGGERS
 #------------------------------------

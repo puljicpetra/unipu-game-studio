@@ -331,6 +331,9 @@ INSERT INTO spell_components VALUES
 INSERT INTO spell_aoe_shape VALUES 
 (3, 1);
 
+INSERT INTO racial_spells VALUES
+(1, 1, 1);
+
 # item as needed 
 # armor as needed
 # weapon as needed
