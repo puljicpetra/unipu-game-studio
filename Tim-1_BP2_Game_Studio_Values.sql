@@ -100,8 +100,8 @@ INSERT INTO skill_proficiency VALUES
 	(4, 4, true), (5, 4, true);
 
 INSERT INTO damage_type_relationship (damage_id, damage_relationship_id) VALUES
-	(7, 2), (1, 3);
-
+	(7, 2), (1, 3), (3, 2);
+    
 INSERT INTO creature_damage_relationship (creature_id, damage_type_relationship_id) VALUES
 	(7, 2);
     
@@ -279,7 +279,7 @@ INSERT INTO race_condition_relationship VALUES
 	(1, 2), (2, 3);
     
 INSERT INTO race_language VALUES
-	(1, 1), (1, 3), (2, 1), (2, 2), (3, 1);
+	(1, 1), (1, 3), (2, 1), (2, 2), (3, 1), (4, 1), (4, 13);
     
 INSERT INTO race_sense VALUES 
 	(1, 1), (2, 1), (4, 1);
@@ -288,7 +288,34 @@ INSERT INTO race_movement VALUES
 	(1, 1), (2, 4), (3, 1), (4, 1);
 
 INSERT INTO race_damage_relationship VALUES
-	(2, 1);
+	(2, 1), (4, 3);
+    
+INSERT INTO race_item_prof VALUES 
+(2, 39), (1, 26);
+
+INSERT INTO features VALUES
+(1, 'Elvish Trance', 'Instead of sleeping, you can meditate for 4 hours.');
+
+INSERT INTO race_feature VALUES
+(2, 1);
+
+
+INSERT INTO common_names (common_name, is_family_name, gender) VALUES
+    ('Blackwood', TRUE, 'NEUTRAL'), ('Fairmont', TRUE, 'NEUTRAL'), ('Hawthorne', TRUE, 'NEUTRAL'), ('Silvershade', TRUE, 'NEUTRAL'), ('Moonwhisper', TRUE, 'NEUTRAL'),
+    ('Starflower', TRUE, 'NEUTRAL'), ('Ironheart', TRUE, 'NEUTRAL'), ('Axebeard', TRUE, 'NEUTRAL'), ('Stonefist', TRUE, 'NEUTRAL'), ('Nightwalker', TRUE, 'NEUTRAL'),
+    ('Flamescar', TRUE, 'NEUTRAL'), ('Shadowhorn', TRUE, 'NEUTRAL'), ('John', FALSE, 'MASCULINE'), ('Emma', FALSE, 'FEMININE'), ('Oliver', FALSE, 'MASCULINE'),
+    ('Sophia', FALSE, 'FEMININE'), ('William', FALSE, 'MASCULINE'), ('Isabella', FALSE, 'FEMININE'), ('Elandriel', FALSE, 'NEUTRAL'), ('Luthien', FALSE, 'FEMININE'),
+    ('Feanor', FALSE, 'MASCULINE'), ('Galadriel', FALSE, 'FEMININE'), ('Arwen', FALSE, 'FEMININE'), ('Legolas', FALSE, 'MASCULINE'), ('Thorin', FALSE, 'MASCULINE'),
+    ('Gimli', FALSE, 'MASCULINE'), ('Dwalin', FALSE, 'MASCULINE'), ('Balin', FALSE, 'MASCULINE'), ('Kili', FALSE, 'MASCULINE'), ('Fili', FALSE, 'MASCULINE'),
+    ('Zariel', FALSE, 'NEUTRAL'), ('Akmenos', FALSE, 'NEUTRAL'), ('Mephistopheles', FALSE, 'NEUTRAL'), ('Ravix', FALSE, 'NEUTRAL'), ('Bel', FALSE, 'NEUTRAL'),('Malcanthet', FALSE, 'FEMININE');
+INSERT INTO race_names (race_id, common_name_id) VALUES
+    (1, 4),  (1, 5),  (1, 6), (3, 14),  (3, 15),  (3, 16), (3, 17),  (3, 18),  (1, 19), 
+    (2, 7), (2, 8), (2, 9), (4, 20), (1, 21), (1, 22),  (1, 23), (1, 24), (2, 25),
+    (3, 1), (3, 2), (3, 3), (3, 10), (4, 11), (4, 12), (3, 13), (2, 26), (2, 27), 
+    (2, 28), (2, 29), (2, 30), (4, 31), (4, 32),(4, 33),(4, 34),(4, 35), (4, 36); 
+
+SELECT * FROM race_names
+JOIN common_names ON race_names.common_name_id = common_names.id;
 
 # item as needed 
 # armor as needed

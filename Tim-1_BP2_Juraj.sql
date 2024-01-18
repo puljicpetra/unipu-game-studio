@@ -46,6 +46,29 @@ BEGIN
 END //
 
 DELIMITER ;
+
+DROP FUNCTION IF EXISTS get_race_names;
+DELIMITER //
+CREATE FUNCTION get_race_names(race_id INT, gender ENUM('MASCULINE', 'FEMININE', 'NEUTRAL'), include_family_names BOOL)
+RETURNS VARCHAR(255) READS SQL DATA
+BEGIN
+    DECLARE names VARCHAR(255);
+    IF include_family_names THEN
+        SELECT GROUP_CONCAT(DISTINCT cn.common_name ORDER BY cn.common_name SEPARATOR ', ') INTO names
+        FROM race_names rn
+        JOIN common_names cn ON rn.common_name_id = cn.id
+        WHERE rn.race_id = race_id AND (cn.gender = gender AND cn.is_family_name = TRUE);
+    ELSE
+        SELECT GROUP_CONCAT(DISTINCT cn.common_name ORDER BY cn.common_name SEPARATOR ', ') INTO names
+        FROM race_names rn
+        JOIN common_names cn ON rn.common_name_id = cn.id
+        WHERE rn.race_id = race_id AND (cn.gender = gender AND cn.is_family_name = FALSE);
+    END IF;
+    RETURN names;
+END //
+DELIMITER ;
+
+
 #------------------------------------
 # VIEWS
 #------------------------------------
@@ -238,7 +261,7 @@ SELECT
     sz.size,
     ct.creature_type,
     CONCAT(r.height_min, ' - ', r.height_max, ' cm') AS height_range,
-    CONCAT(r.weight_min, ' - ', r.weight_max, ' kg') AS weight_range,
+    CONCAT(r.weight_min, ' - ', r.weight_max, ' lbs') AS weight_range,
     GROUP_CONCAT(DISTINCT feat.feature_name ORDER BY feat.feature_name SEPARATOR ', ') AS features,
     GROUP_CONCAT(DISTINCT itm.item_name ORDER BY itm.item_name SEPARATOR ', ') AS item_proficiencies,
     GROUP_CONCAT(DISTINCT CONCAT(spl.spell_name, ' (Level ', spl.spell_level, ')') ORDER BY spl.spell_name SEPARATOR ', ') AS racial_spells,
@@ -249,7 +272,11 @@ SELECT
     GROUP_CONCAT(DISTINCT lang.language_name ORDER BY lang.language_name SEPARATOR ', ') AS languages,
     GROUP_CONCAT(DISTINCT CONCAT(dt.damage, ' ', dr.relationship) ORDER BY dt.damage SEPARATOR ', ') AS damage_relationships,
     GROUP_CONCAT(DISTINCT cn.common_name ORDER BY cn.common_name SEPARATOR ', ') AS common_names,
-    GROUP_CONCAT(DISTINCT CONCAT(cond.condition_name, ' ', cr.condition_relationship) ORDER BY cond.condition_name SEPARATOR ', ') AS condition_relationships
+    GROUP_CONCAT(DISTINCT CONCAT(cond.condition_name, ' ', cr.condition_relationship) ORDER BY cond.condition_name SEPARATOR ', ') AS condition_relationships,
+    get_race_names(r.id, 'MASCULINE', FALSE) AS masculine_names,
+    get_race_names(r.id, 'FEMININE', FALSE) AS feminine_names,
+    get_race_names(r.id, 'NEUTRAL', FALSE) AS neutral_names,
+    get_race_names(r.id, 'NEUTRAL', TRUE) AS family_names
 FROM race AS r
 LEFT JOIN alignment AS al ON r.typical_alignment_id = al.id
 LEFT JOIN size AS sz ON r.size_id = sz.id
