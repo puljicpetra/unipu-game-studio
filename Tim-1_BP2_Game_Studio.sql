@@ -7,7 +7,7 @@ USE game_studio;
 #------------------------------------
 
 
-CREATE TABLE ability_score( #kako ne bi smo morali pisati za literally svaki creature scores, mozemo imati sve varijacije od 0 do 30 jer imamo 180 kombinacija + n za sve creatures di je n broj creaturea a inace bi imali 6*n
+CREATE TABLE ability_score( 
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	ability_name ENUM('STRENGTH', 'DEXTERITY', 'CONSTITUTION', 'INTELLIGENCE', 'WISDOM', 'CHARISMA') UNIQUE NOT NULL 
 );
@@ -513,6 +513,8 @@ CREATE TABLE consumable(
     FOREIGN KEY (condition_id) REFERENCES conditions(id) ON UPDATE CASCADE,
     FOREIGN KEY (feature_id) REFERENCES features(id) ON UPDATE CASCADE
 );
+
+
 
 CREATE TABLE creature_condition(
     creature_id INT,
