@@ -1,7 +1,6 @@
 USE game_studio;
 
-INSERT INTO aoe_shape VALUES
-    (1, "CUBE", 1000);
+
  
 INSERT INTO player VALUES
     (1,222, true);
@@ -69,6 +68,9 @@ INSERT INTO creature_instance_inventory VALUES
     (1,23,1),
     (1,18,1);
     
+INSERT INTO object_template VALUES
+	(1,"chest","Includes the items or other type of treasures.",1,30);
+    
 
 SELECT ci.item_id, i.item_name, w.min_range, w.max_range, calculateDistance(1, 2) AS distance
 FROM creature_instance_inventory ci
@@ -116,4 +118,65 @@ WHERE
     AND SQRT(POWER(mc1.coord_x - mc2.coord_x, 2) + POWER(mc1.coord_y - mc2.coord_y, 2) + POWER(mc1.coord_z - mc2.coord_z, 2)) BETWEEN w.min_range AND w.max_range
 LIMIT 0, 1000;
 
+-- --
+DROP PROCEDURE HandleCreatureDeath;
+DELIMITER //
+CREATE PROCEDURE HandleCreatureDeath(creature_instance_id INT)
+BEGIN
+    DECLARE creature_name VARCHAR(64);
+    DECLARE creature_description TEXT;
+    DECLARE coord_x INT;
+    DECLARE coord_y INT;
+    DECLARE coord_z INT;
+
+    -- Dohvati podatke o creature_instance koji umire
+    SELECT
+        ct.creature_name,
+        CONCAT('Inventory of ', ct.creature_name),
+        mc.coord_x,
+        mc.coord_y,
+        mc.coord_z
+    INTO
+        creature_name,
+        creature_description,
+        coord_x,
+        coord_y,
+        coord_z
+    FROM
+        creature_instance ci
+    JOIN
+        creature_template ct ON ci.creature_template_id = ct.id
+    JOIN
+        map_creatures mc ON ci.id = mc.creature_instance_id
+    WHERE
+        ci.id = creature_instance_id;
+
+    -- Ubaci novi red u object_template
+    INSERT INTO object_template (object_name, object_description, size_id, health_points)
+    VALUES
+        (CONCAT(creature_name, '_chest'), creature_description, 1, 1);
+
+
+    -- Ubaci novi red u object_instance
+    INSERT INTO object_instance (object_template_id, map_id, coord_x, coord_y, coord_z)
+    VALUES
+        ((SELECT id FROM object_template WHERE object_template.object_name=(CONCAT(creature_name, '_chest'))), 1, coord_x, coord_y, coord_z);
+
+END //
+DELIMITER ;
+
+call HandleCreatureDeath(2);
+select * from creature_instance;
+select * from creature_template;
+select * from object_instance;
+select * from object_template;
+select * from map_creatures;
+
+DELETE FROM object_instance WHERE id = 1;
+DELETE FROM object_template WHERE id = 6;
+
+INSERT INTO object_instance VALUES
+	();
+INSERT INTO object_template VALUES
+	();
 
