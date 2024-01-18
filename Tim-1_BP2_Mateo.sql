@@ -2,7 +2,7 @@ DELIMITER //
 CREATE TRIGGER validate_creature_hp_before_insert
 BEFORE INSERT ON creature_instance FOR EACH ROW
 BEGIN
-    IF NEW.current_hp < 0 THEN
+    IF NEW.current_hp <= 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Error: Hit points can not be negative.';
     END IF;
@@ -22,63 +22,65 @@ BEGIN
 END;
 //
 DELIMITER ;
-
-DELIMITER //
-CREATE FUNCTION calculate_combat_power(player_character_id INT) RETURNS INT
-DETERMINISTIC
-BEGIN
-    DECLARE ability_score_bonus INT DEFAULT 0;
-    DECLARE spell_bonus INT DEFAULT 0;
-    DECLARE combat_power INT DEFAULT 0;
     
-    SELECT SUM(STRENGTH + DEXTERITY + CONSTITUTION + INTELLIGENCE + WISDOM + CHARISMA) INTO ability_score_bonus
-    FROM creature_template
-    WHERE id = (SELECT creature_template_id FROM player_character WHERE id = player_character_id);
 
-    SELECT COUNT(*) * 5 INTO spell_bonus
-    FROM spell
-    INNER JOIN creature_instance_spells_known ON spell.id = creature_instance_spells_known.spell_id
-    WHERE creature_instance_spells_known.creature_instance_id = (SELECT creature_instance_id FROM player_character WHERE id = player_character_id);
+CREATE VIEW player_character_summary AS
+SELECT 
+    pc.id AS PlayerCharacterID,
+    p.player_name AS PlayerName,
+    r.race_name AS Race,
+    cl.class_name AS Class,
+    COUNT(DISTINCT cis.spell_id) AS NumberOfSpellsKnown,
+    GROUP_CONCAT(i.item_name SEPARATOR ', ') AS InventoryItems
+FROM 
+    player_character pc
+    JOIN player p ON pc.player_id = p.id
+    JOIN race r ON pc.race_id = r.id
+    JOIN class cl ON pc.class_id = cl.id
+    LEFT JOIN creature_instance_spells_known cis ON pc.creature_instance_id = cis.creature_instance_id
+    LEFT JOIN creature_instance_inventory cii ON pc.creature_instance_id = cii.creature_instance_id
+    LEFT JOIN item i ON cii.item_id = i.id
+GROUP BY 
+    pc.id, p.player_name, r.race_name, cl.class_name;
+    
+SELECT * FROM player_character_summary;
 
-    SET combat_power = ability_score_bonus + spell_bonus;
+SELECT 
+    ct.creature_type AS 'Creature Type',
+    ctemp.creature_name AS 'Creature Name',
+    ctemp.challenge_rating AS 'Challenge Rating',
+    (ctemp.STRENGTH + ctemp.DEXTERITY + ctemp.CONSTITUTION + ctemp.INTELLIGENCE + ctemp.WISDOM + ctemp.CHARISMA) AS 'Total Ability Score',
+    ctemp.proficiency AS 'Proficiency Bonus'
+FROM 
+    creature_template ctemp
+    JOIN creature_type ct ON ctemp.creature_type_id = ct.id
+ORDER BY 
+    ct.creature_type, ctemp.challenge_rating DESC;
+    
+    
 
-    RETURN combat_power;
-END;
-//
-DELIMITER ;
+CREATE VIEW race_summary AS
+SELECT 
+    r.race_name,
+    a.lawfulness,
+    a.morality,
+    s.size,
+    CONCAT(r.height_min, ' - ', r.height_max, ' cm') AS HeightRange,
+    CONCAT(r.weight_min, ' - ', r.weight_max, ' kg') AS WeightRange,
+    CONCAT(r.maturity_age, ' - ', r.maximum_age, ' years') AS Lifespan,
+    GROUP_CONCAT(l.language_name SEPARATOR ', ') AS Languages
+FROM 
+    race r
+    JOIN alignment a ON r.typical_alignment_id = a.id
+    JOIN size s ON r.size_id = s.id
+    JOIN race_language rl ON r.id = rl.race_id
+    JOIN languages l ON rl.language_id = l.id
+GROUP BY 
+    r.id;
 
-DELIMITER //
+SELECT * FROM race_summary;
 
-CREATE FUNCTION calculate_spell_aoe(spell_id INT, target_x INT, target_y INT) RETURNS INT
-DETERMINISTIC
-BEGIN
-    DECLARE p_aoe_shape VARCHAR(32);
-    DECLARE p_aoe_size INT;
-    DECLARE affected_tiles INT;
 
-    SELECT a_s.aoe_shape, sas.spell_aoe_shape INTO p_aoe_shape, p_aoe_size
-    FROM spell_aoe_shape AS sas
-    INNER JOIN aoe_shape AS a_s ON sas.aoe_id = a_s.id
-    WHERE sas.spell_id = spell_id;
 
-    CASE aoe_shape
-        WHEN 'CONE' THEN
-            SET affected_tiles = POW(aoe_size, 2);
-        WHEN 'CUBE' THEN
-            SET affected_tiles = POW(aoe_size, 2);
-        WHEN 'CYLINDER' THEN
-            SET affected_tiles = PI() * POW(aoe_size / 2, 2);
-        WHEN 'LINE' THEN
-            SET affected_tiles = aoe_size;
-        WHEN 'SPHERE' THEN
-            SET affected_tiles = (4/3) * PI() * POW(aoe_size / 2, 3);
-        ELSE
-            SET affected_tiles = 0;
-    END CASE;
-
-    RETURN affected_tiles;
-END;
-//
-DELIMITER ;
 
 
