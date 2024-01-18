@@ -141,7 +141,15 @@ INSERT INTO item (item_name, item_description, WEIGHT, cost_id, cost_amount) VAL
 ('Smokepowder Bomb'	, '', 4, 4, 50),
 ('Potion of Healing'			, '', 1, 4, 50),
 ('Greater Potion of Healing'	, '', 1, 4, 150),
-('Poison'						, '', 1, 4, 100)
+('Poison'						, '', 1, 4, 100),
+('Artisan Tools', 	'', 5, 4, 50),
+('Thieves Tools', 	'', 10, 4, 25),
+('Bedroll', 		'', 7, 4, 1),
+('Blanket', 		'', 3, 2, 5),
+('Bucket,', 		'', 5, 2, 2),
+('Lockpick', 		'', 0, 2, 2),
+('Hammer', 			'', 2, 2, 5),
+('Mess Kit', 		'', 3, 4, 3)
 ;
 
 INSERT INTO consumable VALUES
@@ -227,6 +235,25 @@ INSERT INTO movement (movement, distance) VALUES
 # creature_movement
 INSERT INTO creature_movement VALUES
 	(1, 3), (2, 1), (2, 2), (3, 1), (4, 1), (5, 1), (6, 5), (7, 6), (8, 5), (5, 7);
+
+INSERT INTO background (background_name, background_description) VALUES
+('Criminal', 'Vou are an experienced criminal wilh a hislory of breaking lhe law. Vou have spent a lot of time among olher criminais and still have contacts wilhin lhe criminal underworld. Youre far closer than most people to the world of murder, theft, and violence that pervades the underbelly of civilization, and you have survived up to this point by flouting the rules and regulations of society.'),
+('Guild Artisan', 'You are a member of an artisans guild, skilled in a particular field and closely associated with other artisans. You are a well-established part of the mercantile world, freed by talent and wealth from the constraints of a feudal social order. You learned your skills as an apprentice to a master artisan, under the sponsorship of your guild, until you became a master in your own right.'),
+('Soldier', 'War has been your life for as long as you care to remember. You trained as a youth, studied the use of weapons and armor, learned basic survival techniques, including how to stay alive on the battlefield. You might have been part of a standing national army or a mercenary company, or perhaps a member of a local militia who rose to prominence during a recent war.');
+
+INSERT INTO background_skills VALUES
+(1, 15), (1, 4), (2, 11), (2, 18), (3, 1), (3, 16);
+
+INSERT INTO background_languages VALUES
+(1, 16), (2, 2);
+
+INSERT INTO background_item_prof VALUES
+(1, 19), (1, 23), (1, 40), (2, 19), (2, 45), (3, 25), (3, 18), (3, 10);
+
+INSERT INTO background_equipment VALUES
+(1, 19, 1), (1, 42, 1), (1, 30, 3), (1, 44, 1), (1, 36, 1), (1, 4, 25), (1, 38, 1), 
+(2, 4, 50), (2, 32, 1), (2, 35, 2), (2, 34, 1), (2, 39, 1), (2, 37, 1), 
+(3, 25, 1), (3, 31, 5), (3, 46, 1), (3, 4, 5), (3, 43, 1), (3, 41, 1);
 
 INSERT INTO race VALUES
 	(1,'Elf','Elves are a magical people of otherworldly grace, living in the world but not entirely part of it. They live in places of ethereal beauty, in the midst of ancient forests or in silvery spires glittering with faerie light, where soft music drifts through the air and gentle fragrances waft on the breeze. Elves love nature and magic, art and artistry, music and poetry, and the good things of the world.',
