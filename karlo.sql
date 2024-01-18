@@ -119,7 +119,7 @@ WHERE
 LIMIT 0, 1000;
 
 -- --
-DROP PROCEDURE HandleCreatureDeath;
+DROP PROCEDURE IF EXISTS HandleCreatureDeath;
 DELIMITER //
 CREATE PROCEDURE HandleCreatureDeath(creature_instance_id INT)
 BEGIN
@@ -165,12 +165,13 @@ BEGIN
 END //
 DELIMITER ;
 
-call HandleCreatureDeath(2);
+call HandleCreatureDeath(1);
 select * from creature_instance;
 select * from creature_template;
 select * from object_instance;
 select * from object_template;
 select * from map_creatures;
+select * from creature_instance_inventory;
 
 DELETE FROM object_instance WHERE id = 1;
 DELETE FROM object_template WHERE id = 6;
