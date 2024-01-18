@@ -25,15 +25,18 @@ BEGIN
     SELECT MIN(class_level), MAX(class_level) INTO min_level, max_level
 		FROM player_character
         WHERE player_id = p_id;
-	SELECT ct.character_name, pc.class_level INTO max_character, max_level
+	SELECT ct.character_name INTO max_character
 		FROM player_character AS pc
         INNER JOIN creature_instance AS ci ON ci.id = pc.creature_instance.id
-        INNER JOIN creature_template AS ct ON ct.id = ci.creature_template.id;
-	SELECT ct.character_name, pc.class_level INTO min_character, min_level
+        INNER JOIN creature_template AS ct ON ct.id = ci.creature_template.id
+        WHERE pc.class_level = max_level;
+	SELECT ct.character_name INTO min_character
 		FROM player_character AS pc
         INNER JOIN creature_instance AS ci ON ci.id = pc.creature_instance.id
-        INNER JOIN creature_template AS ct ON ct.id = ci.creature_template.id;
-	RETURN CONCAT('Character with the lowest level: ', min_character, ' Level ', min_level, ' | Character with the highest level: ', max_character, ' Level ', max_level,'');
+        INNER JOIN creature_template AS ct ON ct.id = ci.creature_template.id
+        WHERE pc.class_level = min_level;
+	RETURN CONCAT('Character with the lowest level: ', min_character, ' Level ', min_level, ' 
+					| Character with the highest level: ', max_character, ' Level ', max_level,'');
 END //
 DELIMITER ;
 
@@ -67,4 +70,9 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
+
+
+
+
+
 

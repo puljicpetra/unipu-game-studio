@@ -2,7 +2,7 @@ DELIMITER //
 CREATE TRIGGER validate_creature_hp_before_insert
 BEFORE INSERT ON creature_instance FOR EACH ROW
 BEGIN
-    IF NEW.current_hp < 0 THEN
+    IF NEW.current_hp <= 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Error: Hit points can not be negative.';
     END IF;
@@ -22,25 +22,6 @@ BEGIN
 END;
 //
 DELIMITER ;
-
-CREATE VIEW player_character_overview AS
-SELECT 
-    pc.id AS PlayerCharacterID,
-    p.player_name AS PlayerName,
-    SUM(i.cost_amount) AS TotalItemValue,
-    COUNT(DISTINCT cis.spell_id) AS NumberOfSpellsKnown,
-    ci.current_hp AS CurrentHitPoints,
-    SUM(a.base_armor_class) AS TotalArmorClass
-FROM 
-    player_character pc
-    JOIN player p ON pc.player_id = p.id
-    JOIN creature_instance ci ON pc.creature_instance_id = ci.id
-    LEFT JOIN creature_item ci2 ON ci.id = ci2.creature_id
-    LEFT JOIN item i ON ci2.item_id = i.id
-    LEFT JOIN armor a ON i.id = a.item_id
-    LEFT JOIN creature_instance_spells_known cis ON ci.id = cis.creature_instance_id
-GROUP BY 
-    pc.id, p.player_name, ci.current_hp;
     
 
 CREATE VIEW player_character_summary AS
@@ -63,6 +44,41 @@ GROUP BY
     pc.id, p.player_name, r.race_name, cl.class_name;
     
 SELECT * FROM player_character_summary;
+
+SELECT 
+    ct.creature_type AS 'Creature Type',
+    ctemp.creature_name AS 'Creature Name',
+    ctemp.challenge_rating AS 'Challenge Rating',
+    (ctemp.STRENGTH + ctemp.DEXTERITY + ctemp.CONSTITUTION + ctemp.INTELLIGENCE + ctemp.WISDOM + ctemp.CHARISMA) AS 'Total Ability Score',
+    ctemp.proficiency AS 'Proficiency Bonus'
+FROM 
+    creature_template ctemp
+    JOIN creature_type ct ON ctemp.creature_type_id = ct.id
+ORDER BY 
+    ct.creature_type, ctemp.challenge_rating DESC;
+    
+    
+
+CREATE VIEW race_summary AS
+SELECT 
+    r.race_name,
+    a.lawfulness,
+    a.morality,
+    s.size,
+    CONCAT(r.height_min, ' - ', r.height_max, ' cm') AS HeightRange,
+    CONCAT(r.weight_min, ' - ', r.weight_max, ' kg') AS WeightRange,
+    CONCAT(r.maturity_age, ' - ', r.maximum_age, ' years') AS Lifespan,
+    GROUP_CONCAT(l.language_name SEPARATOR ', ') AS Languages
+FROM 
+    race r
+    JOIN alignment a ON r.typical_alignment_id = a.id
+    JOIN size s ON r.size_id = s.id
+    JOIN race_language rl ON r.id = rl.race_id
+    JOIN languages l ON rl.language_id = l.id
+GROUP BY 
+    r.id;
+
+SELECT * FROM race_summary;
 
 
 

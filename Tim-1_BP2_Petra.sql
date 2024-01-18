@@ -51,7 +51,7 @@ END;
 DELIMITER ;
 
 
--- FUNKCIJE
+-- FUNKCIJA
 
 DROP FUNCTION IF EXISTS get_player_character_info;
 DELIMITER //
@@ -79,7 +79,6 @@ SELECT get_player_character_info(6) AS player_character_info;
 
 
 -- PROCEDURA
--- neovisna o trigger kojeg netko ima vec (onaj da se, ako su hp<0, izbrise)
 
 DROP PROCEDURE IF EXISTS GetPlayerInfo;
 DELIMITER //
