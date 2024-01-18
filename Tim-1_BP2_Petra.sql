@@ -27,6 +27,8 @@ ADD COLUMN modified_at DATETIME;
 
 DROP TRIGGER IF EXISTS bi_notes_timestamp
 DELIMITER //
+
+
 CREATE TRIGGER bi_notes_timestamp
 BEFORE INSERT ON notes
 FOR EACH ROW
@@ -74,3 +76,40 @@ END //
 DELIMITER ;
 
 SELECT get_player_character_info(6) AS player_character_info;
+
+
+-- PROCEDURA
+-- neovisna o trigger kojeg netko ima vec (onaj da se, ako su hp<0, izbrise)
+
+DROP PROCEDURE IF EXISTS GetPlayerInfo;
+DELIMITER //
+
+CREATE PROCEDURE GetPlayerInfo(
+    IN player_character_id INT
+)
+BEGIN
+    DECLARE current_hp INT;
+    DECLARE creature_name VARCHAR(64);
+
+    SELECT ci.current_hp, ct.creature_name
+    INTO current_hp, creature_name
+    FROM creature_instance ci
+    JOIN creature_template ct ON ci.creature_template_id = ct.id
+    WHERE ci.id = player_character_id;
+
+    IF current_hp IS NOT NULL THEN
+        SELECT
+            player_character_id AS id,
+            creature_name AS name,
+            current_hp AS hit_points,
+            CASE
+                WHEN current_hp > 0 THEN 'Alive'
+                WHEN current_hp = 0 THEN 'Unconscious'
+                ELSE 'Dead'
+            END AS status;
+    ELSE
+        SELECT 'Player character does not exist.' AS result;
+    END IF;
+END //
+
+DELIMITER ;
