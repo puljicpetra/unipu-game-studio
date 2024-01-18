@@ -330,7 +330,7 @@ CREATE TABLE weapon_property_match (
     FOREIGN KEY (weapon_property_id) REFERENCES weapon_properties (id) ON DELETE CASCADE
 );
 
-CREATE TABLE features ( # OOF needs lots of work for many things to fit such as trigger uses type etc.
+CREATE TABLE features ( 
     id INT PRIMARY KEY AUTO_INCREMENT,
     feature_name VARCHAR(32),
     feature_description TEXT NOT NULL

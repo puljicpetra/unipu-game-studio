@@ -226,7 +226,63 @@ LEFT JOIN condition_relationship AS cr ON ccr.condition_relationship_id = cr.id
 LEFT JOIN conditions AS c ON cr.condition_id = c.id
 GROUP BY crea.creature_name, s.size, t.creature_type, a.lawfulness, a.morality, crea.hit_dice_number, d.dice, crea.STRENGTH, crea.DEXTERITY, crea.CONSTITUTION, crea.INTELLIGENCE, crea.WISDOM, crea.CHARISMA, crea.proficiency, crea.challenge_rating, crt.experience_points;
 
-SELECT * FROM stat_block_template;
+DROP VIEW IF EXISTS player_race;
+CREATE VIEW player_race AS
+SELECT 
+    r.race_name, 
+    r.flavor,
+    r.culture,
+    r.maturity_age,
+    r.maximum_age,
+    CONCAT(al.lawfulness, ' ', al.morality) AS typical_alignment,
+    sz.size,
+    ct.creature_type,
+    CONCAT(r.height_min, ' - ', r.height_max, ' cm') AS height_range,
+    CONCAT(r.weight_min, ' - ', r.weight_max, ' kg') AS weight_range,
+    GROUP_CONCAT(DISTINCT feat.feature_name ORDER BY feat.feature_name SEPARATOR ', ') AS features,
+    GROUP_CONCAT(DISTINCT itm.item_name ORDER BY itm.item_name SEPARATOR ', ') AS item_proficiencies,
+    GROUP_CONCAT(DISTINCT CONCAT(spl.spell_name, ' (Level ', spl.spell_level, ')') ORDER BY spl.spell_name SEPARATOR ', ') AS racial_spells,
+    GROUP_CONCAT(DISTINCT sk.skill_name ORDER BY sk.skill_name SEPARATOR ', ') AS skill_proficiencies,
+    GROUP_CONCAT(DISTINCT CONCAT(mov.movement, ' ', mov.distance, 'ft') ORDER BY mov.movement SEPARATOR ', ') AS movements,
+    GROUP_CONCAT(DISTINCT CONCAT(sen.sense, ' ', sen.distance, 'ft') ORDER BY sen.sense SEPARATOR ', ') AS senses,
+    GROUP_CONCAT(DISTINCT CONCAT(ascore.ability_name, ' +', ra.increase) ORDER BY ascore.ability_name SEPARATOR ', ') AS ability_score_increases,
+    GROUP_CONCAT(DISTINCT lang.language_name ORDER BY lang.language_name SEPARATOR ', ') AS languages,
+    GROUP_CONCAT(DISTINCT CONCAT(dt.damage, ' ', dr.relationship) ORDER BY dt.damage SEPARATOR ', ') AS damage_relationships,
+    GROUP_CONCAT(DISTINCT cn.common_name ORDER BY cn.common_name SEPARATOR ', ') AS common_names,
+    GROUP_CONCAT(DISTINCT CONCAT(cond.condition_name, ' ', cr.condition_relationship) ORDER BY cond.condition_name SEPARATOR ', ') AS condition_relationships
+FROM race AS r
+LEFT JOIN alignment AS al ON r.typical_alignment_id = al.id
+LEFT JOIN size AS sz ON r.size_id = sz.id
+LEFT JOIN creature_type AS ct ON r.creature_type_id = ct.id
+LEFT JOIN race_feature AS rf ON r.id = rf.race_id
+LEFT JOIN features AS feat ON rf.feature_id = feat.id
+LEFT JOIN race_item_prof AS rip ON r.id = rip.race_id
+LEFT JOIN item AS itm ON rip.item_id = itm.id
+LEFT JOIN racial_spells AS rsp ON r.id = rsp.race_id
+LEFT JOIN spell AS spl ON rsp.spell_id = spl.id
+LEFT JOIN race_skill_prof AS rspf ON r.id = rspf.race_id
+LEFT JOIN skill AS sk ON rspf.skill_id = sk.id
+LEFT JOIN race_movement AS rm ON r.id = rm.race_id
+LEFT JOIN movement AS mov ON rm.movement_id = mov.id
+LEFT JOIN race_sense AS rs ON r.id = rs.race_id
+LEFT JOIN sense AS sen ON rs.sense_id = sen.id
+LEFT JOIN race_asi AS ra ON r.id = ra.race_id
+LEFT JOIN ability_score AS ascore ON ra.ability_id = ascore.id
+LEFT JOIN race_language AS rlang ON r.id = rlang.race_id
+LEFT JOIN languages AS lang ON rlang.language_id = lang.id
+LEFT JOIN race_damage_relationship AS rdr ON r.id = rdr.race_id
+LEFT JOIN damage_type_relationship AS dtr ON rdr.damage_type_relationship_id = dtr.id
+LEFT JOIN damage_type AS dt ON dtr.damage_id = dt.id
+LEFT JOIN damage_relationship AS dr ON dtr.damage_relationship_id = dr.id
+LEFT JOIN race_names AS rn ON r.id = rn.race_id
+LEFT JOIN common_names AS cn ON rn.common_name_id = cn.id
+LEFT JOIN race_condition_relationship AS rcr ON r.id = rcr.race_id
+LEFT JOIN condition_relationship AS cr ON rcr.condition_relationship_id = cr.id
+LEFT JOIN conditions AS cond ON cr.condition_id = cond.id
+GROUP BY r.race_name, r.flavor, r.culture, r.maturity_age, r.maximum_age, typical_alignment, sz.size, ct.creature_type, height_range, weight_range;
+
+SELECT * FROM player_race;
+
 #------------------------------------
 # TRIGGERS
 #------------------------------------
