@@ -150,6 +150,26 @@ JOIN item AS itm ON light.item_id = itm.id
 LEFT JOIN item AS cost_item ON itm.cost_id = cost_item.id
 LEFT JOIN aoe_shape AS aoe ON light.aoe_id = aoe.id;
 
+DROP VIEW IF EXISTS player_backgrounds;
+CREATE VIEW player_backgrounds AS
+SELECT 
+    bg.background_name, 
+    bg.background_description,
+    GROUP_CONCAT(DISTINCT skl.skill_name ORDER BY skl.skill_name SEPARATOR ', ') AS skills,
+    GROUP_CONCAT(DISTINCT lang.language_name ORDER BY lang.language_name SEPARATOR ', ') AS languages,
+    GROUP_CONCAT(DISTINCT item_prof.item_name ORDER BY item_prof.item_name SEPARATOR ', ') AS item_proficiencies,
+    GROUP_CONCAT(DISTINCT CONCAT(eq.item_name, ' x', be.amount) ORDER BY eq.item_name SEPARATOR ', ') AS equipment
+FROM background AS bg
+LEFT JOIN background_skills AS bgs ON bg.id = bgs.background_id
+LEFT JOIN skill AS skl ON bgs.skill_id = skl.id
+LEFT JOIN background_languages AS bgl ON bg.id = bgl.background_id
+LEFT JOIN languages AS lang ON bgl.language_id = lang.id
+LEFT JOIN background_item_prof AS bip ON bg.id = bip.background_id
+LEFT JOIN item AS item_prof ON bip.item_id = item_prof.id
+LEFT JOIN background_equipment AS be ON bg.id = be.background_id
+LEFT JOIN item AS eq ON be.item_id = eq.id
+GROUP BY bg.background_name, bg.background_description;
+
 DROP VIEW IF EXISTS stat_block_template;
 CREATE VIEW stat_block_template AS
 SELECT 

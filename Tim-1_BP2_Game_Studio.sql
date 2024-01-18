@@ -490,17 +490,6 @@ CREATE TABLE background_equipment (
     FOREIGN KEY (background_id) REFERENCES background (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-INSERT INTO background_equipment VALUES
-(1, 19, ,1), (1, 42, ,1), (1, 30, ,3), (1, 44, ,1), (1, 36, ,1), (1, 4, ,25), (1, 38, ,1), 
-(2, 4, ,50), (2, 32, ,1), (2, 35, ,2), (2, 34, ,1), (2, 39, ,1), (2, 37, ,1), 
-(3, , ,1), (3, , ,1), (3, , ,1), (3, , ,1), (3, , ,1), (3, , ,1), 
-
-SELECT * FROM item;
-# criminal = dagger, light crossbow, thieves tools | dagger, blanket, lockpick, healing potion, 25 gp, 3 candles, poison
-# artisan =  artisan tools, hammer,  | 1 greater poiton 2 smaller, artisan tools, alchemist fire, 2x smokepowder, bullseye, 50 gp
-# soldier = Longsword, armor, shield, | longsword, 5 torch, 5 gp, mess kit, bedroll, bucket
-
-
 CREATE TABLE light_source (
     item_id INT PRIMARY KEY,
     aoe_id INT NOT NULL, 
