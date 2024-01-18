@@ -104,7 +104,6 @@ BEGIN
             current_hp AS hit_points,
             CASE
                 WHEN current_hp > 0 THEN 'Alive'
-                WHEN current_hp = 0 THEN 'Unconscious'
                 ELSE 'Dead'
             END AS status;
     ELSE
