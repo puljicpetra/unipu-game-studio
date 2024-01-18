@@ -1,5 +1,5 @@
 
--- trigger
+-- trigger za smrt creaturea u igrici
 DROP TRIGGER IF EXISTS death;
 DELIMITER //
 CREATE TRIGGER death
@@ -12,7 +12,7 @@ END //
 DELIMITER ;
 
 
--- funkcija
+-- funkcija koja pokazuje creaturea s najnizim levelom i najvisim levelom koje igrac ima
 DROP FUNCTION IF EXISTS characters_level;
 DELIMITER //
 CREATE FUNCTION characters_level(p_id INTEGER) RETURNS VARCHAR(300)
@@ -37,11 +37,34 @@ BEGIN
 END //
 DELIMITER ;
 
--- pogled
+-- pogled koji sam sortira stvorenja u igrici prema velicini
+DROP VIEW IF EXISTS creatures_size_sorted;
 CREATE VIEW creatures_size_sorted AS
 SELECT creature_name, s.size
-FROM creature_template AS ct
-INNER JOIN size AS s ON ct.size_id = s.id
-ORDER BY FIELD(size, 'TINY', 'SMALL', 'MEDIUM', 'LARGE', 'HUGE', 'GARGANTUAN');
+	FROM creature_template AS ct
+	INNER JOIN size AS s ON ct.size_id = s.id
+	ORDER BY FIELD(size, 'TINY', 'SMALL', 'MEDIUM', 'LARGE', 'HUGE', 'GARGANTUAN');
 
 SELECT * FROM creatures_size_sorted;
+
+-- procedura koja dodaje igraca u određeni game
+DROP PROCEDURE IF EXISTS add_player_to_game;
+DELIMITER //
+CREATE PROCEDURE add_player_to_game( IN p_game_instance_id INT, p_player_id INT)
+BEGIN
+	DECLARE l_num INTEGER;
+    SELECT COUNT(*) INTO l_num
+		FROM game_players AS gp
+        WHERE game_id = p_game_instance_id AND player_id = p_player_id;
+    IF l_num > 0 THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Player is already in the game.';
+    ELSE
+        INSERT INTO game_players (game_id, player_id)
+        VALUES (p_game_instance_id, p_player_id);
+        
+        SELECT  'Player added successfully' AS result;
+    END IF;
+END //
+DELIMITER ;
+
