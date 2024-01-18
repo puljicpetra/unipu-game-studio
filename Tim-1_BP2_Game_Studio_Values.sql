@@ -105,7 +105,7 @@ INSERT INTO damage_type_relationship (damage_id, damage_relationship_id) VALUES
 INSERT INTO creature_damage_relationship (creature_id, damage_type_relationship_id) VALUES
 	(7, 2);
     
-INSERT INTO item (item_name, item_description, WEIGHT, cost_id, cost_amount) VALUES # ADD WEIGHTS
+INSERT INTO item (item_name, item_description, WEIGHT, cost_id, cost_amount) VALUES
 	('Copper Coin', 'A humble old copper coin', 0, 1, 1), ('Silver Coin', 'A plain old Silver coin', 0, 1, 10), ('Electrum Coin', 'A weird old electrum coin', 0, 2, 5) , ('Gold Coin', 'A mighty old gold coin', 0, 3, 10), ('Platinum Coin', 'A legendary old platinum coin', 0, 4, 10); 
 
 INSERT INTO item (item_name, item_description, WEIGHT, cost_id, cost_amount) VALUES
@@ -132,7 +132,17 @@ INSERT INTO item (item_name, item_description, WEIGHT, cost_id, cost_amount) VAL
 ('Rapier'			, '', 2, 4, 25),
 ('Scimitar'			, '', 3, 4, 25),
 ('Crossbow, Heavy'	, '', 18, 4, 50),
-('Longbow'			, '', 2, 4, 50);
+('Longbow'			, '', 2, 4, 50),
+('Candle'			, '', 0, 1, 1),
+('Torch'			, '', 1, 1, 1),
+('Bullseye Lantern'	, '', 2, 4, 10)
+;
+
+INSERT INTO aoe_shape (shape, shape_size) VALUES 
+('SPHERE', 10), ('SPHERE', 60), ('CONE', 120);
+
+INSERT INTO light_source (item_id, aoe_id, duration_in_minutes) VALUES
+(30, 1, 30), (31, 2, 60), (32, 3, 180);
 
 INSERT INTO armor (item_id, armor_type, strength_minimum, stealth_disadvantage, base_armor_class, maximum_dex_modifier) VALUES
  (6, 	"LIGHT", 	0, 	true, 11, NULL),

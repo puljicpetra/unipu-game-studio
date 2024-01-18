@@ -152,6 +152,7 @@ LEFT JOIN condition_relationship AS cr ON ccr.condition_relationship_id = cr.id
 LEFT JOIN conditions AS c ON cr.condition_id = c.id
 GROUP BY crea.creature_name, s.size, t.creature_type, a.lawfulness, a.morality, crea.hit_dice_number, d.dice, crea.STRENGTH, crea.DEXTERITY, crea.CONSTITUTION, crea.INTELLIGENCE, crea.WISDOM, crea.CHARISMA, crea.proficiency, crea.challenge_rating, crt.experience_points;
 
+SELECT * FROM stat_block_template;
 #------------------------------------
 # TRIGGERS
 #------------------------------------
