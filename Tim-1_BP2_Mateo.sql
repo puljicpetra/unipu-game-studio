@@ -22,6 +22,28 @@ BEGIN
 END;
 //
 DELIMITER ;
+
+DELIMITER //
+CREATE FUNCTION get_player_coordinates(player_character_id INT) 
+RETURNS VARCHAR(100)
+DETERMINISTIC
+BEGIN
+    DECLARE coordinates VARCHAR(100);
+
+    SELECT CONCAT('X: ', coord_x, ', Y: ', coord_y, ', Z: ', coord_z) INTO coordinates
+    FROM map_creatures
+    WHERE creature_instance_id = (
+        SELECT creature_instance_id
+        FROM player_character
+        WHERE id = player_character_id
+    );
+    RETURN coordinates;
+END;
+//
+DELIMITER ;
+
+
+
     
 
 CREATE VIEW player_character_summary AS
