@@ -143,7 +143,6 @@ BEGIN
     DECLARE new_spell_id INT;
     START TRANSACTION;
 
-    -- Insert into the spell table
     INSERT INTO spell (
         spell_name, spell_school, spell_level, is_ritual, is_concentration,
         casting_time_unit_id, casting_unit_amount, duration_time_unit_id,
@@ -158,17 +157,13 @@ BEGIN
         p_spell_description
     );
 
-    -- Get the ID of the newly inserted spell
     SET new_spell_id = LAST_INSERT_ID();
 
-    -- Insert into the spell_components table
     INSERT INTO spell_components (spell_id, components_id) VALUES (new_spell_id,p_components);
    
-    -- Insert into the spell_aoe_shape table
     INSERT INTO spell_aoe_shape (spell_id, aoe_id)
     VALUES (new_spell_id, (SELECT id FROM aoe_shape WHERE shape = p_aoe_shape AND shape_size = p_aoe_shape_size));
 
-    -- Insert into the spell_class table
     INSERT INTO spell_class (class_id, spell_id) VALUES (p_class_list,new_spell_id);
 
 	COMMIT;
@@ -194,13 +189,10 @@ FOR EACH ROW
 BEGIN
     DECLARE existing_amount INT;
     
-    -- Check if the item already exists in the player character's inventory
     SELECT amount INTO existing_amount
     FROM creature_instance_inventory as cii
     WHERE cii.item_id = NEW.item_id;
 
-    -- If the item exists, update the amount and prevent the insertion
-    -- transakcija?
     IF existing_amount IS NOT NULL THEN
         UPDATE creature_instance_inventory
         SET amount = existing_amount + 1;
