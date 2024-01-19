@@ -306,6 +306,9 @@ CREATE TABLE spell_class(
     FOREIGN KEY (spell_id) REFERENCES spell(id) ON DELETE CASCADE
 );
 
+
+
+
 CREATE TABLE race(
     id INT PRIMARY KEY AUTO_INCREMENT,
     race_name VARCHAR(32) NOT NULL UNIQUE,
@@ -691,7 +694,7 @@ CREATE TABLE class_level_feature (
 );
 
 CREATE TABLE class_level_spellslots (
-    class_level_id INT NOT NULL,
+    class_level_id INT NOT NULL PRIMARY KEY,
     slot_level INT NOT NULL DEFAULT 0,
     slot_amount INT NOT NULL DEFAULT 0,
     FOREIGN KEY (class_level_id) REFERENCES class_levels (id) ON UPDATE CASCADE ON DELETE CASCADE
