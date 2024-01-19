@@ -194,6 +194,7 @@ CREATE TABLE creature_instance(
     FOREIGN KEY (creature_template_id) REFERENCES creature_template(id) 
 );
 
+
 CREATE TABLE armor(
     id INT PRIMARY KEY AUTO_INCREMENT,
     item_id INT NOT NULL UNIQUE,
@@ -219,7 +220,7 @@ CREATE TABLE weapon(
     FOREIGN KEY (item_id) REFERENCES item(id) ON DELETE CASCADE
 );
 
-CREATE TABLE weapon_properties( # maybe just hardcode all the properties how to use instead of description so gameplay can be automated?
+CREATE TABLE weapon_properties( 
     id INT PRIMARY KEY AUTO_INCREMENT,
     property_name VARCHAR(32) NOT NULL UNIQUE,
     property_description TEXT NOT NULL
@@ -448,9 +449,10 @@ CREATE TABLE personality (
 
 CREATE TABLE player (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    player_name INT, # napraviti concat player + id ako je null after insert i provjeriti da nije null
+    player_name VARCHAR (32),
     is_DM BOOL NOT NULL DEFAULT false
 );
+
 
 CREATE TABLE background(
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -711,6 +713,3 @@ CREATE TABLE throwable (
     FOREIGN KEY (damage_type_id) REFERENCES damage_type (id),
     FOREIGN KEY (aoe_id) REFERENCES aoe_shape (id)
 );
-
-# features su ostali
-# takodjer i guess actions???
