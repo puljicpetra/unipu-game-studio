@@ -42,8 +42,6 @@ END;
 //
 DELIMITER ;
 
-
-
     
 
 CREATE VIEW player_character_summary AS
@@ -101,6 +99,39 @@ GROUP BY
     r.id;
 
 SELECT * FROM race_summary;
+
+
+DELIMITER //
+CREATE PROCEDURE update_player_health(IN player_character_id INT, IN damage INT)
+BEGIN
+    DECLARE creature_inst_id INT;
+    DECLARE current_hp INT;
+    DECLARE new_hp INT;
+
+    SELECT creature_instance_id INTO creature_inst_id 
+    FROM player_character 
+    WHERE id = player_character_id;
+
+    IF creature_inst_id IS NOT NULL THEN
+        SELECT current_hp INTO current_hp
+        FROM creature_instance
+        WHERE id = creature_inst_id;
+
+        SET new_hp = GREATEST(current_hp - damage, 0);
+
+        UPDATE creature_instance
+        SET current_hp = new_hp
+        WHERE id = creature_inst_id;
+    ELSE
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Player character or associated creature instance not found.';
+    END IF;
+END;
+//
+DELIMITER ;
+
+
+CALL update_player_health(1, 10);
 
 
 
