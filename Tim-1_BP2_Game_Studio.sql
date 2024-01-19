@@ -123,7 +123,6 @@ CREATE TABLE condition_relationship (
     FOREIGN KEY (condition_id) REFERENCES conditions (id) ON DELETE CASCADE
 );
 
-
 CREATE TABLE creature_condition_relationship (
     creature_id INT,
     condition_relationship_id INT,
@@ -520,8 +519,6 @@ CREATE TABLE consumable(
     FOREIGN KEY (feature_id) REFERENCES features(id) ON UPDATE CASCADE
 );
 
-
-
 CREATE TABLE creature_condition(
     creature_id INT,
     condition_id INT,
@@ -714,7 +711,8 @@ CREATE TABLE throwable (
     FOREIGN KEY (item_id) REFERENCES item (id),
     FOREIGN KEY (saving_throw_ability_id) REFERENCES ability_score (id),
     FOREIGN KEY (damage_dice_id) REFERENCES dice (id),
-    FOREIGN KEY (damage_type_id) REFERENCES damage_type (id)
+    FOREIGN KEY (damage_type_id) REFERENCES damage_type (id),
+    FOREIGN KEY (aoe_id) REFERENCES aoe_shape (id)
 );
 
 # features su ostali

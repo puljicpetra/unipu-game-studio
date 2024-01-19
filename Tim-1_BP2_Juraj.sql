@@ -341,6 +341,7 @@ LEFT JOIN spell_aoe_shape AS sas ON s.id = sas.spell_id
 LEFT JOIN aoe_shape AS aoe ON sas.aoe_id = aoe.id;
 
 SELECT * FROM spell_overview;
+
 #------------------------------------
 # TRIGGERS
 #------------------------------------
