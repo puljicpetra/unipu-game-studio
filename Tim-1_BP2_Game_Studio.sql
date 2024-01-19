@@ -293,7 +293,9 @@ CREATE TABLE class(
     class_name VARCHAR(32) NOT NULL UNIQUE,
     class_description TEXT NOT NULL,
     hit_dice_id INT NOT NULL DEFAULT 1,
-    primary_ability_id INT NOT NULL DEFAULT 0
+    primary_ability_id INT NOT NULL DEFAULT 0,
+    FOREIGN KEY (hit_dice_id) REFERENCES dice(id),
+    FOREIGN KEY (primary_ability_id) REFERENCES ability_score(id)
 );
 
 CREATE TABLE spell_class(
@@ -500,7 +502,7 @@ CREATE TABLE light_source (
 );
 
 CREATE TABLE consumable(
-    item_id INT NOT NULL,
+    item_id INT NOT NULL PRIMARY KEY,
     dice_id INT DEFAULT NULL,
     dice_amount INT DEFAULT NULL,
     is_healing BOOl NOT NULL DEFAULT false,
@@ -568,8 +570,9 @@ CREATE TABLE game_instance(
 );
 
 CREATE TABLE game_players(
-    game_id INT PRIMARY KEY,
+    game_id INT,
     player_id INT NOT NULL,
+    PRIMARY KEY(game_id,player_id),
     FOREIGN KEY (player_id) REFERENCES player(id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (game_id) REFERENCES game_instance(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
