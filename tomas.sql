@@ -73,7 +73,7 @@ DELIMITER //
 CREATE FUNCTION roll_die(p_dice_type INTEGER) RETURNS INTEGER
 DETERMINISTIC
 BEGIN
-    DECLARE rezultat,dice_type INTEGER;
+    DECLARE rezultat INTEGER;
     
     IF p_dice_type IN (4, 6, 8, 10, 12,20,100) THEN
         SET rezultat = FLOOR(1 + RAND() * p_dice_type);
