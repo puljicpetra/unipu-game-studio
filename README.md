@@ -1,9 +1,13 @@
 # Projekt: GAME STUDIO (Fork)
 
 **Kolegij:** Baze podataka II
+
 **Nositelj kolegija:** doc. dr. sc. Goran Oreški
+
 **Izvođač vježbi:** Romeo Šajina, mag. inf.
+
 **Fakultet:** Fakultet Informatike u Puli
+
 **Originalni Tim:** „Tim-1“
 
 **Napomena:** Ovaj repozitorij je **fork** originalnog timskog projekta "GAME STUDIO" rađenog u sklopu kolegija "Baze podataka II". Služi prvenstveno za prikaz mog individualnog doprinosa i rada na tom projektu te kao arhiva projektnih materijala.
