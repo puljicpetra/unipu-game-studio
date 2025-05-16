@@ -103,3 +103,115 @@ Moj doprinos projektu uključivao je rad na osiguravanju funkcionalnosti i integ
 ---
 
 **Link na originalni timski repozitorij:** [https://github.com/JurajSternVukotic/unipu-game-studio](https://github.com/JurajSternVukotic/unipu-game-studio)
+
+---
+---
+*(English Version Below)*
+---
+---
+
+# Project: GAME STUDIO (Fork)
+
+**Course:** Databases II
+
+**Course Supervisor:** Asst. Prof. Goran Oreški, PhD
+
+**Lab Instructor:** Romeo Šajina, M.Sc. Inf.
+
+**Faculty:** Faculty of Informatics in Pula
+
+**Original Team:** "Tim-1"
+
+**Note:** This repository is a **fork** of the original team project "GAME STUDIO" developed as part of the "Databases II" course. It primarily serves to showcase my individual contribution and work on that project, and as an archive of project materials.
+
+---
+
+## About the "GAME STUDIO" Project
+
+The "GAME STUDIO" project focuses on the development of a comprehensive database supporting a tabletop role-playing game (RPG) based on the popular "Dungeons and Dragons" (D&D) system. The goal was to thoroughly study the subject, design, and implement a software solution using a relational database (MySQL) for data storage, management, and facilitation of gameplay.
+
+The system is designed to manage various aspects of the game, including:
+*   **Creatures/Characters:** Attributes (races, classes, alignments, sizes), abilities (skills, proficiencies), hit points (health), initiative.
+*   **Game World:** Maps, objects on maps, game instances.
+*   **Game Mechanics:** Spells, magic components, areas of effect (AoE), equipment (weapons, armor), combat (damage types, conditions, attacks), experience points (challenge rating, experience).
+*   **Players:** Character creation, inventory tracking, character backgrounds, personalities.
+
+The database is designed to be complex and detailed, with an emphasis on an advanced implementation of SQL elements such as:
+*   A large number of **tables** (over 50 in the final version) to model all aspects of the game.
+*   **Complex queries** for data retrieval and manipulation.
+*   **Views** for simplified access to frequently used data.
+*   **Stored procedures** to encapsulate complex operations (e.g., character creation, combat turns).
+*   **Triggers** to automate processes (e.g., updating hit points, checking inventory).
+*   **Functions** for in-game calculations (e.g., damage calculation, action outcomes).
+*   **Transactions** to ensure data integrity.
+
+In addition to the database, the development of a software interface (console or graphical) was planned to allow users to interact with the system.
+
+---
+
+## Original "Tim-1" Project Team and My Contribution
+
+**Original team members:**
+*   **Karlo Bazina:** Programmer - Frontend Developer
+*   **Tomas Mikašinović-Komšo:** Programmer - Graphics Designer
+*   **Petra Puljić:** Communication Lead - Documentation Production Manager
+*   **Jakov Benedikt Ružić:** Quality Assurance Engineer - Human Resources
+*   **Juraj Štern-Vukotić:** Team Lead - Tech Lead Senior Software Architect
+*   **Mateo Udovičić:** Programmer - Backend Developer
+
+### My Specific Contribution to the Project (Petra Puljić):
+
+My contribution to the project included work on ensuring data functionality and integrity through SQL triggers, functions, and procedures, as well as maintaining and updating project documentation. Specifically, I implemented and presented:
+
+*   **SQL Triggers for the `notes` table:**
+    *   **`bi_notes`:** A trigger that automatically generates a title for a new note (e.g., "Note X") if the user did not enter a title or entered an empty string.
+    *   **`bi_notes_timestamp`:** A trigger that automatically sets the creation time (`created_at`) and last modification time (`modified_at`) to the current timestamp when inserting a new note.
+    *   **`bu_notes_timestamp`:** A trigger that automatically updates the last modification time (`modified_at`) to the current timestamp upon each modification of an existing note.
+*   **SQL Function `get_player_character_info`:**
+    *   A function that takes `player_character_id` as an input parameter and returns a string with information about the player character, including player name, race, class, and level. If a character with the requested ID does not exist, the function returns an appropriate message.
+*   **SQL Stored Procedure `GetPlayerInfo`:**
+    *   A procedure that takes `player_character_id` and retrieves information about current hit points (`current_hp`) and creature name (`creature_name`). Based on `current_hp`, the procedure also returns the character's status ('Alive' or 'Dead'). If the character does not exist, a corresponding message is returned.
+*   **Maintenance and Updating of Project Documentation:**
+    *   I continuously worked on updating and aligning all parts of the project documentation (Project Summary, Reports, Final Documentation) to reflect the project's progress and changes.
+*   **Coordination of communication with the professor as "Communication Lead"**
+
+---
+
+## Planned System Functionalities (according to the Project Summary)
+
+*   Browsing the database by logical and useful categories (rules, current game).
+*   Loading and generating data from/to .csv or .json formats ("saves", rules).
+*   Ability to change rules, add new ones, or delete old ones.
+*   Character creation with a display of all relevant information and choices.
+*   Different user permissions (Player vs. Game Master).
+*   Automatic interactions between different game mechanics (e.g., inventory tracking, calculating attack outcomes, turn tracking).
+*   System for character "resting."
+*   System for tracking positions, effects, and collisions on a 2D "map."
+*   System for tracking quests (rewards, objectives, participants, outcomes) and tools for the Game Master to create them.
+*   Tutorial for using the system (separate for players and Game Masters).
+
+---
+
+## Tools and Technologies Used (Planned and Used)
+
+*   **Database and Modeling:**
+    *   MySQL Workbench (Database development, EER Diagrams, writing queries and procedures)
+    *   Lucidchart (ER Diagram creation)
+    *   DBDiagramIO (Quick ERD sketching - initial)
+*   **Versioning:**
+    *   GitHub / Git
+*   **Interface Programming (planned):**
+    *   Python (with libraries like `pyodbc` for database and `PyQt6` for UI)
+    *   Web Technologies (HTML, CSS, JavaScript, with frameworks like Tailwind and Vue)
+*   **Communication:**
+    *   Discord
+    *   WhatsApp
+*   **Documentation:**
+    *   Dillinger (for Markdown)
+    *   Google Docs (for final documentation)
+*   **Development Environment:**
+    *   VSCode
+
+---
+
+**Link to the original team repository:** [https://github.com/JurajSternVukotic/unipu-game-studio](https://github.com/JurajSternVukotic/unipu-game-studio)
